@@ -5,8 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import config from '../environment/config'
-import { DiscordConfigService } from './services/discord-config-service';
-
+import { DiscordConfigService } from './services/discord-config.service';
+import { TwitterService } from './services/twitter.service';
+import { PrismaService } from './services/prisma.service';
+import { UserService } from './services/user.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +18,7 @@ import { DiscordConfigService } from './services/discord-config-service';
       isGlobal: true,
       load: [config],
     }),
+    ScheduleModule.forRoot(),
     DiscordModule.forRootAsync({
       imports: [ConfigModule],
       useClass: DiscordConfigService,
@@ -43,6 +47,7 @@ import { DiscordConfigService } from './services/discord-config-service';
     // }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TwitterService, PrismaService, UserService],
+  // providers: [AppService, TwitterService, UserService],
 })
 export class AppModule { }

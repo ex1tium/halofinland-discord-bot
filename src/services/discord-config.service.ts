@@ -13,7 +13,7 @@ import { Intents } from 'discord.js';
 @Injectable()
 export class DiscordConfigService implements DiscordOptionsFactory {
   constructor(
-    private readonly configService: ConfigService
+    private readonly _configService: ConfigService
   ) {
   }
 
@@ -41,11 +41,11 @@ export class DiscordConfigService implements DiscordOptionsFactory {
             Intents.FLAGS.DIRECT_MESSAGE_TYPING,
           ],
       },
-      allowGuilds: JSON.parse(this.configService.get('allowGuilds')),
+      allowGuilds: JSON.parse(this._configService.get('allowGuilds')),
 
       // usePipes: [TransformPipe, ValidationPipe],
       useGuards: [],
-      token: this.configService.get('token'),
+      token: this._configService.get('token'),
 
     }
 
