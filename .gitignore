@@ -38,3 +38,4 @@ lerna-debug.log*
 /environment/.env
 /environment/!.example.env
 /environment/!config.ts
+.env
