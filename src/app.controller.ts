@@ -1,5 +1,5 @@
 import { Controller, Get, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { On, Once, UseGuards, UsePipes, DiscordClientProvider } from '@discord-nestjs/core';
+import { On, Once, UseGuards, UsePipes, DiscordClientProvider, DiscordCommandProvider } from '@discord-nestjs/core';
 import { Message } from 'discord.js';
 import { AppService } from './app.service';
 import { MessageFromUserGuard } from './guards/message-fom-user.guard';
@@ -7,6 +7,8 @@ import { MessageToUpperPipe } from './pipes/message-to-upper.pipe';
 import { TwitterService } from './services/twitter.service';
 import { UserService } from './services/user.service';
 import { Subscription } from 'rxjs';
+import { DiscordApiService } from './services/discord-api.service';
+import { DefineDiscordCommand } from './models/sub-command-options.model';
 // Client, ClientProvider, 
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
@@ -18,7 +20,10 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly _appService: AppService,
     private _twitterService: TwitterService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _discordCommandProvider: DiscordCommandProvider,
+    private _discordApiService: DiscordApiService
+
   ) {
     // console.log(this.discordProvider.getClient().channels)
 
@@ -61,6 +66,91 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       }
     }))
 
+    // 1 is type SUB_COMMAND'
+    // 2 is type SUB_COMMAND_GROUP
+    const statsSubCommands: DefineDiscordCommand[] =
+      [
+        {
+          "name": "reg",
+          "description": "Register or update your Xbox Gamer tag",
+          "type": 1,
+          "options": [
+            {
+              "name": "tag",
+              "description": "Enter Xbox Gamertag",
+              "type": 3,
+              "required": true
+            },
+
+          ]
+        },
+        {
+          "name": "update",
+          "description": "Pulls latest stats for your gamertag",
+          "type": 1,
+        },
+        {
+          "name": "get",
+          "description": "Prints stats for gamertag",
+          "type": 1,
+        },
+        {
+          "name": "help",
+          "description": "READ ME",
+          "type": 1,
+          "options": [
+            {
+              "name": "lang",
+              "description": "Select language",
+              "type": 3,
+              "required": true,
+              "choices": [
+                {
+                  "name": "Suomeksi",
+                  "value": "fi"
+                },
+                {
+                  "name": "In English",
+                  "value": "en"
+                },
+              ]
+            },
+
+          ]
+        },
+        // {
+        //   "name": "role",
+        //   "description": "Get or edit permissions for a role",
+        //   "type": 2,
+        //   "options": [
+        //     {
+        //       "name": "get",
+        //       "description": "Get permissions for a role",
+        //       "type": 1
+        //     },
+        //     {
+        //       "name": "edit",
+        //       "description": "Edit permissions for a role",
+        //       "type": 1
+        //     }
+        //   ]
+        // }
+
+        // {
+        //   name: 'reg',
+        //   description: 'Enter your Xbox Gamer Tag',
+        //   type: 1,
+        //   required: true
+        // }
+      ]
+    // this._subMap.set('stats_command', this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands))
+
+
+    // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
+
+    this.logger.debug(`REGISTERED COMMANDS: ${JSON.stringify(this._discordCommandProvider.getAllCommands())}`)
+
+
 
 
     // const invite = this.discordProvider.getClient().generateInvite({
@@ -71,6 +161,8 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
 
   onModuleDestroy() {
+
+    this._subMap.forEach(sub => sub.unsubscribe())
 
   }
 

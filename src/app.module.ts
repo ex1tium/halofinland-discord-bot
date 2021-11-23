@@ -10,6 +10,12 @@ import { TwitterService } from './services/twitter.service';
 import { PrismaService } from './services/prisma.service';
 import { UserService } from './services/user.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { HttpModule } from '@nestjs/axios';
+import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
+import { SharedModule } from './shared/shared.module';
+import { HalodotapiService } from './services/halodotapi.service';
+import { DiscordApiService } from './services/discord-api.service';
+// import { DiscordApiService } from './services/discord-api.service';
 
 @Module({
   imports: [
@@ -18,36 +24,12 @@ import { ScheduleModule } from '@nestjs/schedule';
       isGlobal: true,
       load: [config],
     }),
+    HttpModule,
     ScheduleModule.forRoot(),
-    DiscordModule.forRootAsync({
-      imports: [ConfigModule],
-      useClass: DiscordConfigService,
-    }),
-    // DiscordModule.forRootAsync({
-    //   useFactory: () => ({
-    //     token: '',
-    //     commandPrefix: '!',
-    //     allowGuilds: [''],
-    //     denyGuilds: [''],
-    //     allowCommands: [
-    //       {
-    //         name: 'some',
-    //         channels: [''],
-    //         users: [''],
-    //         channelType: [''],
-    //       },
-    //     ],
-    //     webhook: {
-    //       webhookId: 'your_webhook_id',
-    //       webhookToken: 'your_webhook_token',
-    //     },
-    //     usePipes: [TransformPipe, ValidationPipe],
-    //     // and other discord options
-    //   }),
-    // }),
+    HaloDotApiModule,
+    SharedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TwitterService, PrismaService, UserService],
-  // providers: [AppService, TwitterService, UserService],
+  providers: [AppService, HalodotapiService, DiscordApiService],
 })
 export class AppModule { }

@@ -4,7 +4,7 @@ import { ETwitterStreamEvent, TweetStream, TweetV2, TweetV2SingleResult, Twitter
 
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { PrismaService } from './prisma.service';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { DiscordClientProvider } from '@discord-nestjs/core';
 import { TextChannel, MessageEmbed } from 'discord.js';
 import { format } from 'date-fns'
@@ -39,15 +39,15 @@ export class TwitterService {
 
   async init() {
     const user = await this._client.v2.user('1093614084807741440');
-    this._logger.verbose(`twitter client: ${JSON.stringify(user)}`)
+    // this._logger.verbose(`twitter client: ${JSON.stringify(user)}`)
     // this._stream = await this._client.sampleStream();
     const rwClient = this._client.readWrite;
-    this._logger.verbose(`rwClient: ${JSON.stringify(rwClient)}`)
+    // this._logger.verbose(`rwClient: ${JSON.stringify(rwClient)}`)
 
 
 
     const find = await this._prismaService.tweet.findMany()
-    this._logger.verbose(`find tweets: ${JSON.stringify(find)}`)
+    // this._logger.verbose(`find tweets: ${JSON.stringify(find)}`)
 
     this.pollHaloSupportTweets();
 
@@ -97,13 +97,15 @@ export class TwitterService {
     return embedTweet;
   }
 
-  @Cron('5 * * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async pollHaloSupportTweets() {
     const search = await this._client.v2.search('from:HaloSupport ("patch" OR "release" OR "update" OR "problem" OR "issue")', {
       "tweet.fields": ['created_at', 'id', 'author_id', 'source'],
     });
 
-    this._logger.debug('search', JSON.stringify(search))
+    this._logger.debug('searching for new tweets')
+
+    // this._logger.debug('search', JSON.stringify(search))
     const newTweets: TweetV2[] = [];
 
     const sortData = search.data.data.sort((a, b) => {
@@ -120,12 +122,13 @@ export class TwitterService {
           }
         })
 
-        // console.log('found', found)
 
         if (!found) {
           this.recordTweet(tweet);
           newTweets.push(tweet)
           this.sendChannel('911189130543788062', tweet)
+          console.log('found new tweet', tweet)
+
         }
 
 
