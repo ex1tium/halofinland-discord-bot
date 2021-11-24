@@ -47,7 +47,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
         // TODO write query against HaloDotApi
 
         embedReply = new MessageEmbed()
-          .setColor('#FF0000')
+          .setColor('#CCCCFF')
           // .setDescription('Gamertag Updated')
           .addFields(
             { name: `TODO`, value: `Query stats for tag ${gamerTag}` },
@@ -61,7 +61,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
       } else {
         embedReply = new MessageEmbed()
-          .setColor('#FF0000')
+          .setColor('#FF7F50')
           // .setDescription('Gamertag Updated')
           .addFields(
             { name: `Error`, value: `No Xbox Gametag registered for user` },

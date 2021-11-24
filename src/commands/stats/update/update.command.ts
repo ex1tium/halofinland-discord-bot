@@ -37,7 +37,7 @@ export class StatsUpdateSubCommand implements DiscordTransformedCommand<UpdateDt
       })
 
       embedReply = new MessageEmbed()
-        .setColor('#FF0000')
+        .setColor('#DFFF00')
         // .setDescription('Gamertag Updated')
         .addFields(
           { name: `Old Gamertag`, value: `${userExists.gamerTag}` },

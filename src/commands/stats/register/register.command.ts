@@ -63,7 +63,7 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
     let embedReply: MessageEmbed;
     if (wasUpdated) {
       embedReply = new MessageEmbed()
-        .setColor('#FF0000')
+        .setColor('#DFFF00')
         // .setDescription('Gamertag Updated')
         .addFields(
           { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
@@ -73,7 +73,7 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
 
     } else {
       embedReply = new MessageEmbed()
-        // .setColor('#FF0000')
+        .setColor('#40E0D0')
         // .setDescription('Gamertag Saved')
         .addFields(
           // { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
