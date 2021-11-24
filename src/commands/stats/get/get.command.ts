@@ -50,7 +50,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
           .setColor('#FF0000')
           // .setDescription('Gamertag Updated')
           .addFields(
-            { name: `TODO`, value: `Query stats` },
+            { name: `TODO`, value: `Query stats for tag ${gamerTag}` },
           )
         // .setTimestamp()
         reply = {
