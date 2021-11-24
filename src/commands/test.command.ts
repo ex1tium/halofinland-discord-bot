@@ -3,7 +3,6 @@ import { Command } from '@discord-nestjs/core';
 import { DiscordCommand } from '@discord-nestjs/core';
 import { CommandInteraction } from 'discord.js';
 import { ToJsonResponse } from 'src/models/interaction-toJSON.model';
-import { HalodotapiService } from 'src/services/halodotapi.service';
 
 @Command({
   name: 'test',

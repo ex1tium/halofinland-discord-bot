@@ -6,6 +6,8 @@ import {
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { HaloDotApiService } from 'src/services/halodotapi.service';
+import { UserService } from 'src/services/user.service';
 import { GetDto } from './get.dto';
 
 @UsePipes(TransformPipe)
@@ -14,15 +16,58 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
   private _logger: Logger = new Logger(StatsGetSubCommand.name)
 
-  constructor() { }
+  constructor(
+    private _haloDotApi: HaloDotApiService,
+    private _userService: UserService
+  ) { }
 
-  handler(@Payload() dto: GetDto, interaction: CommandInteraction): string {
+  async handler(@Payload() dto: GetDto, interaction: CommandInteraction) {
+
+    const hasParam = !!dto.gamertag
+    const userId = interaction.user.id
+
+    let gamerTag: string;
+    let embedReply: MessageEmbed;
+
+    let reply: { embeds: MessageEmbed[]; };
+
+    if (hasParam) {
+      gamerTag = dto.gamertag;
+
+      // TODO write query against HaloDotApi
+
+    } else {
+      const botUser = await this._userService.user({
+        discordUserId: userId,
+      })
+
+      if (botUser) {
+        gamerTag = botUser.gamerTag
+
+        // TODO write query against HaloDotApi
+
+      } else {
+        embedReply = new MessageEmbed()
+          .setColor('#FF0000')
+          // .setDescription('Gamertag Updated')
+          .addFields(
+            { name: `Error`, value: `No Xbox Gametag registered for user` },
+          )
+        // .setTimestamp()
+        reply = {
+          embeds: [embedReply]
+        }
+
+        return reply;
+      }
+
+    }
 
 
     this._logger.verbose(JSON.stringify(dto))
     this._logger.verbose(interaction)
 
-    return `Print out stats`;
+    return reply;
   }
 }
 

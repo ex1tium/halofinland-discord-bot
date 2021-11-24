@@ -6,41 +6,54 @@ import {
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { UserService } from 'src/services/user.service';
 import { UpdateDto } from './update.dto';
 
 @UsePipes(TransformPipe)
-@SubCommand({ name: 'update', description: 'Register your Xbox Gamer tag' })
+@SubCommand({ name: 'update', description: 'Update your registered Xbox Gamer Tag' })
 export class StatsUpdateSubCommand implements DiscordTransformedCommand<UpdateDto> {
 
   private _logger: Logger = new Logger(StatsUpdateSubCommand.name)
 
-  constructor() { }
+  constructor(private _userService: UserService) { }
 
-  handler(@Payload() dto: UpdateDto, interaction: CommandInteraction): string {
+  async handler(@Payload() dto: UpdateDto, interaction: CommandInteraction) {
 
+    const gamerTag = dto.gamertag
+    const userId = interaction.user.id
+    const userExists = await this._userService.user({
+      discordUserId: userId,
+    })
+    let embedReply: MessageEmbed;
 
-    this._logger.verbose(JSON.stringify(dto))
-    this._logger.verbose(interaction)
+    if (userExists) {
+      this._userService.updateUser({
+        where: {
+          discordUserId: userId,
+        },
+        data: {
+          gamerTag: gamerTag
+        }
+      })
 
-    return `Updated stats`;
+      embedReply = new MessageEmbed()
+        .setColor('#FF0000')
+        // .setDescription('Gamertag Updated')
+        .addFields(
+          { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
+          { name: `New Gamertag`, value: `${gamerTag}` },
+        )
+        .setTimestamp()
+      const reply = {
+        embeds: [embedReply]
+      }
+
+      this._logger.verbose(JSON.stringify(dto))
+      this._logger.verbose(interaction)
+
+      return reply;
+    }
+
+    return 'use /stats reg :gamertag: command to register first'
   }
 }
-
-
-
-// // import { EmailDto } from '../../dto/email.dto';
-// import { TransformPipe } from '@discord-nestjs/common';
-// import {
-//   Payload,
-//   // SubCommand,
-//   DiscordTransformedCommand,
-//   UsePipes,
-// } from '@discord-nestjs/core';
-
-// @UsePipes(TransformPipe)
-// @SubCommand({ name: 'email', description: 'Register by email' })
-// export class EmailSubCommand implements DiscordTransformedCommand<EmailDto> {
-//   handler(@Payload() dto: EmailDto): string {
-//     return `Success register user: ${dto.email}, ${dto.name}, ${dto.age}, ${dto.city}`;
-//   }
-// }
