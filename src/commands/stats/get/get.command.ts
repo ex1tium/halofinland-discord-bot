@@ -36,6 +36,19 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
       // TODO write query against HaloDotApi
 
+      embedReply = new MessageEmbed()
+        .setColor('#CCCCFF')
+        // .setDescription('Gamertag Updated')
+        .addFields(
+          { name: `TODO`, value: `Query stats for tag ${gamerTag}` },
+        )
+      // .setTimestamp()
+      reply = {
+        embeds: [embedReply]
+      }
+
+      return reply;
+
     } else {
       const botUser = await this._userService.user({
         discordUserId: userId,
