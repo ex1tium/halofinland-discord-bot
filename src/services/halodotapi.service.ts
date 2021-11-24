@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
-export class HalodotapiService {
-  private readonly _logger = new Logger(HalodotapiService.name);
+export class HaloDotApiService {
+  private readonly _logger = new Logger(HaloDotApiService.name);
 
   constructor() {
 

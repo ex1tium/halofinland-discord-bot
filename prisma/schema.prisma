@@ -10,9 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int     @id @default(autoincrement()) @map("userId")
-  discordId String  @unique
+model BotUser {
+  userId        Int     @id @default(autoincrement()) @map("userId")
+  discordUserId String  @unique
+  gamerTag  String?
   name      String?
 
   @@map("user")
@@ -27,10 +28,10 @@ model Tweets {
 }
 
 model Tweet {
-  id   String @id
-  text String
+  id         String   @id
+  text       String
   created_at DateTime
-  author_id String
+  author_id  String
 
   @@map("tweet")
 }

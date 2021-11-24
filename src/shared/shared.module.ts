@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Intents, Message } from 'discord.js';
 import { DiscordApiService } from 'src/services/discord-api.service';
+import { HaloDotApiService } from 'src/services/halodotapi.service';
 // import { DiscordConfigService } from 'src/services/discord-config.service';
 import { PrismaService } from 'src/services/prisma.service';
 // import { PrismaModule } from 'src/services/prisma/prisma.module';
@@ -54,7 +55,7 @@ import { UserService } from 'src/services/user.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [TwitterService, PrismaService, UserService, DiscordCommandProvider],
-  exports: [TwitterService, PrismaService, UserService, DiscordCommandProvider]
+  providers: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider],
+  exports: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider]
 })
 export class SharedModule { }

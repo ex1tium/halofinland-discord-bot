@@ -72,11 +72,11 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       [
         {
           "name": "reg",
-          "description": "Register or update your Xbox Gamer tag",
+          "description": "Register your Xbox Gamer tag",
           "type": 1,
           "options": [
             {
-              "name": "tag",
+              "name": "gamertag",
               "description": "Enter Xbox Gamertag",
               "type": 3,
               "required": true
@@ -86,13 +86,31 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
         },
         {
           "name": "update",
-          "description": "Pulls latest stats for your gamertag",
+          "description": "Update your registered Xbox Gamer Tag",
           "type": 1,
+          "options": [
+            {
+              "name": "gamertag",
+              "description": "Enter Xbox Gamertag",
+              "type": 3,
+              "required": true
+            },
+
+          ]
         },
         {
           "name": "get",
-          "description": "Prints stats for gamertag",
+          "description": "Query your stats or use :gamertag: to query",
           "type": 1,
+          "options": [
+            {
+              "name": "gamertag",
+              "description": "(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite",
+              "type": 3,
+              "required": false
+            },
+
+          ]
         },
         {
           "name": "help",
@@ -148,7 +166,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
     // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
 
-    this.logger.debug(`REGISTERED COMMANDS: ${JSON.stringify(this._discordCommandProvider.getAllCommands())}`)
+    // this.logger.debug(`REGISTERED COMMANDS: ${JSON.stringify(this._discordCommandProvider.getAllCommands())}`)
 
 
 

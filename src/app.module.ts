@@ -13,7 +13,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
 import { SharedModule } from './shared/shared.module';
-import { HalodotapiService } from './services/halodotapi.service';
 import { DiscordApiService } from './services/discord-api.service';
 // import { DiscordApiService } from './services/discord-api.service';
 
@@ -30,6 +29,6 @@ import { DiscordApiService } from './services/discord-api.service';
     SharedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, HalodotapiService, DiscordApiService],
+  providers: [AppService, DiscordApiService],
 })
 export class AppModule { }
