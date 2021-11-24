@@ -6,6 +6,8 @@ import {
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { PrismaService } from 'src/services/prisma.service';
+import { TwitterService } from 'src/services/twitter.service';
 import { RegisterDto } from './register.dto';
 
 @UsePipes(TransformPipe)
@@ -14,9 +16,14 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
 
   private _logger: Logger = new Logger('StatsRegSubCommand')
 
-  constructor() { }
+  // constructor(private _prismaService: PrismaService) { }
+
+  constructor(private _twitterService: TwitterService) { }
+
 
   handler(@Payload() dto: RegisterDto, interaction: CommandInteraction): string {
+
+    // this._
 
     this._logger.verbose(dto.tag)
 
