@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import config from '../environment/config'
-import { DiscordConfigService } from './services/discord-config.service';
+// import { DiscordConfigService } from './services/discord-config.service';
 import { TwitterService } from './services/twitter.service';
 import { PrismaService } from './services/prisma.service';
 import { UserService } from './services/user.service';
