@@ -177,14 +177,12 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
         // }
       ]
     // this._subMap.set('stats_command', this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands))
-    const result = await this._discordApiService.getCommands();
+    // const result = await this._discordApiService.getCommands();
     // this._discordApiService.deleteCommand('912494585433952346');
     // this._discordApiService.getCommands();
 
 
     // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
-
-    this.logger.debug(`result: ${result}`)
 
 
 
