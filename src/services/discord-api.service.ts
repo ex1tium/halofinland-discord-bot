@@ -2,7 +2,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { lastValueFrom } from 'rxjs';
 import { DefineDiscordCommand } from 'src/models/sub-command-options.model';
+import { AxiosResponse } from "axios";
 
 @Injectable()
 export class DiscordApiService {
@@ -54,5 +56,45 @@ export class DiscordApiService {
       // console.log('registerCommand response', data)
     })
 
+  }
+
+  async getCommands(): Promise<false | AxiosResponse<any, any>> {
+    try {
+      const get = await lastValueFrom(this._httpService.get(
+        this.discordUrl,
+        {
+          headers: {
+            'Authorization': `Bot ${this.botToken}`
+          }
+        }
+      ))
+
+      if (get.status == 200) {
+        this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data))
+        return get;
+      }
+    } catch (error) {
+      return error;
+    }
+
+  }
+
+  async deleteCommand(commandId: string): Promise<false | AxiosResponse<any, any>> {
+    const deleteCommand = await lastValueFrom(this._httpService.delete(
+      this.discordUrl + `/${commandId}`,
+      {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`
+        }
+      }
+    ))
+
+    if (deleteCommand.status == 200) {
+      this._logger.debug(`DELETE COMMAND: `, JSON.stringify(deleteCommand.data))
+
+      return deleteCommand;
+    } else {
+      return false;
+    }
   }
 }
