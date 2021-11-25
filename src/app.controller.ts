@@ -40,16 +40,16 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   // @Client()
   // discordProvider: ClientProvider;
 
-  @On('messageCreate')
-  @UseGuards(MessageFromUserGuard)
-  // @UsePipes(MessageToUpperPipe)
-  async onMessage(message: Message): Promise<void> {
-    console.log(message);
-    this.logger.log(`Incoming message: ${message.content}`);
-    if (this.allowedChannelIds.some(id => id == message.channelId)) {
-      await message.reply('Message processed successfully');
-    }
-  }
+  // @On('messageCreate')
+  // @UseGuards(MessageFromUserGuard)
+  // // @UsePipes(MessageToUpperPipe)
+  // async onMessage(message: Message): Promise<void> {
+  //   console.log(message);
+  //   this.logger.log(`Incoming message: ${message.content}`);
+  //   if (this.allowedChannelIds.some(id => id == message.channelId)) {
+  //     await message.reply('Message processed successfully');
+  //   }
+  // }
 
 
   @Once('ready')
@@ -81,7 +81,22 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
               "type": 3,
               "required": true
             },
-
+            {
+              "name": "allowlogging",
+              "description": "Allow your stats to be logged in a database every 24 hours.",
+              "type": 3,
+              "required": true,
+              "choices": [
+                {
+                  "name": "Yes",
+                  "value": "1"
+                },
+                {
+                  "name": "No",
+                  "value": "0"
+                },
+              ]
+            },
           ]
         },
         {

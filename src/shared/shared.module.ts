@@ -1,9 +1,10 @@
 import { DiscordCommandProvider, DiscordModule } from '@discord-nestjs/core';
+import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Intents, Message } from 'discord.js';
 import { DiscordApiService } from 'src/services/discord-api.service';
-import { HaloDotApiService } from 'src/services/halodotapi.service';
+import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 // import { DiscordConfigService } from 'src/services/discord-config.service';
 import { PrismaService } from 'src/services/prisma.service';
 // import { PrismaModule } from 'src/services/prisma/prisma.module';
@@ -17,6 +18,7 @@ import { UserService } from 'src/services/user.service';
     //   imports: [ConfigModule, PrismaModule],
     //   useClass: DiscordConfigService,
     // }),
+    HttpModule,
     DiscordModule.forRootAsync({
       imports: [ConfigModule, SharedModule],
       useFactory: (configService: ConfigService) => ({

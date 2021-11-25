@@ -1,20 +1,14 @@
 import { Module } from '@nestjs/common';
-import { DiscordModule } from '@discord-nestjs/core';
 // TransformPipe, ValidationPipe
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from '../environment/config'
-// import { DiscordConfigService } from './services/discord-config.service';
-import { TwitterService } from './services/twitter.service';
-import { PrismaService } from './services/prisma.service';
-import { UserService } from './services/user.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
 import { SharedModule } from './shared/shared.module';
 import { DiscordApiService } from './services/discord-api.service';
-// import { DiscordApiService } from './services/discord-api.service';
 
 @Module({
   imports: [
@@ -23,7 +17,14 @@ import { DiscordApiService } from './services/discord-api.service';
       isGlobal: true,
       load: [config],
     }),
-    HttpModule,
+    HttpModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async () => ({
+        // timeout: 15,
+        // maxRedirects: 5,
+      }),
+      inject: [ConfigService],
+    }),
     ScheduleModule.forRoot(),
     HaloDotApiModule,
     SharedModule,
