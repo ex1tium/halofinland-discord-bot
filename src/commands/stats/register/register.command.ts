@@ -6,6 +6,7 @@ import {
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { PrismaService } from 'src/services/prisma.service';
 import { TwitterService } from 'src/services/twitter.service';
 import { UserService } from 'src/services/user.service';
@@ -17,14 +18,19 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
 
   private _logger: Logger = new Logger('StatsRegSubCommand')
 
-  constructor(private _userService: UserService) { }
+  constructor(
+    private _userService: UserService
+  ) { }
 
   // constructor(private _twitterService: TwitterService) { }
 
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
 
-    const gamerTag = dto.gamertag
+    const gamerTag = dto.gamertag;
+    const allowLogging = dto.allowlogging;
+    this._logger.warn(`allowLogging: ${allowLogging}`)
+
     const userId = interaction.user.id
     const userExists = await this._userService.user({
       discordUserId: userId,
@@ -35,13 +41,14 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
 
     this._logger.warn(`userExists: ${userExists}`)
 
-    if (userExists) {
+    if (userExists && userExists.discordUserId) {
       this._userService.updateUser({
         where: {
           discordUserId: userId,
         },
         data: {
-          gamerTag: gamerTag
+          gamerTag: gamerTag,
+          allowStatsLogging: allowLogging ? 1 : 0
         }
       })
 
@@ -49,7 +56,8 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
     } else {
       this._userService.createUser({
         discordUserId: userId,
-        gamerTag: gamerTag
+        gamerTag: gamerTag,
+        allowStatsLogging: allowLogging ? 1 : 0
       })
     }
 
@@ -68,8 +76,9 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
         .addFields(
           { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
           { name: `New Gamertag`, value: `${gamerTag}` },
+          { name: `Logging`, value: `${allowLogging ? 'enabled' : 'disabled'}` },
         )
-        // .setTimestamp()
+      // .setTimestamp()
 
     } else {
       embedReply = new MessageEmbed()
@@ -78,8 +87,10 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
         .addFields(
           // { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
           { name: `Registered Xbox Gamertag`, value: `${gamerTag}` },
+          { name: `Logging`, value: `${allowLogging ? 'enabled' : 'disabled'}` },
+
         )
-        // .setTimestamp()
+      // .setTimestamp()
     }
 
 

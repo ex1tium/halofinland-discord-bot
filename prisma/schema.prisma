@@ -11,18 +11,21 @@ datasource db {
 }
 
 model BotUser {
-  userId        Int     @id @default(autoincrement()) @map("userId")
-  discordUserId String  @unique
-  gamerTag  String?
-  name      String?
+  userId            Int         @id @default(autoincrement()) @map("userId")
+  discordUserId     String      @unique
+  gamerTag          String?
+  name              String?
+  allowStatsLogging Int         @default(0)
+  HaloStats         HaloStats[]
 
   @@map("user")
 }
 
 model Tweets {
-  newest_id       String @unique
+  newest_id       String   @unique
   oldest_id       String
   ratelimit_reset Int
+  lastUpdated     DateTime
 
   @@map("tweets")
 }
@@ -34,4 +37,32 @@ model Tweet {
   author_id  String
 
   @@map("tweet")
+}
+
+model HaloStats {
+  id                          Int                        @id
+  serviceRecord               HaloInfiniteServiceRecord? @relation(fields: [haloInfiniteServiceRecordId], references: [id])
+  csrs                        HaloInfiniteCsrs?          @relation(fields: [haloInfiniteCsrsId], references: [id])
+  BotUser                     BotUser                    @relation(fields: [botUserUserId], references: [userId])
+  botUserUserId               Int
+  haloInfiniteServiceRecordId Int
+  haloInfiniteCsrsId          Int
+}
+
+model HaloInfiniteServiceRecord {
+  // botUser       BotUser @relation(fields: [botUserUserId], references: [userId])
+  id          Int  @id
+  // botUserUserId Int  @id
+  dataFromApi Json
+  HaloStats HaloStats[]
+  
+  @@map("hi_service_record")
+}
+
+model HaloInfiniteCsrs {
+  id          Int         @id
+  dataFromApi Json
+  HaloStats   HaloStats[]
+
+  @@map("hi_csrs")
 }

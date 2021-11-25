@@ -3,14 +3,15 @@ import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class HaloDotApiMiddleware implements NestMiddleware {
+  private _logger = new Logger(HaloDotApiMiddleware.name);
   // constructor(private _logger: Logger) { }
 
 
   use(req: Request, res: Response, next: NextFunction) {
 
-    const _logger = new Logger('HTTP HALO-DOT-API');
+    // const
 
-    _logger.warn('HaloDotApiMiddleWare HEADER: ', req.headers)
+    this._logger.warn('HaloDotApiMiddleWare HEADER: ', req.headers)
     // console.log()
 
     next();

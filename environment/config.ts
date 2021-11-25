@@ -7,5 +7,7 @@ export default () => ({
   twitterApiKey: process.env.TWITTER_API_KEY,
   twitterApiSecret: process.env.TWITTER_API_SECRET,
   twitterBearerToken: process.env.TWITTER_BEARER_TOKEN,
-  twitterAllowedSearchAuthorIds: process.env.TWITTER_ALLOWED_SEARCH_AUTHOR_IDS
+  twitterAllowedSearchAuthorIds: process.env.TWITTER_ALLOWED_SEARCH_AUTHOR_IDS,
+  haloDotToken: process.env.HALO_DOT_TOKEN,
+  haloDotGamertag: process.env.HALO_DOT_GAMERTAG
 });
