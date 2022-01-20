@@ -81,20 +81,21 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
       } else {
         const botUser = await this._userService.user({
           discordUserId: userId,
+        }).catch((error) => {
+          this._logger.error(error)
         })
 
         if (botUser) {
           gamerTag = botUser.gamerTag
 
           // TODO write query against HaloDotApi
-          const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
-          // .catch(err => {
-          //   console.error('catch error: ', err)
-          // })
-          const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
-          // .catch(err => {
-          //   console.error('catch error: ', err)
-          // })
+          const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
+            this._logger.error(error)
+          })
+
+          const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) => {
+            this._logger.error(error)
+          })
 
           if (statsCSR && statsCSR.data && statsRecord && statsRecord.data) {
 
