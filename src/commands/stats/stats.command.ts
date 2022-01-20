@@ -1,14 +1,17 @@
 /* registration.command.ts */
 
 import { StatsDto } from './stats.dto';
-import { Command, UsePipes, Payload, DiscordTransformedCommand, UseGroup, DiscordCommand } from '@discord-nestjs/core';
-import { TransformPipe } from '@discord-nestjs/common';
+import { Command, UsePipes, Payload, DiscordTransformedCommand, UseGroup, DiscordCommand, UseFilters } from '@discord-nestjs/core';
+import { TransformPipe, ValidationPipe } from '@discord-nestjs/common';
 import { CommandInteraction, InteractionReplyOptions, MessageEmbed } from 'discord.js';
 import { StatsRegSubCommand } from './register/register.command';
 import { StatsHelpSubCommand } from './help/help.command';
 import { StatsGetSubCommand } from './get/get.command';
 import { StatsUpdateSubCommand } from './update/update.command';
+import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 
+@UseFilters(CommandValidationFilter)
+@UsePipes(TransformPipe, ValidationPipe)
 @Command({
   name: 'stats',
   description: 'Stats provided by HaloDotAPI',

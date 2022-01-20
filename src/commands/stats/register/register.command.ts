@@ -1,18 +1,20 @@
 import { TransformPipe } from '@discord-nestjs/common';
 import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from '@discord-nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, UseFilters, ValidationPipe } from '@nestjs/common';
 import {
   CommandInteraction,
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { PrismaService } from 'src/services/prisma.service';
 import { TwitterService } from 'src/services/twitter.service';
 import { UserService } from 'src/services/user.service';
 import { RegisterDto } from './register.dto';
 
-@UsePipes(TransformPipe)
+@UseFilters(CommandValidationFilter)
+@UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'reg', description: 'Register your Xbox Gamer tag' })
 export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto> {
 
@@ -99,7 +101,10 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
         embeds: [embedReply]
       }
 
-      return reply;
+      return interaction.reply(reply).catch((error) => {
+        Promise.reject(error)
+      })
+
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));

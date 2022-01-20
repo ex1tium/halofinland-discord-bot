@@ -1,16 +1,18 @@
 import { TransformPipe } from '@discord-nestjs/common';
 import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from '@discord-nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, UseFilters, ValidationPipe } from '@nestjs/common';
 import {
   CommandInteraction,
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { UserService } from 'src/services/user.service';
 import { GetDto } from './get.dto';
 
-@UsePipes(TransformPipe)
+@UseFilters(CommandValidationFilter)
+@UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'get', description: 'Prints our your stats' })
 export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
@@ -21,15 +23,19 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
     private _userService: UserService
   ) { }
 
-  async handler(@Payload() dto: GetDto, interaction: CommandInteraction) {
+  async handler(@Payload() dto: GetDto, interaction: CommandInteraction): Promise<any> {
     try {
+
+      // await interaction.deferReply();
+
+
       const hasParam = !!dto.gamertag
       const userId = interaction.user.id
 
       let gamerTag: string;
       let embedReply: MessageEmbed;
 
-      let reply: { embeds: MessageEmbed[]; };
+      let replyMessage: { embeds: MessageEmbed[]; };
 
       if (hasParam) {
         gamerTag = dto.gamertag;
@@ -43,7 +49,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
           this._logger.error(error)
         })
 
-        if (statsCSR && statsCSR.data && statsRecord && statsRecord.data) {
+        if (statsCSR && statsCSR.data && statsRecord && statsRecord.data && !interaction.replied) {
 
           embedReply = new MessageEmbed()
             .setColor('#CCCCFF')
@@ -62,20 +68,29 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             )
             .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
           // .setTimestamp()
-          reply = {
+          replyMessage = {
             embeds: [embedReply]
           }
 
-          return interaction.reply(reply)
+          console.log('1')
+
+          return interaction.reply(replyMessage).catch((error) => {
+            Promise.reject(error)
+          })
         } else {
           let errorEmbed = new MessageEmbed()
             .setColor('#FF0000')
             .setTitle('Error')
             .setDescription(`Stats not found for ${gamerTag}`)
-          reply = {
+          replyMessage = {
             embeds: [errorEmbed]
           }
-          return interaction.reply(reply)
+
+          console.log('2')
+
+          return interaction.reply(replyMessage).catch((error) => {
+            Promise.reject(error)
+          })
         }
 
       } else {
@@ -97,7 +112,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             this._logger.error(error)
           })
 
-          if (statsCSR && statsCSR.data && statsRecord && statsRecord.data) {
+          if (statsCSR && statsCSR.data && statsRecord && statsRecord.data && !interaction.replied) {
 
             embedReply = new MessageEmbed()
               .setColor('#CCCCFF')
@@ -117,11 +132,12 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
             // .setTimestamp()
 
-            reply = {
+            replyMessage = {
               embeds: [embedReply]
             }
+            console.log('3')
 
-            return interaction.reply(reply).catch((error) => {
+            return interaction.reply(replyMessage).catch((error) => {
               Promise.reject(error)
             })
           } else {
@@ -129,10 +145,13 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               .setColor('#FF0000')
               .setTitle('Error')
               .setDescription(`Stats not found for ${gamerTag}`)
-            reply = {
+            replyMessage = {
               embeds: [errorEmbed]
             }
-            return interaction.reply(reply).catch((error) => {
+
+            console.log('4')
+
+            return interaction.reply(replyMessage).catch((error) => {
               Promise.reject(error)
             })
           }
@@ -145,11 +164,16 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               { name: `Error`, value: `No Xbox Gametag registered for user` },
             )
           // .setTimestamp()
-          reply = {
+          replyMessage = {
             embeds: [embedReply]
           }
 
-          return interaction.reply(reply)
+          console.log('5')
+
+
+          return interaction.reply(replyMessage).catch((error) => {
+            Promise.reject(error)
+          })
         }
       }
     } catch (error) {

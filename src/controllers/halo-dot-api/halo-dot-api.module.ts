@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from 'src/globalExceptions';
+import { AllExceptionsFilter } from 'src/exception-filters/globalExceptions';
 import { HaloDotApiMiddleware } from 'src/middleware/halo-dot-api.middleware';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { SharedModule } from 'src/shared/shared.module';

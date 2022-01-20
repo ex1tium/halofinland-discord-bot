@@ -1,14 +1,16 @@
 import { TransformPipe } from '@discord-nestjs/common';
 import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from '@discord-nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, UseFilters, ValidationPipe } from '@nestjs/common';
 import {
   CommandInteraction,
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 import { StatsHelpDto } from './help.dto';
 
-@UsePipes(TransformPipe)
+@UseFilters(CommandValidationFilter)
+@UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'help', description: 'READ ME' })
 export class StatsHelpSubCommand implements DiscordTransformedCommand<StatsHelpDto> {
 
@@ -40,9 +42,11 @@ export class StatsHelpSubCommand implements DiscordTransformedCommand<StatsHelpD
           // .setImage('https://i.imgur.com/AfFp7pu.png') //TODO Statsi kuva?
           .setTimestamp()
 
-        return {
+        return interaction.reply({
           embeds: [embedHelpFi]
-        };
+        }).catch((error) => {
+          Promise.reject(error)
+        })
       } else {
         const embedHelpEn = new MessageEmbed()
           .setColor('#0099ff')
@@ -60,9 +64,11 @@ export class StatsHelpSubCommand implements DiscordTransformedCommand<StatsHelpD
           // .setImage('https://i.imgur.com/AfFp7pu.png') //TODO Statsi kuva?
           .setTimestamp()
 
-        return {
+        return interaction.reply({
           embeds: [embedHelpEn]
-        };
+        }).catch((error) => {
+          Promise.reject(error)
+        })
       }
 
     } catch (error) {

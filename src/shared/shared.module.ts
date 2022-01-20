@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { Intents, Message } from 'discord.js';
-import { AllExceptionsFilter } from 'src/globalExceptions';
+import { AllExceptionsFilter } from 'src/exception-filters/globalExceptions';
 import { DiscordApiService } from 'src/services/discord-api.service';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 // import { DiscordConfigService } from 'src/services/discord-config.service';

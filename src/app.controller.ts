@@ -12,7 +12,7 @@ import { DefineDiscordCommand } from './models/sub-command-options.model';
 // Client, ClientProvider, 
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(AppController.name);
+  private readonly _logger = new Logger(AppController.name);
   private _subMap = new Map<string, Subscription>();
 
   allowedChannelIds: string[] = ['911368720440496208'];
@@ -54,15 +54,13 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
   @Once('ready')
   onReady() {
-    this.logger.log('Bot was started!');
+    this._logger.log('Bot was started!');
 
     this._twitterService.init();
 
     this._subMap.set('newTweets', this._twitterService.newTweets$.subscribe((newTweets) => {
-      console.error('newTweets', newTweets);
-
       if (newTweets) {
-
+        this._logger.log(`newTweets ${newTweets}`);
       }
     }))
 
