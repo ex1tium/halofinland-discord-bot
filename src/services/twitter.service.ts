@@ -14,13 +14,9 @@ export class TwitterService {
   private readonly _logger = new Logger(TwitterService.name);
   private _client: TwitterApi;
 
-  // private _stream: TweetStream<TweetV2>;
-  // private _stream$: Observable<TweetV2>;
   private _haloSupportTweets: BehaviorSubject<TweetV2[]> = new BehaviorSubject(null);
 
   private _twitterAllowedSearchAuthorIds: string[] = [];
-
-
 
   constructor(
     private _configService: ConfigService,
@@ -38,28 +34,20 @@ export class TwitterService {
   }
 
   async init() {
-    const user = await this._client.v2.user('1093614084807741440');
-    // this._logger.verbose(`twitter client: ${JSON.stringify(user)}`)
-    // this._stream = await this._client.sampleStream();
-    const rwClient = this._client.readWrite;
-    // this._logger.verbose(`rwClient: ${JSON.stringify(rwClient)}`)
+    try {
+      const user = await this._client.v2.user('1093614084807741440');
+      this._logger.verbose(`twitter client: ${JSON.stringify(user)}`)
 
-
-
-    const find = await this._prismaService.tweet.findMany()
-    // this._logger.verbose(`find tweets: ${JSON.stringify(find)}`)
-
-    this.pollHaloSupportTweets();
-
-
-
-    // '911368720440496208'
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
 
   }
 
-  // get tweetStream() {
-  //   return this._stream$;
-  // }
 
   get newTweets$() {
     return this._haloSupportTweets.asObservable();
@@ -70,106 +58,153 @@ export class TwitterService {
   }
 
   async sendChannel(channelId: string, tweet: TweetV2) {
-    const channel = await this._discordProvider.getClient().channels.fetch(channelId) as TextChannel
-    channel.send({ embeds: [this.constructEmbedTweetMessage(tweet)] })
 
-    // this._logger.debug(`_discordProvider channel: ${JSON.stringify(channel)}`)
+    try {
+      const channel = await this._discordProvider.getClient().channels.fetch(channelId) as TextChannel
+      const createMessage = await this.constructEmbedTweetMessage(tweet)
 
-  }
-
-  constructEmbedTweetMessage(tweet: TweetV2) {
-    const embedTweet = new MessageEmbed()
-      // .setTitle('Tweet')
-      .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
-      .setAuthor('From @HaloSupport', null, `https://twitter.com/HaloSupport`)
-      // .setDescription('New Tweet')
-      .addFields(
-        {
-          name: 'Tweet', value: tweet.text
-        },
-        {
-          name: 'Actions', value: `[Open Tweet](https://twitter.com/i/web/status/${tweet.id})`
-        }
-      )
-      .setTimestamp(new Date(tweet.created_at))
-      .setFooter(format(new Date(tweet.created_at), 'HH:mm'))
-    // .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
-    return embedTweet;
-  }
-
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async pollHaloSupportTweets() {
-    const search = await this._client.v2.search('from:HaloSupport ("patch" OR "release" OR "update" OR "problem" OR "issue")', {
-      "tweet.fields": ['created_at', 'id', 'author_id', 'source'],
-    });
-
-    this._logger.debug('searching for new tweets')
-
-    // this._logger.debug('search', JSON.stringify(search))
-    const newTweets: TweetV2[] = [];
-
-    const sortData = search.data.data.sort((a, b) => {
-      return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf()
-    })
-
-    for (let i = 0; i < sortData.length; i++) {
-      const tweet = sortData[i];
-
-      if (this._twitterAllowedSearchAuthorIds.some(id => id == tweet.author_id)) {
-        const found = await this._prismaService.tweet.findUnique({
-          where: {
-            id: tweet.id
-          }
-        })
-
-
-        if (!found) {
-          this.recordTweet(tweet);
-          newTweets.push(tweet)
-          this.sendChannel('911189130543788062', tweet)
-          console.log('found new tweet', tweet)
-
-        }
-
-
+      if (createMessage) {
+        return channel.send({ embeds: [createMessage] })
+      } else {
+        throw new Error(`Problem sending message to channel ${channel.name}.`)
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
       }
     }
 
-    this.next(newTweets)
-    return newTweets
+  }
+
+  async constructEmbedTweetMessage(tweet: TweetV2) {
+    try {
+      const embedTweet = new MessageEmbed()
+        // .setTitle('Tweet')
+        .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
+        .setAuthor('From @HaloSupport', null, `https://twitter.com/HaloSupport`)
+        // .setDescription('New Tweet')
+        .addFields(
+          {
+            name: 'Tweet', value: tweet.text
+          },
+          {
+            name: 'Actions', value: `[Open Tweet](https://twitter.com/i/web/status/${tweet.id})`
+          }
+        )
+        .setTimestamp(new Date(tweet.created_at))
+        .setFooter(format(new Date(tweet.created_at), 'HH:mm'))
+      // .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
+      return embedTweet;
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+  }
+
+  // @Cron(CronExpression.EVERY_5_MINUTES)
+  async pollHaloSupportTweets() {
+    try {
+      const search = await this._client.v2.search('from:HaloSupport ("patch" OR "release" OR "update" OR "problem" OR "issue")', {
+        "tweet.fields": ['created_at', 'id', 'author_id', 'source'],
+      });
+
+      this._logger.debug('searching for new tweets')
+
+      // this._logger.debug('search', JSON.stringify(search))
+      const newTweets: TweetV2[] = [];
+
+      const sortData = search.data.data.sort((a, b) => {
+        return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf()
+      })
+
+      for (let i = 0; i < sortData.length; i++) {
+        const tweet = sortData[i];
+
+        if (this._twitterAllowedSearchAuthorIds.some(id => id == tweet.author_id)) {
+          const found = await this._prismaService.tweet.findUnique({
+            where: {
+              id: tweet.id
+            }
+          })
+
+
+          if (!found) {
+            this.recordTweet(tweet);
+            newTweets.push(tweet)
+            this.sendChannel('911189130543788062', tweet)
+            console.log('found new tweet', tweet)
+
+          }
+
+
+        }
+      }
+      this.next(newTweets)
+      return newTweets
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+
 
   }
 
   async recordTweet(tweetData: TweetV2) {
-    const record = await this._prismaService.tweet.create({
-      data: {
-        id: tweetData.id,
-        text: tweetData.text,
-        author_id: tweetData.author_id,
-        created_at: tweetData.created_at
-      }
-    })
 
-    return record;
+    try {
+      const record = await this._prismaService.tweet.create({
+        data: {
+          id: tweetData.id,
+          text: tweetData.text,
+          author_id: tweetData.author_id,
+          created_at: tweetData.created_at
+        }
+      })
+
+      return record;
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
   }
 
   async upsertTweet(tweetData: TweetV2) {
-    const tweet = await this._prismaService.tweet.upsert({
-      where: {
-        id: tweetData.id
-      },
-      update: {
+    try {
+      const tweet = await this._prismaService.tweet.upsert({
+        where: {
+          id: tweetData.id
+        },
+        update: {
 
-      },
-      create: {
-        id: tweetData.id,
-        text: tweetData.text,
-        author_id: tweetData.author_id,
-        created_at: tweetData.created_at
+        },
+        create: {
+          id: tweetData.id,
+          text: tweetData.text,
+          author_id: tweetData.author_id,
+          created_at: tweetData.created_at
+        }
+      })
+
+      // this._logger.verbose(`tweet: ${JSON.stringify(tweet)}`)
+      return tweet;
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
       }
-    })
+    }
 
-    // this._logger.verbose(`tweet: ${JSON.stringify(tweet)}`)
-    return tweet;
   }
 }

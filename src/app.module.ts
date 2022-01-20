@@ -9,6 +9,8 @@ import { HttpModule } from '@nestjs/axios';
 import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
 import { SharedModule } from './shared/shared.module';
 import { DiscordApiService } from './services/discord-api.service';
+import { AllExceptionsFilter } from './globalExceptions';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -30,6 +32,11 @@ import { DiscordApiService } from './services/discord-api.service';
     SharedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DiscordApiService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    AppService, DiscordApiService],
 })
 export class AppModule { }

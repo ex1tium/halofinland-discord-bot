@@ -22,77 +22,28 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   ) { }
 
   async handler(@Payload() dto: GetDto, interaction: CommandInteraction) {
+    try {
+      const hasParam = !!dto.gamertag
+      const userId = interaction.user.id
 
-    const hasParam = !!dto.gamertag
-    const userId = interaction.user.id
+      let gamerTag: string;
+      let embedReply: MessageEmbed;
 
-    let gamerTag: string;
-    let embedReply: MessageEmbed;
+      let reply: { embeds: MessageEmbed[]; };
 
-    let reply: { embeds: MessageEmbed[]; };
-
-    if (hasParam) {
-      gamerTag = dto.gamertag;
-
-      // TODO write query against HaloDotApi
-
-      const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
-      const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
-
-      if (statsCSR.data && statsRecord.data) {
-
-        embedReply = new MessageEmbed()
-          .setColor('#CCCCFF')
-          .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
-          .setTitle(gamerTag)
-          .setDescription(statsCSR.data[0].response.current.tier)
-          .addFields(
-            { name: `Kills`, value: ` ${statsRecord.data.summary.kills}`, inline: true },
-            { name: `Deaths`, value: ` ${statsRecord.data.summary.deaths}`, inline: true },
-            { name: `Assists`, value: ` ${statsRecord.data.summary.assists}`, inline: true },
-          )
-          .addFields(
-            { name: `KDA`, value: ` ${statsRecord.data.kda.toFixed(1)}`, inline: true },
-            { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
-            { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
-          )
-          .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
-        // .setTimestamp()
-        reply = {
-          embeds: [embedReply]
-        }
-
-        return reply;
-      } else {
-        let errorEmbed = new MessageEmbed()
-          .setColor('#FF0000')
-          .setTitle('Error')
-          .setDescription(`Stats not found for ${gamerTag}`)
-        reply = {
-          embeds: [errorEmbed]
-        }
-        return reply
-      }
-
-    } else {
-      const botUser = await this._userService.user({
-        discordUserId: userId,
-      })
-
-      if (botUser) {
-        gamerTag = botUser.gamerTag
+      if (hasParam) {
+        gamerTag = dto.gamertag;
 
         // TODO write query against HaloDotApi
-        const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
-        // .catch(err => {
-        //   console.error('catch error: ', err)
-        // })
-        const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
-        // .catch(err => {
-        //   console.error('catch error: ', err)
-        // })
 
-        if (statsCSR.data && statsRecord.data) {
+        const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
+          this._logger.error(error)
+        })
+        const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) => {
+          this._logger.error(error)
+        })
+
+        if (statsCSR && statsCSR.data && statsRecord && statsRecord.data) {
 
           embedReply = new MessageEmbed()
             .setColor('#CCCCFF')
@@ -111,12 +62,11 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             )
             .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
           // .setTimestamp()
-
           reply = {
             embeds: [embedReply]
           }
 
-          return reply;
+          return interaction.reply(reply)
         } else {
           let errorEmbed = new MessageEmbed()
             .setColor('#FF0000')
@@ -125,22 +75,87 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
           reply = {
             embeds: [errorEmbed]
           }
-          return reply
+          return interaction.reply(reply)
         }
 
       } else {
-        embedReply = new MessageEmbed()
-          .setColor('#FF7F50')
-          // .setDescription('Gamertag Updated')
-          .addFields(
-            { name: `Error`, value: `No Xbox Gametag registered for user` },
-          )
-        // .setTimestamp()
-        reply = {
-          embeds: [embedReply]
-        }
+        const botUser = await this._userService.user({
+          discordUserId: userId,
+        })
 
-        return reply;
+        if (botUser) {
+          gamerTag = botUser.gamerTag
+
+          // TODO write query against HaloDotApi
+          const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
+          // .catch(err => {
+          //   console.error('catch error: ', err)
+          // })
+          const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
+          // .catch(err => {
+          //   console.error('catch error: ', err)
+          // })
+
+          if (statsCSR && statsCSR.data && statsRecord && statsRecord.data) {
+
+            embedReply = new MessageEmbed()
+              .setColor('#CCCCFF')
+              .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
+              .setTitle(gamerTag)
+              .setDescription(statsCSR.data[0].response.current.tier)
+              .addFields(
+                { name: `Kills`, value: ` ${statsRecord.data.summary.kills}`, inline: true },
+                { name: `Deaths`, value: ` ${statsRecord.data.summary.deaths}`, inline: true },
+                { name: `Assists`, value: ` ${statsRecord.data.summary.assists}`, inline: true },
+              )
+              .addFields(
+                { name: `KDA`, value: ` ${statsRecord.data.kda.toFixed(1)}`, inline: true },
+                { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
+                { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
+              )
+              .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
+            // .setTimestamp()
+
+            reply = {
+              embeds: [embedReply]
+            }
+
+            return interaction.reply(reply).catch((error) => {
+              Promise.reject(error)
+            })
+          } else {
+            let errorEmbed = new MessageEmbed()
+              .setColor('#FF0000')
+              .setTitle('Error')
+              .setDescription(`Stats not found for ${gamerTag}`)
+            reply = {
+              embeds: [errorEmbed]
+            }
+            return interaction.reply(reply).catch((error) => {
+              Promise.reject(error)
+            })
+          }
+
+        } else {
+          embedReply = new MessageEmbed()
+            .setColor('#FF7F50')
+            // .setDescription('Gamertag Updated')
+            .addFields(
+              { name: `Error`, value: `No Xbox Gametag registered for user` },
+            )
+          // .setTimestamp()
+          reply = {
+            embeds: [embedReply]
+          }
+
+          return interaction.reply(reply)
+        }
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
       }
     }
   }

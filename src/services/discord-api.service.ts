@@ -26,39 +26,49 @@ export class DiscordApiService {
 
   }
 
-  registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
+  async registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
 
-    const data: DefineDiscordCommand = {
-      "name": name,
-      "description": description,
-    }
-
-    if (type) {
-      data.type = type;
-    }
-
-    if (options) {
-      data.options = options;
-    }
-
-    this._logger.warn(data)
-
-
-    const post = this._httpService.post(
-      this.discordUrl,
-      data, {
-      headers: {
-        'Authorization': `Bot ${this.botToken}`
+    try {
+      const data: DefineDiscordCommand = {
+        "name": name,
+        "description": description,
       }
-    })
 
-    return post.pipe().subscribe((data) => {
-      // console.log('registerCommand response', data)
-    })
+      if (type) {
+        data.type = type;
+      }
+
+      if (options) {
+        data.options = options;
+      }
+
+      this._logger.warn(data)
+
+
+      const post = this._httpService.post(
+        this.discordUrl,
+        data, {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`
+        }
+      })
+
+      return post.pipe().subscribe((data) => {
+        // console.log('registerCommand response', data)
+      })
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+
+
 
   }
 
-  async getCommands(): Promise<false | AxiosResponse<any, any>> {
+  async getCommands(): Promise<void | AxiosResponse<any, any>> {
     try {
       const get = await lastValueFrom(this._httpService.get(
         this.discordUrl,
@@ -74,27 +84,39 @@ export class DiscordApiService {
         return get;
       }
     } catch (error) {
-      return error;
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
     }
 
   }
 
-  async deleteCommand(commandId: string): Promise<false | AxiosResponse<any, any>> {
-    const deleteCommand = await lastValueFrom(this._httpService.delete(
-      this.discordUrl + `/${commandId}`,
-      {
-        headers: {
-          'Authorization': `Bot ${this.botToken}`
+  async deleteCommand(commandId: string): Promise<void | AxiosResponse<any, any>> {
+    try {
+      const deleteCommand = await lastValueFrom(this._httpService.delete(
+        this.discordUrl + `/${commandId}`,
+        {
+          headers: {
+            'Authorization': `Bot ${this.botToken}`
+          }
         }
+      ))
+
+      if (deleteCommand.status == 200) {
+        this._logger.debug(`DELETE COMMAND: `, JSON.stringify(deleteCommand.data))
+
+        return deleteCommand;
+      } else {
+        return null;
       }
-    ))
-
-    if (deleteCommand.status == 200) {
-      this._logger.debug(`DELETE COMMAND: `, JSON.stringify(deleteCommand.data))
-
-      return deleteCommand;
-    } else {
-      return false;
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
     }
   }
 }

@@ -53,7 +53,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
 
   @Once('ready')
-  async onReady() {
+  onReady() {
     this.logger.log('Bot was started!');
 
     this._twitterService.init();

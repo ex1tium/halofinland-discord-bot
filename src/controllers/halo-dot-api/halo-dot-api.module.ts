@@ -2,6 +2,8 @@ import { DiscordCommandProvider } from '@discord-nestjs/core';
 import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from 'src/globalExceptions';
 import { HaloDotApiMiddleware } from 'src/middleware/halo-dot-api.middleware';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { SharedModule } from 'src/shared/shared.module';
@@ -30,7 +32,12 @@ import { HaloDotApiController } from './halo-dot-api.controller';
     // })
   ],
   controllers: [HaloDotApiController],
-  providers: [HaloDotApiService]
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    HaloDotApiService]
 })
 export class HaloDotApiModule implements NestModule {
 
