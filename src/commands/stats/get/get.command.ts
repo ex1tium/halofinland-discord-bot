@@ -11,7 +11,7 @@ import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { UserService } from 'src/services/user.service';
 import { GetDto } from './get.dto';
 
-@UseFilters(CommandValidationFilter)
+// @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'get', description: 'Prints our your stats' })
 export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
@@ -26,9 +26,11 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   async handler(@Payload() dto: GetDto, interaction: CommandInteraction): Promise<any> {
     try {
 
-      // await interaction.deferReply();
+      await interaction.deferReply();
+      const reply = await interaction.fetchReply()
+      this._logger.debug(reply)
 
-
+      // https://github.com/discordjs/discord.js/issues/7005
       const hasParam = !!dto.gamertag
       const userId = interaction.user.id
 
@@ -74,9 +76,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
           console.log('1')
 
-          return interaction.reply(replyMessage).catch((error) => {
-            Promise.reject(error)
-          })
+          if (interaction.deferred && !interaction.replied)
+            return await interaction.editReply(replyMessage).catch((error) => {
+              Promise.reject(error)
+            })
         } else {
           let errorEmbed = new MessageEmbed()
             .setColor('#FF0000')
@@ -88,9 +91,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
           console.log('2')
 
-          return interaction.reply(replyMessage).catch((error) => {
-            Promise.reject(error)
-          })
+          if (interaction.deferred && !interaction.replied)
+            return await interaction.editReply(replyMessage).catch((error) => {
+              Promise.reject(error)
+            })
         }
 
       } else {
@@ -137,9 +141,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             }
             console.log('3')
 
-            return interaction.reply(replyMessage).catch((error) => {
-              Promise.reject(error)
-            })
+            if (interaction.deferred && !interaction.replied)
+              return await interaction.editReply(replyMessage).catch((error) => {
+                Promise.reject(error)
+              })
           } else {
             let errorEmbed = new MessageEmbed()
               .setColor('#FF0000')
@@ -151,9 +156,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
             console.log('4')
 
-            return interaction.reply(replyMessage).catch((error) => {
-              Promise.reject(error)
-            })
+            if (interaction.deferred && !interaction.replied)
+              return await interaction.editReply(replyMessage).catch((error) => {
+                Promise.reject(error)
+              })
           }
 
         } else {
@@ -170,10 +176,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
           console.log('5')
 
-
-          return interaction.reply(replyMessage).catch((error) => {
-            Promise.reject(error)
-          })
+          if (interaction.deferred && !interaction.replied)
+            return await interaction.editReply(replyMessage).catch((error) => {
+              Promise.reject(error)
+            })
         }
       }
     } catch (error) {
