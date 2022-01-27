@@ -25,7 +25,7 @@
 
 ## Description
 
-[Halo Finland Discord](https://discord.gg/pdEdBsA5r7) bot. Production ready versions start @ 1.0.0
+[Halo Finland Discord](https://discord.gg/Q7ECbvRW6F) bot. Production ready versions start @ 1.0.0
 
 ## Installation
 
