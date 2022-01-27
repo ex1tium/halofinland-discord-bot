@@ -4,7 +4,7 @@
   <p align="center">
   <a href="https://discord.gg/pdEdBsA5r7" target="blank"><img src="https://i.imgur.com/ExOovnp.jpg" width="128" alt="Halo Finland Logo" /></a>
 </p>
-  <p align="center">Discord bot for <a href="https://discord.gg/pdEdBsA5r7" target="_blank">Halo Finland </a> community .</p>
+  <p align="center">Discord bot for <a href="https://discord.gg/Q7ECbvRW6F" target="_blank">Halo Finland </a> community .</p>
   <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="64" alt="Nest Logo" /></a>
 </p>
