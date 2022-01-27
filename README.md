@@ -2,7 +2,7 @@
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">
-  <a href="https://discord.gg/pdEdBsA5r7" target="blank"><img src="https://i.imgur.com/ExOovnp.jpg" width="128" alt="Halo Finland Logo" /></a>
+  <a href="https://discord.gg/Q7ECbvRW6F" target="blank"><img src="https://i.imgur.com/ExOovnp.jpg" width="128" alt="Halo Finland Logo" /></a>
 </p>
   <p align="center">Discord bot for <a href="https://discord.gg/Q7ECbvRW6F" target="_blank">Halo Finland </a> community .</p>
   <p align="center">
