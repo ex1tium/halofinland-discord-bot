@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// shadowDatabaseUrl for planetscale
+//configured for use with planetscale db https://planetscale.com
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model BotUser {
+  user_id             String      @id @default(cuid()) @map("user_id")
+  discord_user_id     String      @unique
+  gamertag            String?
+  name                String?
+  allow_stats_logging Int         @default(0)
+  halo_stats          HaloStats[]
+
+  @@map("user")
+}
+
+model Tweets {
+  newest_id       String   @unique
+  oldest_id       String
+  ratelimit_reset Int
+  last_updated    DateTime
+
+  @@map("tweets")
+}
+
+model Tweet {
+  tweet_id   String   @id
+  text       String
+  created_at DateTime
+  author_id  String
+
+  @@map("tweet")
+}
+
+model HaloStats {
+  root_stats_id                      Int                       @id
+  service_record                     HaloInfiniteServiceRecord @relation(fields: [haloInfiniteServiceRecordHisc_id], references: [hisc_id])
+  csrs                               HaloInfiniteCsrs?         @relation(fields: [haloInfiniteCsrsCsrs_id], references: [csrs_id])
+  botuser                            BotUser                   @relation(fields: [botUserUser_id], references: [user_id])
+  botser_user_id                     Int
+  haloinfinite_service_record_id     Int
+  haloinfinite_csrs_id               Int
+  haloinfinite_servicerecord_hisc_id Int
+  botuser_user_id                    String
+
+  haloInfiniteServiceRecordHisc_id String
+  haloInfiniteCsrsCsrs_id          String?
+  botUserUser_id                   String
+
+  @@index([root_stats_id])
+}
+
+model HaloInfiniteServiceRecord {
+  // botUser       BotUser @relation(fields: [botUserUserId], references: [userId])
+  hisc_id       String      @id @default(cuid())
+  // botUserUserId Int  @id
+  data_from_api Json
+  halo_stats    HaloStats[]
+
+  @@index([hisc_id])
+  @@map("hi_service_record")
+}
+
+model HaloInfiniteCsrs {
+  csrs_id       String      @id @default(cuid())
+  data_from_api Json
+  halo_stats    HaloStats[]
+
+  @@index([csrs_id])
+  @@map("hi_csrs")
+}

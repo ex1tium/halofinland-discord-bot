@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
-import { DiscordModule } from '@discord-nestjs/core';
 // TransformPipe, ValidationPipe
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from '../environment/config'
-import { DiscordConfigService } from './services/discord-config-service';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { HttpModule } from '@nestjs/axios';
+import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
+import { SharedModule } from './shared/shared.module';
+import { DiscordApiService } from './services/discord-api.service';
+import { AllExceptionsFilter } from './exception-filters/globalExceptions';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -15,34 +19,24 @@ import { DiscordConfigService } from './services/discord-config-service';
       isGlobal: true,
       load: [config],
     }),
-    DiscordModule.forRootAsync({
+    HttpModule.registerAsync({
       imports: [ConfigModule],
-      useClass: DiscordConfigService,
+      useFactory: async () => ({
+        // timeout: 15,
+        // maxRedirects: 5,
+      }),
+      inject: [ConfigService],
     }),
-    // DiscordModule.forRootAsync({
-    //   useFactory: () => ({
-    //     token: '',
-    //     commandPrefix: '!',
-    //     allowGuilds: [''],
-    //     denyGuilds: [''],
-    //     allowCommands: [
-    //       {
-    //         name: 'some',
-    //         channels: [''],
-    //         users: [''],
-    //         channelType: [''],
-    //       },
-    //     ],
-    //     webhook: {
-    //       webhookId: 'your_webhook_id',
-    //       webhookToken: 'your_webhook_token',
-    //     },
-    //     usePipes: [TransformPipe, ValidationPipe],
-    //     // and other discord options
-    //   }),
-    // }),
+    ScheduleModule.forRoot(),
+    HaloDotApiModule,
+    SharedModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    AppService, DiscordApiService],
 })
 export class AppModule { }
