@@ -9,3 +9,4 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
+    restart: unless-stopped
