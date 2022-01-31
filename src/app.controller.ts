@@ -122,7 +122,22 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
               "type": 3,
               "required": false
             },
-
+            // {
+            //   "name": "isPublic",
+            //   "description": "(Optional) Show stats publicly on channel",
+            //   "type": 3,
+            //   "required": false,
+            //   "choices": [
+            //     {
+            //       "name": "Yes",
+            //       "value": "1"
+            //     },
+            //     {
+            //       "name": "No",
+            //       "value": "0"
+            //     },
+            //   ]
+            // },
           ]
         },
         {

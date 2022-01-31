@@ -37,31 +37,31 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
 
       const userId = interaction.user.id
       const userExists = await this._userService.user({
-        discordUserId: userId,
+        discord_user_id: userId,
       })
 
       let wasUpdated = false;
 
 
-      this._logger.warn(`userExists: ${userExists}`)
+      this._logger.warn(`userExists: ${JSON.stringify(userExists)}`)
 
-      if (userExists && userExists.discordUserId) {
+      if (userExists && userExists.discord_user_id) {
         this._userService.updateUser({
           where: {
-            discordUserId: userId,
+            discord_user_id: userId,
           },
           data: {
-            gamerTag: gamerTag,
-            allowStatsLogging: allowLogging ? 1 : 0
+            gamertag: gamerTag,
+            allow_stats_logging: allowLogging ? 1 : 0
           }
         })
 
         wasUpdated = true
       } else {
         this._userService.createUser({
-          discordUserId: userId,
-          gamerTag: gamerTag,
-          allowStatsLogging: allowLogging ? 1 : 0
+          discord_user_id: userId,
+          gamertag: gamerTag,
+          allow_stats_logging: allowLogging ? 1 : 0
         })
       }
 
@@ -78,7 +78,7 @@ export class StatsRegSubCommand implements DiscordTransformedCommand<RegisterDto
           .setColor('#DFFF00')
           // .setDescription('Gamertag Updated')
           .addFields(
-            { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
+            { name: `Old Gamertag`, value: `${userExists.gamertag}` },
             { name: `New Gamertag`, value: `${gamerTag}` },
             { name: `Logging`, value: `${allowLogging ? 'enabled' : 'disabled'}` },
           )

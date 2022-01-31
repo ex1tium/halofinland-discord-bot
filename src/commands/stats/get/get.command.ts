@@ -11,7 +11,7 @@ import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { UserService } from 'src/services/user.service';
 import { GetDto } from './get.dto';
 
-// @UseFilters(CommandValidationFilter)
+@UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'get', description: 'Prints our your stats' })
 export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
@@ -26,9 +26,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   async handler(@Payload() dto: GetDto, interaction: CommandInteraction): Promise<any> {
     try {
 
-      await interaction.deferReply();
-      const reply = await interaction.fetchReply()
-      this._logger.debug(reply)
+
+      const defer = await interaction.deferReply({ fetchReply: true });
+      // const reply = await interaction.fetchReply()
+      this._logger.verbose(JSON.stringify(defer))
 
       // https://github.com/discordjs/discord.js/issues/7005
       const hasParam = !!dto.gamertag
@@ -37,12 +38,12 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
       let gamerTag: string;
       let embedReply: MessageEmbed;
 
-      let replyMessage: { embeds: MessageEmbed[]; };
+      let replyMessage: InteractionReplyOptions;
 
       if (hasParam) {
         gamerTag = dto.gamertag;
+        this._logger.debug(`gamerTag as param: ${gamerTag}`)
 
-        // TODO write query against HaloDotApi
 
         const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
           this._logger.error(error)
@@ -68,44 +69,55 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
               { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
             )
-            .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
+            .setFooter({
+              text: `Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+            })
           // .setTimestamp()
           replyMessage = {
-            embeds: [embedReply]
+            embeds: [embedReply],
+            fetchReply: true
           }
 
           console.log('1')
 
           if (interaction.deferred && !interaction.replied)
-            return await interaction.editReply(replyMessage).catch((error) => {
+            await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
               Promise.reject(error)
             })
+
+
         } else {
           let errorEmbed = new MessageEmbed()
             .setColor('#FF0000')
             .setTitle('Error')
             .setDescription(`Stats not found for ${gamerTag}`)
           replyMessage = {
-            embeds: [errorEmbed]
+            embeds: [errorEmbed],
+            fetchReply: true
           }
 
           console.log('2')
 
-          if (interaction.deferred && !interaction.replied)
-            return await interaction.editReply(replyMessage).catch((error) => {
-              Promise.reject(error)
-            })
+          // if (interaction.deferred && !interaction.replied)
+          await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+            Promise.reject(error)
+          })
+
+          // interaction.reply(replyMessage).then((reply) => {
+          //   this._logger.debug(`reply: ${reply}`)
+          // })
         }
 
       } else {
         const botUser = await this._userService.user({
-          discordUserId: userId,
+          discord_user_id: userId,
         }).catch((error) => {
           this._logger.error(error)
         })
 
         if (botUser) {
-          gamerTag = botUser.gamerTag
+          gamerTag = botUser.gamertag
+          this._logger.debug(`gamerTag from botuser: ${gamerTag}`)
 
           // TODO write query against HaloDotApi
           const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
@@ -133,33 +145,66 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
                 { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
               )
-              .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
-            // .setTimestamp()
+              .setFooter({
+                text: `Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+              })            // .setTimestamp()
 
             replyMessage = {
-              embeds: [embedReply]
+              embeds: [embedReply],
+              fetchReply: true
             }
             console.log('3')
 
+
+            // if (interaction.deferred && !interaction.replied)
+            //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+            //     Promise.reject(error)
+            //   })
+
+
             if (interaction.deferred && !interaction.replied)
-              return await interaction.editReply(replyMessage).catch((error) => {
+              await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
                 Promise.reject(error)
               })
+
+
+            // interaction.reply(replyMessage).then((reply) => {
+            //   this._logger.debug(`reply: ${reply}`)
+            // }).finally(() => {
+            //   // interaction.editReply('edit reply')
+            // })
+
+            // return await interaction.followUp(replyMessage)
+
+
+
+
           } else {
             let errorEmbed = new MessageEmbed()
               .setColor('#FF0000')
               .setTitle('Error')
               .setDescription(`Stats not found for ${gamerTag}`)
             replyMessage = {
-              embeds: [errorEmbed]
+              embeds: [errorEmbed],
+              fetchReply: true
             }
 
             console.log('4')
 
+            // if (interaction.deferred && !interaction.replied)
+            //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+            //     Promise.reject(error)
+            //   })
+
             if (interaction.deferred && !interaction.replied)
-              return await interaction.editReply(replyMessage).catch((error) => {
+              await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
                 Promise.reject(error)
               })
+
+            // interaction.reply(replyMessage).then((reply) => {
+            //   this._logger.debug(`reply: ${reply}`)
+            // })
+
           }
 
         } else {
@@ -171,15 +216,24 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             )
           // .setTimestamp()
           replyMessage = {
-            embeds: [embedReply]
+            embeds: [embedReply],
+            fetchReply: true
           }
 
           console.log('5')
 
+          // if (interaction.deferred && !interaction.replied)
+          //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+          //     Promise.reject(error)
+          //   })
           if (interaction.deferred && !interaction.replied)
-            return await interaction.editReply(replyMessage).catch((error) => {
+            await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
               Promise.reject(error)
             })
+
+          // interaction.reply(replyMessage).then((reply) => {
+          //   this._logger.debug(`reply: ${reply}`)
+          // })
         }
       }
     } catch (error) {

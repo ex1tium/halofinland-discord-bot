@@ -23,17 +23,17 @@ export class StatsUpdateSubCommand implements DiscordTransformedCommand<UpdateDt
       const gamerTag = dto.gamertag
       const userId = interaction.user.id
       const userExists = await this._userService.user({
-        discordUserId: userId,
+        discord_user_id: userId,
       })
       let embedReply: MessageEmbed;
 
       if (userExists) {
         this._userService.updateUser({
           where: {
-            discordUserId: userId,
+            discord_user_id: userId,
           },
           data: {
-            gamerTag: gamerTag
+            gamertag: gamerTag
           }
         })
 
@@ -41,7 +41,7 @@ export class StatsUpdateSubCommand implements DiscordTransformedCommand<UpdateDt
           .setColor('#DFFF00')
           // .setDescription('Gamertag Updated')
           .addFields(
-            { name: `Old Gamertag`, value: `${userExists.gamerTag}` },
+            { name: `Old Gamertag`, value: `${userExists.gamertag}` },
             { name: `New Gamertag`, value: `${gamerTag}` },
           )
           .setTimestamp()

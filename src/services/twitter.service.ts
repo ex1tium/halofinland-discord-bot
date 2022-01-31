@@ -83,7 +83,11 @@ export class TwitterService {
       const embedTweet = new MessageEmbed()
         // .setTitle('Tweet')
         .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
-        .setAuthor('From @HaloSupport', null, `https://twitter.com/HaloSupport`)
+        .setAuthor({
+          name: 'From @HaloSupport',
+          iconURL: null,
+          url: `https://twitter.com/HaloSupport`
+        })
         // .setDescription('New Tweet')
         .addFields(
           {
@@ -94,7 +98,9 @@ export class TwitterService {
           }
         )
         .setTimestamp(new Date(tweet.created_at))
-        .setFooter(format(new Date(tweet.created_at), 'HH:mm'))
+        .setFooter({
+          text: format(new Date(tweet.created_at), 'HH:mm')
+        })
       // .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
       return embedTweet;
     } catch (error) {
@@ -128,7 +134,7 @@ export class TwitterService {
         if (this._twitterAllowedSearchAuthorIds.some(id => id == tweet.author_id)) {
           const found = await this._prismaService.tweet.findUnique({
             where: {
-              id: tweet.id
+              tweet_id: tweet.id
             }
           })
 
@@ -162,7 +168,7 @@ export class TwitterService {
     try {
       const record = await this._prismaService.tweet.create({
         data: {
-          id: tweetData.id,
+          tweet_id: tweetData.id,
           text: tweetData.text,
           author_id: tweetData.author_id,
           created_at: tweetData.created_at
@@ -183,13 +189,13 @@ export class TwitterService {
     try {
       const tweet = await this._prismaService.tweet.upsert({
         where: {
-          id: tweetData.id
+          tweet_id: tweetData.id
         },
         update: {
 
         },
         create: {
-          id: tweetData.id,
+          tweet_id: tweetData.id,
           text: tweetData.text,
           author_id: tweetData.author_id,
           created_at: tweetData.created_at
