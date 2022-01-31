@@ -1,8 +1,8 @@
 {
   "name": "halofinland-bot",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.9.0",
+  "description": "Discord bot for Halo Finland community",
+  "author": "🅴🆇 𝟭 🆃🅸🆄🅼#2753 in Discord",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
