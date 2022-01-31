@@ -2,7 +2,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { lastValueFrom } from 'rxjs';
 import { DefineDiscordCommand } from 'src/models/sub-command-options.model';
+import { AxiosResponse } from "axios";
 
 @Injectable()
 export class DiscordApiService {
@@ -24,35 +26,97 @@ export class DiscordApiService {
 
   }
 
-  registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
+  async registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
 
-    const data: DefineDiscordCommand = {
-      "name": name,
-      "description": description,
-    }
-
-    if (type) {
-      data.type = type;
-    }
-
-    if (options) {
-      data.options = options;
-    }
-
-    this._logger.warn(data)
-
-
-    const post = this._httpService.post(
-      this.discordUrl,
-      data, {
-      headers: {
-        'Authorization': `Bot ${this.botToken}`
+    try {
+      const data: DefineDiscordCommand = {
+        "name": name,
+        "description": description,
       }
-    })
 
-    return post.pipe().subscribe((data) => {
-      // console.log('registerCommand response', data)
-    })
+      if (type) {
+        data.type = type;
+      }
 
+      if (options) {
+        data.options = options;
+      }
+
+      this._logger.warn(data)
+
+
+      const post = this._httpService.post(
+        this.discordUrl,
+        data, {
+        headers: {
+          'Authorization': `Bot ${this.botToken}`
+        }
+      })
+
+      return post.pipe().subscribe((data) => {
+        // console.log('registerCommand response', data)
+      })
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+
+
+
+  }
+
+  async getCommands(): Promise<void | AxiosResponse<any, any>> {
+    try {
+      const get = await lastValueFrom(this._httpService.get(
+        this.discordUrl,
+        {
+          headers: {
+            'Authorization': `Bot ${this.botToken}`
+          }
+        }
+      ))
+
+      if (get.status == 200) {
+        this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data))
+        return get;
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+
+  }
+
+  async deleteCommand(commandId: string): Promise<void | AxiosResponse<any, any>> {
+    try {
+      const deleteCommand = await lastValueFrom(this._httpService.delete(
+        this.discordUrl + `/${commandId}`,
+        {
+          headers: {
+            'Authorization': `Bot ${this.botToken}`
+          }
+        }
+      ))
+
+      if (deleteCommand.status == 200) {
+        this._logger.debug(`DELETE COMMAND: `, JSON.stringify(deleteCommand.data))
+
+        return deleteCommand;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
   }
 }

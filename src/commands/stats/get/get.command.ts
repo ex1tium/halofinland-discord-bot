@@ -1,16 +1,18 @@
 import { TransformPipe } from '@discord-nestjs/common';
 import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from '@discord-nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, UseFilters, ValidationPipe } from '@nestjs/common';
 import {
   CommandInteraction,
   InteractionReplyOptions,
   MessageEmbed,
 } from 'discord.js';
+import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 import { UserService } from 'src/services/user.service';
 import { GetDto } from './get.dto';
 
-@UsePipes(TransformPipe)
+@UseFilters(CommandValidationFilter)
+@UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: 'get', description: 'Prints our your stats' })
 export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
@@ -21,78 +23,36 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
     private _userService: UserService
   ) { }
 
-  async handler(@Payload() dto: GetDto, interaction: CommandInteraction) {
+  async handler(@Payload() dto: GetDto, interaction: CommandInteraction): Promise<any> {
+    try {
 
-    const hasParam = !!dto.gamertag
-    const userId = interaction.user.id
 
-    let gamerTag: string;
-    let embedReply: MessageEmbed;
+      const defer = await interaction.deferReply({ fetchReply: true });
+      // const reply = await interaction.fetchReply()
+      this._logger.verbose(JSON.stringify(defer))
 
-    let reply: { embeds: MessageEmbed[]; };
+      // https://github.com/discordjs/discord.js/issues/7005
+      const hasParam = !!dto.gamertag
+      const userId = interaction.user.id
 
-    if (hasParam) {
-      gamerTag = dto.gamertag;
+      let gamerTag: string;
+      let embedReply: MessageEmbed;
 
-      // TODO write query against HaloDotApi
+      let replyMessage: InteractionReplyOptions;
 
-      const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
-      const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
+      if (hasParam) {
+        gamerTag = dto.gamertag;
+        this._logger.debug(`gamerTag as param: ${gamerTag}`)
 
-      if (statsCSR.data && statsRecord.data) {
 
-        embedReply = new MessageEmbed()
-          .setColor('#CCCCFF')
-          .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
-          .setTitle(gamerTag)
-          .setDescription(statsCSR.data[0].response.current.tier)
-          .addFields(
-            { name: `Kills`, value: ` ${statsRecord.data.summary.kills}`, inline: true },
-            { name: `Deaths`, value: ` ${statsRecord.data.summary.deaths}`, inline: true },
-            { name: `Assists`, value: ` ${statsRecord.data.summary.assists}`, inline: true },
-          )
-          .addFields(
-            { name: `KDA`, value: ` ${statsRecord.data.kda.toFixed(1)}`, inline: true },
-            { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
-            { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
-          )
-          .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
-        // .setTimestamp()
-        reply = {
-          embeds: [embedReply]
-        }
+        const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
+          this._logger.error(error)
+        })
+        const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) => {
+          this._logger.error(error)
+        })
 
-        return reply;
-      } else {
-        let errorEmbed = new MessageEmbed()
-          .setColor('#FF0000')
-          .setTitle('Error')
-          .setDescription(`Stats not found for ${gamerTag}`)
-        reply = {
-          embeds: [errorEmbed]
-        }
-        return reply
-      }
-
-    } else {
-      const botUser = await this._userService.user({
-        discordUserId: userId,
-      })
-
-      if (botUser) {
-        gamerTag = botUser.gamerTag
-
-        // TODO write query against HaloDotApi
-        const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open')
-        // .catch(err => {
-        //   console.error('catch error: ', err)
-        // })
-        const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag)
-        // .catch(err => {
-        //   console.error('catch error: ', err)
-        // })
-
-        if (statsCSR.data && statsRecord.data) {
+        if (statsCSR && statsCSR.data && statsRecord && statsRecord.data && !interaction.replied) {
 
           embedReply = new MessageEmbed()
             .setColor('#CCCCFF')
@@ -109,38 +69,178 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
               { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
             )
-            .setFooter(`Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`)
+            .setFooter({
+              text: `Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+            })
           // .setTimestamp()
-
-          reply = {
-            embeds: [embedReply]
+          replyMessage = {
+            embeds: [embedReply],
+            fetchReply: true
           }
 
-          return reply;
+          console.log('1')
+
+          if (interaction.deferred && !interaction.replied)
+            await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+              Promise.reject(error)
+            })
+
+
         } else {
           let errorEmbed = new MessageEmbed()
             .setColor('#FF0000')
             .setTitle('Error')
             .setDescription(`Stats not found for ${gamerTag}`)
-          reply = {
-            embeds: [errorEmbed]
+          replyMessage = {
+            embeds: [errorEmbed],
+            fetchReply: true
           }
-          return reply
+
+          console.log('2')
+
+          // if (interaction.deferred && !interaction.replied)
+          await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+            Promise.reject(error)
+          })
+
+          // interaction.reply(replyMessage).then((reply) => {
+          //   this._logger.debug(`reply: ${reply}`)
+          // })
         }
 
       } else {
-        embedReply = new MessageEmbed()
-          .setColor('#FF7F50')
-          // .setDescription('Gamertag Updated')
-          .addFields(
-            { name: `Error`, value: `No Xbox Gametag registered for user` },
-          )
-        // .setTimestamp()
-        reply = {
-          embeds: [embedReply]
-        }
+        const botUser = await this._userService.user({
+          discord_user_id: userId,
+        }).catch((error) => {
+          this._logger.error(error)
+        })
 
-        return reply;
+        if (botUser) {
+          gamerTag = botUser.gamertag
+          this._logger.debug(`gamerTag from botuser: ${gamerTag}`)
+
+          // TODO write query against HaloDotApi
+          const statsCSR = await this._haloDotApi.requestPlayerStatsCSR(gamerTag, 'open').catch((error) => {
+            this._logger.error(error)
+          })
+
+          const statsRecord = await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) => {
+            this._logger.error(error)
+          })
+
+          if (statsCSR && statsCSR.data && statsRecord && statsRecord.data && !interaction.replied) {
+
+            embedReply = new MessageEmbed()
+              .setColor('#CCCCFF')
+              .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
+              .setTitle(gamerTag)
+              .setDescription(statsCSR.data[0].response.current.tier)
+              .addFields(
+                { name: `Kills`, value: ` ${statsRecord.data.summary.kills}`, inline: true },
+                { name: `Deaths`, value: ` ${statsRecord.data.summary.deaths}`, inline: true },
+                { name: `Assists`, value: ` ${statsRecord.data.summary.assists}`, inline: true },
+              )
+              .addFields(
+                { name: `KDA`, value: ` ${statsRecord.data.kda.toFixed(1)}`, inline: true },
+                { name: `KDR`, value: ` ${statsRecord.data.kdr.toFixed(1)}`, inline: true },
+                { name: `Matches Played`, value: ` ${statsRecord.data.matches_played}`, inline: true },
+              )
+              .setFooter({
+                text: `Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+              })            // .setTimestamp()
+
+            replyMessage = {
+              embeds: [embedReply],
+              fetchReply: true
+            }
+            console.log('3')
+
+
+            // if (interaction.deferred && !interaction.replied)
+            //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+            //     Promise.reject(error)
+            //   })
+
+
+            if (interaction.deferred && !interaction.replied)
+              await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+                Promise.reject(error)
+              })
+
+
+            // interaction.reply(replyMessage).then((reply) => {
+            //   this._logger.debug(`reply: ${reply}`)
+            // }).finally(() => {
+            //   // interaction.editReply('edit reply')
+            // })
+
+            // return await interaction.followUp(replyMessage)
+
+
+
+
+          } else {
+            let errorEmbed = new MessageEmbed()
+              .setColor('#FF0000')
+              .setTitle('Error')
+              .setDescription(`Stats not found for ${gamerTag}`)
+            replyMessage = {
+              embeds: [errorEmbed],
+              fetchReply: true
+            }
+
+            console.log('4')
+
+            // if (interaction.deferred && !interaction.replied)
+            //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+            //     Promise.reject(error)
+            //   })
+
+            if (interaction.deferred && !interaction.replied)
+              await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+                Promise.reject(error)
+              })
+
+            // interaction.reply(replyMessage).then((reply) => {
+            //   this._logger.debug(`reply: ${reply}`)
+            // })
+
+          }
+
+        } else {
+          embedReply = new MessageEmbed()
+            .setColor('#FF7F50')
+            // .setDescription('Gamertag Updated')
+            .addFields(
+              { name: `Error`, value: `No Xbox Gametag registered for user` },
+            )
+          // .setTimestamp()
+          replyMessage = {
+            embeds: [embedReply],
+            fetchReply: true
+          }
+
+          console.log('5')
+
+          // if (interaction.deferred && !interaction.replied)
+          //   return await interaction.editReply(replyMessage).then((reply) => { interaction.deleteReply() }).catch((error) => {
+          //     Promise.reject(error)
+          //   })
+          if (interaction.deferred && !interaction.replied)
+            await interaction.editReply(replyMessage).then((reply) => { this._logger.verbose(reply) }).catch((error) => {
+              Promise.reject(error)
+            })
+
+          // interaction.reply(replyMessage).then((reply) => {
+          //   this._logger.debug(`reply: ${reply}`)
+          // })
+        }
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
       }
     }
   }

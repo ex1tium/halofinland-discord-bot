@@ -2,7 +2,9 @@ import { DiscordCommandProvider, DiscordModule } from '@discord-nestjs/core';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { Intents, Message } from 'discord.js';
+import { AllExceptionsFilter } from 'src/exception-filters/globalExceptions';
 import { DiscordApiService } from 'src/services/discord-api.service';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
 // import { DiscordConfigService } from 'src/services/discord-config.service';
@@ -57,7 +59,12 @@ import { UserService } from 'src/services/user.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider],
   exports: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider]
 })
 export class SharedModule { }

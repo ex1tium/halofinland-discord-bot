@@ -61,9 +61,15 @@ export class HaloDotApiController {
 
 
     } catch (error) {
-      if (error && error.response) {
-        this._logger.error(error?.response?.data);
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
       }
+
+      // if (error && error.response) {
+      //   this._logger.error(error?.response?.data);
+      // }
     }
   }
 }

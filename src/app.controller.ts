@@ -12,7 +12,7 @@ import { DefineDiscordCommand } from './models/sub-command-options.model';
 // Client, ClientProvider, 
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(AppController.name);
+  private readonly _logger = new Logger(AppController.name);
   private _subMap = new Map<string, Subscription>();
 
   allowedChannelIds: string[] = ['911368720440496208'];
@@ -53,16 +53,14 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
 
   @Once('ready')
-  async onReady() {
-    this.logger.log('Bot was started!');
+  onReady() {
+    this._logger.log('Bot was started!');
 
     this._twitterService.init();
 
     this._subMap.set('newTweets', this._twitterService.newTweets$.subscribe((newTweets) => {
-      console.error('newTweets', newTweets);
-
       if (newTweets) {
-
+        this._logger.log(`newTweets ${newTweets}`);
       }
     }))
 
@@ -124,7 +122,22 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
               "type": 3,
               "required": false
             },
-
+            // {
+            //   "name": "isPublic",
+            //   "description": "(Optional) Show stats publicly on channel",
+            //   "type": 3,
+            //   "required": false,
+            //   "choices": [
+            //     {
+            //       "name": "Yes",
+            //       "value": "1"
+            //     },
+            //     {
+            //       "name": "No",
+            //       "value": "0"
+            //     },
+            //   ]
+            // },
           ]
         },
         {
@@ -177,11 +190,12 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
         // }
       ]
     // this._subMap.set('stats_command', this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands))
+    // const result = await this._discordApiService.getCommands();
+    // this._discordApiService.deleteCommand('912494585433952346');
+    // this._discordApiService.getCommands();
 
 
     // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
-
-    // this.logger.debug(`REGISTERED COMMANDS: ${JSON.stringify(this._discordCommandProvider.getAllCommands())}`)
 
 
 

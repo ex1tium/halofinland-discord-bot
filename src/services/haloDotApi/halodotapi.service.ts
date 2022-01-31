@@ -23,12 +23,21 @@ export class HaloDotApiService {
     }
   }
 
-  async init(): Promise<AxiosResponse<any, any>> {
+  async init(): Promise<void | AxiosResponse<any, any>> {
+    try {
+      this._logger.debug(`haloDotApiBaseUrl: ${this._haloDotApiInfiniteBaseUrl}`)
+      const url = 'https://cryptum.halodotapi.com/'
+      // const req =
+      return await lastValueFrom(this._http.get(url));
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
     // this._http.get()
-    this._logger.debug(`haloDotApiBaseUrl: ${this._haloDotApiInfiniteBaseUrl}`)
-    const url = 'https://cryptum.halodotapi.com/'
-    // const req =
-    return await lastValueFrom(this._http.get(url));
+
   }
 
   getMotd(): Observable<AxiosResponse<any, any>> {
@@ -41,38 +50,49 @@ export class HaloDotApiService {
   }
 
   async requestPlayerStatsCSR(gamertag: string, queue: 'open' | 'solo-duo') {
-    let returnValue: CsrsModels.CsrsRootObject;
-
     try {
+      let returnValue: CsrsModels.CsrsRootObject;
+
       const url = this._haloDotApiInfiniteBaseUrl + `stats/players/${gamertag}/csrs`;
       const request = await lastValueFrom(this._http.get<any>(url, {
         headers: this._headers
       }))
-      if (request.status === 200)
+      if (request && request.status === 200) {
         returnValue = request.data as CsrsModels.CsrsRootObject;
+      }
+      return returnValue;
+
     } catch (error) {
       // throw new Error(error);
-      return error;
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
     }
-    return returnValue;
   }
 
   async requestPlayerServiceRecord(gamertag: string) {
-    let returnValue: ServiceRecordsModels.ServiceRecord | undefined;
     try {
+      let returnValue: ServiceRecordsModels.ServiceRecord | undefined;
+
       const url = this._haloDotApiInfiniteBaseUrl + `stats/players/${gamertag}/service-record/global`;
       // this._logger.warn(`url: ${url}`)
       const request = await lastValueFrom(this._http.get<any>(url, {
         headers: this._headers
       }))
-      if (request.status == 200) {
+      if (request && request.status == 200) {
         returnValue = request.data as ServiceRecordsModels.ServiceRecord;
       }
+      return returnValue;
+
     } catch (error) {
-      // throw new Error(error);
-      return error;
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
     }
-    return returnValue;
   }
 
   // async getMotdAsync(): Promise<AxiosResponse<any, any>> {
