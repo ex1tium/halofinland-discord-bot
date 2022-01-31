@@ -10,8 +10,8 @@ import { StatsGetSubCommand } from './get/get.command';
 import { StatsUpdateSubCommand } from './update/update.command';
 import { CommandValidationFilter } from 'src/exception-filters/discord-command-validation';
 
-@UseFilters(CommandValidationFilter)
-@UsePipes(TransformPipe, ValidationPipe)
+// @UseFilters(CommandValidationFilter)
+// @UsePipes(TransformPipe, ValidationPipe)
 @Command({
   name: 'stats',
   description: 'Stats provided by HaloDotAPI',

@@ -39,11 +39,15 @@ export class StatsHelpSubCommand implements DiscordTransformedCommand<StatsHelpD
             { name: 'update', value: 'Päivitä tilastot' },
             { name: 'get ?:gamertag:', value: 'Tulostaa käyttäjän Halo Infinite tilastot tai hakee käyttäjän tilastot gamertagille' },
           )
+          .setFooter({
+            text: 'Bug reports and feature requests 🅴🆇 𝟭 🆃🅸🆄🅼#2753'
+          })
           // .setImage('https://i.imgur.com/AfFp7pu.png') //TODO Statsi kuva?
           .setTimestamp()
 
         return interaction.reply({
-          embeds: [embedHelpFi]
+          embeds: [embedHelpFi],
+          ephemeral: true
         }).catch((error) => {
           Promise.reject(error)
         })
@@ -61,11 +65,15 @@ export class StatsHelpSubCommand implements DiscordTransformedCommand<StatsHelpD
             { name: 'update', value: 'Updates latest stats from API' },
             { name: 'get', value: 'Prints your stats or stats for gamertag' },
           )
+          .setFooter({
+            text: 'Bugi raportit ja kehitysehdotukset 🅴🆇 𝟭 🆃🅸🆄🅼#2753'
+          })
           // .setImage('https://i.imgur.com/AfFp7pu.png') //TODO Statsi kuva?
           .setTimestamp()
 
         return interaction.reply({
-          embeds: [embedHelpEn]
+          embeds: [embedHelpEn],
+          ephemeral: true
         }).catch((error) => {
           Promise.reject(error)
         })
