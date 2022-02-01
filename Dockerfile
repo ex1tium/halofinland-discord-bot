@@ -17,9 +17,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
-
 RUN npx prisma generate
+
+COPY . .
 
 RUN npm run build
 
@@ -40,4 +40,4 @@ COPY --from=development /usr/src/app/dist ./dist
 
 # CMD ["npm", "run", "start"]
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]
