@@ -11,6 +11,7 @@ import { SharedModule } from './shared/shared.module';
 import { DiscordApiService } from './services/discord-api.service';
 import { AllExceptionsFilter } from './exception-filters/globalExceptions';
 import { APP_FILTER } from '@nestjs/core';
+import { Oauth2DiscordModule } from './controllers/oauth2-discord/oauth2-discord.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { APP_FILTER } from '@nestjs/core';
     }),
     ScheduleModule.forRoot(),
     HaloDotApiModule,
+    Oauth2DiscordModule,
     SharedModule,
   ],
   controllers: [AppController],

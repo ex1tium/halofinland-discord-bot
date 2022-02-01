@@ -54,7 +54,7 @@ export class DiscordApiService {
       })
 
       return post.pipe().subscribe((data) => {
-        // console.log('registerCommand response', data)
+        console.log('registerCommand response', data)
       })
     } catch (error) {
       if (error && error.stack) {

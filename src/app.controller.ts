@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, Logger, OnModuleDestroy, OnModuleInit, Request } from '@nestjs/common';
 import { On, Once, UseGuards, UsePipes, DiscordClientProvider, DiscordCommandProvider } from '@discord-nestjs/core';
 import { Message } from 'discord.js';
 import { AppService } from './app.service';
@@ -192,12 +192,15 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     // this._subMap.set('stats_command', this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands))
     // const result = await this._discordApiService.getCommands();
     // this._discordApiService.deleteCommand('912494585433952346');
-    // this._discordApiService.getCommands();
+
+    // this._discordApiService.getCommands().catch((error) => {
+    //   this._logger.error(error);
+    // })
 
 
     // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
 
-
+    // this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands)
 
 
     // const invite = this.discordProvider.getClient().generateInvite({
@@ -205,6 +208,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     // });
     // console.log(invite)
   }
+
 
 
   onModuleDestroy() {
