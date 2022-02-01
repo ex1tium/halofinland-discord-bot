@@ -38,4 +38,4 @@ COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start"]
