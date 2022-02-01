@@ -34,9 +34,9 @@ COPY package*.json ./
 
 RUN npm install --only=prod
 
-RUN npx prisma generate
-
 COPY . .
+
+RUN npx prisma generate
 
 COPY --from=development /usr/src/app/dist ./dist
 
