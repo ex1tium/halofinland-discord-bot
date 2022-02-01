@@ -19,6 +19,8 @@ RUN npm install --only=development
 
 COPY . .
 
+RUN npx prisma generate
+
 RUN npm run build
 
 FROM node:lts-alpine As production
