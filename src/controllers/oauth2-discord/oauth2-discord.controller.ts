@@ -1,10 +1,10 @@
 import { Controller, Get, Request, Req, Logger, Body, Res, Response, HttpStatus } from '@nestjs/common';
 
+
 @Controller('oauth2-discord')
 export class Oauth2DiscordController {
 
   private _logger: Logger = new Logger(Oauth2DiscordController.name)
-
 
   @Get()
   async callbackForDiscordOauth2(
@@ -15,7 +15,6 @@ export class Oauth2DiscordController {
 
     if (request) {
       // const requestJson = await request.json();
-
       this._logger.verbose(`request json: ${JSON.stringify(request.body)}`)
     }
 
@@ -29,10 +28,6 @@ export class Oauth2DiscordController {
       this._logger.verbose(`request json: ${JSON.stringify(body.body)}`)
     }
 
-
-
-    // return 'This action returns all cats';
     return HttpStatus.OK
-
   }
 }
