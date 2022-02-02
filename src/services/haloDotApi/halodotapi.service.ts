@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { lastValueFrom, Observable } from 'rxjs';
 
 /**
- *  The HaloDotApiService class is a class that is responsible for making requests to the HaloDotApi. 
+ *  The HaloDotApiService class is a class that is responsible for making requests to the HaloDotApi.
  *
  * @export
  * @class HaloDotApiService
@@ -15,7 +15,11 @@ export class HaloDotApiService {
   private readonly _logger = new Logger(HaloDotApiService.name);
 
   private _haloDotApiInfiniteBaseUrl: string;
-  private _headers: { Authorization: string; 'Content-Type': string; 'Cryptum-API-Version': string; };
+  private _headers: {
+    Authorization: string;
+    'Content-Type': string;
+    'Cryptum-API-Version': string;
+  };
 
   constructor(
     private _http: HttpService,
@@ -59,7 +63,6 @@ export class HaloDotApiService {
     const request = this._http.get<any>(url, {});
     return request;
   }
-
 
   /**
    * It returns the CSRs for a player.
@@ -120,6 +123,4 @@ export class HaloDotApiService {
       }
     }
   }
-
 }
-

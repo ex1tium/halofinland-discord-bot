@@ -25,7 +25,7 @@ export class StatsRegSubCommand
 {
   private _logger: Logger = new Logger('StatsRegSubCommand');
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService) {}
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
     try {

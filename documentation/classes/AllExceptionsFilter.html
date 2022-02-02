@@ -130,7 +130,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/exception-filters/globalExceptions.ts:40</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/exception-filters/globalExceptions.ts:14</a></div>
                             </td>
                         </tr>
 
@@ -198,7 +198,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/exception-filters/globalExceptions.ts:40</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/exception-filters/globalExceptions.ts:14</a></div>
                         </td>
                     </tr>
 
@@ -232,8 +232,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="44"
-                            class="link-to-prism">src/exception-filters/globalExceptions.ts:44</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="18"
+                            class="link-to-prism">src/exception-filters/globalExceptions.ts:18</a></div>
                 </td>
             </tr>
 
@@ -312,11 +312,12 @@
 } from &#x27;@nestjs/common&#x27;;
 import { HttpAdapterHost } from &#x27;@nestjs/core&#x27;;
 
+/* The @Catch() decorator is used to catch all exceptions thrown by the controller methods. */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
   catch(exception: unknown, host: ArgumentsHost): void {
     // In certain situations &#x60;httpAdapter&#x60; might not be available in the

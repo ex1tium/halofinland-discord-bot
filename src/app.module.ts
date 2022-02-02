@@ -48,4 +48,4 @@ SharedModule, which will configure the shared services. */
     DiscordApiService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

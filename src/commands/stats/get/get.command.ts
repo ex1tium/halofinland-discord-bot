@@ -26,7 +26,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   constructor(
     private _haloDotApi: HaloDotApiService,
     private _userService: UserService,
-  ) { }
+  ) {}
 
   async handler(
     @Payload() dto: GetDto,
@@ -107,8 +107,9 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               },
             )
             .setFooter({
-              text: `Time played: ${statsRecord.data.time_played.human
-                }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+              text: `Time played: ${
+                statsRecord.data.time_played.human
+              }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
             });
           // .setTimestamp()
           replyMessage = {
@@ -217,8 +218,9 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 },
               )
               .setFooter({
-                text: `Time played: ${statsRecord.data.time_played.human
-                  }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+                text: `Time played: ${
+                  statsRecord.data.time_played.human
+                }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
               }); // .setTimestamp()
 
             replyMessage = {

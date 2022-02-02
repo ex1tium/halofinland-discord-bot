@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/help/help.command.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/commands/stats/help/help.command.ts:20</a></div>
                             </td>
                         </tr>
 
@@ -169,7 +169,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/help/help.command.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/commands/stats/help/help.command.ts:20</a></div>
                         </td>
                     </tr>
 
@@ -205,8 +205,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="23"
-                            class="link-to-prism">src/commands/stats/help/help.command.ts:23</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="24"
+                            class="link-to-prism">src/commands/stats/help/help.command.ts:24</a></div>
                 </td>
             </tr>
 
@@ -290,13 +290,14 @@ import { StatsHelpDto } from &#x27;./help.dto&#x27;;
 
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
-@SubCommand({ name: &#x27;help&#x27;, description: &#x27;READ ME&#x27; })
+@SubCommand({ name: &#x27;help&#x27;, description: &#x27;Shows bot commands and helpful information&#x27; })
+/* This is a command that will display helpful message! */
 export class StatsHelpSubCommand
   implements DiscordTransformedCommand&lt;StatsHelpDto&gt;
 {
   private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  constructor() {}
+  constructor() { }
 
   async handler(
     @Payload() dto: StatsHelpDto,

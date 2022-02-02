@@ -151,7 +151,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/exception-filters/discord-command-validation.ts:12</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/exception-filters/discord-command-validation.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -187,8 +187,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="14"
-                            class="link-to-prism">src/exception-filters/discord-command-validation.ts:14</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="15"
+                            class="link-to-prism">src/exception-filters/discord-command-validation.ts:15</a></div>
                 </td>
             </tr>
 
@@ -267,6 +267,7 @@ import { Logger } from &#x27;@nestjs/common&#x27;;
 import { ValidationError } from &#x27;class-validator&#x27;;
 import { MessageEmbed } from &#x27;discord.js&#x27;;
 
+/* We catch all validation errors and send a message to the user with the error details. */
 @Catch(ValidationError)
 export class CommandValidationFilter implements DiscordExceptionFilter {
   private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);

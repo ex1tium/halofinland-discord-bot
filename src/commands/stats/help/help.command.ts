@@ -12,14 +12,17 @@ import { StatsHelpDto } from './help.dto';
 
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
-@SubCommand({ name: 'help', description: 'Shows bot commands and helpful information' })
+@SubCommand({
+  name: 'help',
+  description: 'Shows bot commands and helpful information',
+})
 /* This is a command that will display helpful message! */
 export class StatsHelpSubCommand
   implements DiscordTransformedCommand<StatsHelpDto>
 {
   private _logger: Logger = new Logger('StatsRegSubCommand');
 
-  constructor() { }
+  constructor() {}
 
   async handler(
     @Payload() dto: StatsHelpDto,

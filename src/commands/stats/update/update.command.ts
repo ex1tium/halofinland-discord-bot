@@ -26,7 +26,7 @@ export class StatsUpdateSubCommand
 {
   private _logger: Logger = new Logger(StatsUpdateSubCommand.name);
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService) {}
 
   async handler(@Payload() dto: UpdateDto, interaction: CommandInteraction) {
     try {
@@ -56,7 +56,7 @@ export class StatsUpdateSubCommand
           .setTimestamp();
         const reply: InteractionReplyOptions = {
           embeds: [embedReply],
-          ephemeral: true
+          ephemeral: true,
         };
 
         this._logger.verbose(JSON.stringify(dto));

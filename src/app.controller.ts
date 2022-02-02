@@ -4,14 +4,11 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import {
-  Once,
-} from '@discord-nestjs/core';
+import { Once } from '@discord-nestjs/core';
 import { TwitterService } from './services/twitter.service';
 import { Subscription } from 'rxjs';
 import { DiscordApiService } from './services/discord-api.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-
 
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
@@ -21,19 +18,19 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   constructor(
     private _twitterService: TwitterService,
     private _discordApiService: DiscordApiService,
-  ) { }
+  ) {}
 
-  onModuleInit() { }
+  onModuleInit() {}
 
   @Once('ready')
   async onReady() {
-
     /* The below code is initializing the TwitterService. */
-    await this._twitterService.init().catch((error) => {
-      this._logger.error(error);
-    }).then(() => {
-
-    })
+    await this._twitterService
+      .init()
+      .catch((error) => {
+        this._logger.error(error);
+      })
+      .then(() => {});
 
     /* The _subMap is a map of the
     subscriptions. The _subMap.set() method adds a subscription to the map. */
@@ -42,11 +39,12 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       /* Subscribing to the newTweets$ observable. */
       this._twitterService.newTweets$.subscribe((newTweets) => {
         if (newTweets) {
-          this._logger.verbose(`Found ${newTweets.length} new tweets from @HaloSupport`);
+          this._logger.verbose(
+            `Found ${newTweets.length} new tweets from @HaloSupport`,
+          );
         }
       }),
     );
-
 
     /* The `registerNewCommand` method is used to register a new command with the Discord API. The first
     parameter is the name of the command, the second parameter is a description of the command, and
@@ -55,21 +53,25 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
     // Doesn't have to be ran every startup. Only if changes are made
     // TODO write commandline argument for running this command?
-    await this._discordApiService.registerNewCommand('stats', 'Commands for interacting with Halo Stats API', 'sub_command', await this._discordApiService.constructStatsCommand())
+    await this._discordApiService
+      .registerNewCommand(
+        'stats',
+        'Commands for interacting with Halo Stats API',
+        'sub_command',
+        await this._discordApiService.constructStatsCommand(),
+      )
       .then((value) => {
         // this._logger.verbose(`Registered command: ${JSON.stringify(value)}`)
-      }).catch((error) => {
-        this._logger.error(error)
       })
-
-
-    await this._discordApiService.getCommands()
       .catch((error) => {
-        this._logger.error(error)
-      })
+        this._logger.error(error);
+      });
+
+    await this._discordApiService.getCommands().catch((error) => {
+      this._logger.error(error);
+    });
 
     this._logger.log('Bot was started!');
-
   }
 
   /* This is a cron expression that will run every 5 minutes. */

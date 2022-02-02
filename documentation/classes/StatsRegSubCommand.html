@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/register/register.command.ts:24</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/register/register.command.ts:26</a></div>
                             </td>
                         </tr>
 
@@ -199,7 +199,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/register/register.command.ts:24</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/register/register.command.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -235,8 +235,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="28"
-                            class="link-to-prism">src/commands/stats/register/register.command.ts:28</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="30"
+                            class="link-to-prism">src/commands/stats/register/register.command.ts:30</a></div>
                 </td>
             </tr>
 
@@ -326,12 +326,14 @@ import { RegisterDto } from &#x27;./register.dto&#x27;;
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: &#x27;reg&#x27;, description: &#x27;Register your Xbox Gamer tag&#x27; })
+/* This is a command that allows users to register their gamertag and whether or not they want to be
+logged. */
 export class StatsRegSubCommand
   implements DiscordTransformedCommand&lt;RegisterDto&gt;
 {
   private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
     try {

@@ -31,8 +31,6 @@ export class DiscordApiService {
     // console.log('discordAPI token:', this.botToken);
   }
 
-
-
   /**
    * It takes in a name, description, and type, and then sends a post request to the Discord API with
    * the data to register a new command for the bot. Required appropriate scope and permission.
@@ -56,7 +54,8 @@ export class DiscordApiService {
       };
 
       if (type) {
-        data.type = type === 'sub_command' ? 1 : type === 'sub_command_group' ? 2 : null;
+        data.type =
+          type === 'sub_command' ? 1 : type === 'sub_command_group' ? 2 : null;
 
         if (data.type === null) {
           return Promise.reject('Check type parameter');
@@ -75,13 +74,14 @@ export class DiscordApiService {
         },
       });
 
-      const result = await lastValueFrom(post)
-
+      const result = await lastValueFrom(post);
 
       if (result.status === 200) {
-        return result.data
+        return result.data;
       } else {
-        return Promise.reject(`Error registering new command. HttpStatus: ${result.status}`)
+        return Promise.reject(
+          `Error registering new command. HttpStatus: ${result.status}`,
+        );
       }
     } catch (error) {
       if (error && error.stack) {
@@ -182,7 +182,7 @@ export class DiscordApiService {
       },
     ];
 
-    return statsSubCommands
+    return statsSubCommands;
   }
 
   /**
@@ -203,7 +203,7 @@ export class DiscordApiService {
         this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data));
         return get;
       } else {
-        Promise.reject(`API responded with status ${get.status}`)
+        Promise.reject(`API responded with status ${get.status}`);
       }
     } catch (error) {
       if (error && error.stack) {

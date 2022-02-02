@@ -79,4 +79,4 @@ to determine what events the bot will listen */
     DiscordCommandProvider,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/update/update.command.ts:26</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/commands/stats/update/update.command.ts:27</a></div>
                             </td>
                         </tr>
 
@@ -199,7 +199,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/update/update.command.ts:26</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/commands/stats/update/update.command.ts:27</a></div>
                         </td>
                     </tr>
 
@@ -235,8 +235,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">src/commands/stats/update/update.command.ts:30</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="31"
+                            class="link-to-prism">src/commands/stats/update/update.command.ts:31</a></div>
                 </td>
             </tr>
 
@@ -328,12 +328,13 @@ import { UpdateDto } from &#x27;./update.dto&#x27;;
   name: &#x27;update&#x27;,
   description: &#x27;Update your registered Xbox Gamer Tag&#x27;,
 })
+/* This is a command that will update a user&#x27;s gamertag. */
 export class StatsUpdateSubCommand
   implements DiscordTransformedCommand&lt;UpdateDto&gt;
 {
   private _logger: Logger &#x3D; new Logger(StatsUpdateSubCommand.name);
 
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   async handler(@Payload() dto: UpdateDto, interaction: CommandInteraction) {
     try {
@@ -356,14 +357,14 @@ export class StatsUpdateSubCommand
 
         embedReply &#x3D; new MessageEmbed()
           .setColor(&#x27;#DFFF00&#x27;)
-          // .setDescription(&#x27;Gamertag Updated&#x27;)
           .addFields(
             { name: &#x60;Old Gamertag&#x60;, value: &#x60;${userExists.gamertag}&#x60; },
             { name: &#x60;New Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
           )
           .setTimestamp();
-        const reply &#x3D; {
+        const reply: InteractionReplyOptions &#x3D; {
           embeds: [embedReply],
+          ephemeral: true
         };
 
         this._logger.verbose(JSON.stringify(dto));

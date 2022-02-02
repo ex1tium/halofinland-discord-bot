@@ -84,7 +84,12 @@
                                 <a href="#onModuleInit" >onModuleInit</a>
                             </li>
                             <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#onReady" >onReady</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#pollLatestTweetsFromHaloSupport" >pollLatestTweetsFromHaloSupport</a>
                             </li>
                         </ul>
                     </td>
@@ -123,14 +128,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="222"
-                            class="link-to-prism">src/app.controller.ts:222</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="88"
+                            class="link-to-prism">src/app.controller.ts:88</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>It unsubscribes from all the subscriptions that were created in the onModuleInit function.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -160,8 +167,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="44"
-                            class="link-to-prism">src/app.controller.ts:44</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="26"
+                            class="link-to-prism">src/app.controller.ts:26</a></div>
                 </td>
             </tr>
 
@@ -183,6 +190,7 @@
                 <td class="col-md-4">
                     <a name="onReady"></a>
                     <span class="name">
+                        <span class="modifier">Async</span>
                         <span ><b>onReady</b></span>
                         <a href="#onReady"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -190,7 +198,8 @@
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>onReady()</code>
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onReady()</code>
                 </td>
             </tr>
 
@@ -204,8 +213,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="66"
-                            class="link-to-prism">src/app.controller.ts:66</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="29"
+                            class="link-to-prism">src/app.controller.ts:29</a></div>
                 </td>
             </tr>
 
@@ -214,7 +223,53 @@
                 <td class="col-md-4">
 
                     <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pollLatestTweetsFromHaloSupport"></a>
+                    <span class="name">
+                        <span class="modifier">Async</span>
+                        <span ><b>pollLatestTweetsFromHaloSupport</b></span>
+                        <a href="#pollLatestTweetsFromHaloSupport"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>pollLatestTweetsFromHaloSupport()</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Cron(CronExpression.EVERY_5_MINUTES)<br /></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="77"
+                            class="link-to-prism">src/app.controller.ts:77</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
 
                     </div>
                 </td>
@@ -227,225 +282,91 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
   Controller,
-  Get,
   Logger,
   OnModuleDestroy,
   OnModuleInit,
-  Request,
 } from &#x27;@nestjs/common&#x27;;
 import {
-  On,
   Once,
-  UseGuards,
-  UsePipes,
-  DiscordClientProvider,
-  DiscordCommandProvider,
 } from &#x27;@discord-nestjs/core&#x27;;
-import { Message } from &#x27;discord.js&#x27;;
-import { AppService } from &#x27;./app.service&#x27;;
-import { MessageFromUserGuard } from &#x27;./guards/message-fom-user.guard&#x27;;
-import { MessageToUpperPipe } from &#x27;./pipes/message-to-upper.pipe&#x27;;
 import { TwitterService } from &#x27;./services/twitter.service&#x27;;
-import { UserService } from &#x27;./services/user.service&#x27;;
 import { Subscription } from &#x27;rxjs&#x27;;
 import { DiscordApiService } from &#x27;./services/discord-api.service&#x27;;
-import { DefineDiscordCommand } from &#x27;./models/sub-command-options.model&#x27;;
-// Client, ClientProvider,
+import { Cron, CronExpression } from &#x27;@nestjs/schedule&#x27;;
+
+
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
   private readonly _logger &#x3D; new Logger(AppController.name);
   private _subMap &#x3D; new Map&lt;string, Subscription&gt;();
 
-  allowedChannelIds: string[] &#x3D; [&#x27;911368720440496208&#x27;];
-
   constructor(
-    private readonly _appService: AppService,
     private _twitterService: TwitterService,
-    private _userService: UserService,
-    private _discordCommandProvider: DiscordCommandProvider,
     private _discordApiService: DiscordApiService,
-  ) {
-    // console.log(this.discordProvider.getClient().channels)
-  }
+  ) { }
 
-  onModuleInit() {
-    // console.log(this.discordProvider.getClient())
-    // this._userService.users({}).then((users) &#x3D;&gt; {
-    //   console.log(&#x27;users&#x27;, users)
-    // })
-  }
-
-  // @Client()
-  // discordProvider: ClientProvider;
-
-  // @On(&#x27;messageCreate&#x27;)
-  // @UseGuards(MessageFromUserGuard)
-  // // @UsePipes(MessageToUpperPipe)
-  // async onMessage(message: Message): Promise&lt;void&gt; {
-  //   console.log(message);
-  //   this.logger.log(&#x60;Incoming message: ${message.content}&#x60;);
-  //   if (this.allowedChannelIds.some(id &#x3D;&gt; id &#x3D;&#x3D; message.channelId)) {
-  //     await message.reply(&#x27;Message processed successfully&#x27;);
-  //   }
-  // }
+  onModuleInit() { }
 
   @Once(&#x27;ready&#x27;)
-  onReady() {
-    this._logger.log(&#x27;Bot was started!&#x27;);
+  async onReady() {
 
-    this._twitterService.init();
+    /* The below code is initializing the TwitterService. */
+    await this._twitterService.init().catch((error) &#x3D;&gt; {
+      this._logger.error(error);
+    }).then(() &#x3D;&gt; {
 
+    })
+
+    /* The _subMap is a map of the
+    subscriptions. The _subMap.set() method adds a subscription to the map. */
     this._subMap.set(
       &#x27;newTweets&#x27;,
+      /* Subscribing to the newTweets$ observable. */
       this._twitterService.newTweets$.subscribe((newTweets) &#x3D;&gt; {
         if (newTweets) {
-          this._logger.log(&#x60;newTweets ${newTweets}&#x60;);
+          this._logger.verbose(&#x60;Found ${newTweets.length} new tweets from @HaloSupport&#x60;);
         }
       }),
     );
 
-    // 1 is type SUB_COMMAND&#x27;
-    // 2 is type SUB_COMMAND_GROUP
-    const statsSubCommands: DefineDiscordCommand[] &#x3D; [
-      {
-        name: &#x27;reg&#x27;,
-        description: &#x27;Register your Xbox Gamer tag&#x27;,
-        type: 1,
-        options: [
-          {
-            name: &#x27;gamertag&#x27;,
-            description: &#x27;Enter Xbox Gamertag&#x27;,
-            type: 3,
-            required: true,
-          },
-          {
-            name: &#x27;allowlogging&#x27;,
-            description:
-              &#x27;Allow your stats to be logged in a database every 24 hours.&#x27;,
-            type: 3,
-            required: true,
-            choices: [
-              {
-                name: &#x27;Yes&#x27;,
-                value: &#x27;1&#x27;,
-              },
-              {
-                name: &#x27;No&#x27;,
-                value: &#x27;0&#x27;,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: &#x27;update&#x27;,
-        description: &#x27;Update your registered Xbox Gamer Tag&#x27;,
-        type: 1,
-        options: [
-          {
-            name: &#x27;gamertag&#x27;,
-            description: &#x27;Enter Xbox Gamertag&#x27;,
-            type: 3,
-            required: true,
-          },
-        ],
-      },
-      {
-        name: &#x27;get&#x27;,
-        description: &#x27;Query your stats or use :gamertag: to query&#x27;,
-        type: 1,
-        options: [
-          {
-            name: &#x27;gamertag&#x27;,
-            description:
-              &#x27;(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite&#x27;,
-            type: 3,
-            required: false,
-          },
-          // {
-          //   &quot;name&quot;: &quot;isPublic&quot;,
-          //   &quot;description&quot;: &quot;(Optional) Show stats publicly on channel&quot;,
-          //   &quot;type&quot;: 3,
-          //   &quot;required&quot;: false,
-          //   &quot;choices&quot;: [
-          //     {
-          //       &quot;name&quot;: &quot;Yes&quot;,
-          //       &quot;value&quot;: &quot;1&quot;
-          //     },
-          //     {
-          //       &quot;name&quot;: &quot;No&quot;,
-          //       &quot;value&quot;: &quot;0&quot;
-          //     },
-          //   ]
-          // },
-        ],
-      },
-      {
-        name: &#x27;help&#x27;,
-        description: &#x27;READ ME&#x27;,
-        type: 1,
-        options: [
-          {
-            name: &#x27;lang&#x27;,
-            description: &#x27;Select language&#x27;,
-            type: 3,
-            required: true,
-            choices: [
-              {
-                name: &#x27;Suomeksi&#x27;,
-                value: &#x27;fi&#x27;,
-              },
-              {
-                name: &#x27;In English&#x27;,
-                value: &#x27;en&#x27;,
-              },
-            ],
-          },
-        ],
-      },
-      // {
-      //   &quot;name&quot;: &quot;role&quot;,
-      //   &quot;description&quot;: &quot;Get or edit permissions for a role&quot;,
-      //   &quot;type&quot;: 2,
-      //   &quot;options&quot;: [
-      //     {
-      //       &quot;name&quot;: &quot;get&quot;,
-      //       &quot;description&quot;: &quot;Get permissions for a role&quot;,
-      //       &quot;type&quot;: 1
-      //     },
-      //     {
-      //       &quot;name&quot;: &quot;edit&quot;,
-      //       &quot;description&quot;: &quot;Edit permissions for a role&quot;,
-      //       &quot;type&quot;: 1
-      //     }
-      //   ]
-      // }
 
-      // {
-      //   name: &#x27;reg&#x27;,
-      //   description: &#x27;Enter your Xbox Gamer Tag&#x27;,
-      //   type: 1,
-      //   required: true
-      // }
-    ];
-    // this._subMap.set(&#x27;stats_command&#x27;, this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Halo Infinite stats commands&#x27;, 1, statsSubCommands))
-    // const result &#x3D; await this._discordApiService.getCommands();
-    // this._discordApiService.deleteCommand(&#x27;912494585433952346&#x27;);
+    /* The &#x60;registerNewCommand&#x60; method is used to register a new command with the Discord API. The first
+    parameter is the name of the command, the second parameter is a description of the command, and
+    the third parameter is the type of the command. The &#x60;constructStatsCommand&#x60; method is used
+    to construct stats the command. */
 
-    // this._discordApiService.getCommands().catch((error) &#x3D;&gt; {
-    //   this._logger.error(error);
-    // })
+    // Doesn&#x27;t have to be ran every startup. Only if changes are made
+    // TODO write commandline argument for running this command?
+    await this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Commands for interacting with Halo Stats API&#x27;, &#x27;sub_command&#x27;, await this._discordApiService.constructStatsCommand())
+      .then((value) &#x3D;&gt; {
+        // this._logger.verbose(&#x60;Registered command: ${JSON.stringify(value)}&#x60;)
+      }).catch((error) &#x3D;&gt; {
+        this._logger.error(error)
+      })
 
-    // this._subMap.set(&#x27;test_command&#x27;, this._discordApiService.registerNewCommand(&#x27;test&#x27;, &#x27;testing command&#x27;, 1, null))
 
-    // this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Halo Infinite stats commands&#x27;, 1, statsSubCommands)
+    await this._discordApiService.getCommands()
+      .catch((error) &#x3D;&gt; {
+        this._logger.error(error)
+      })
 
-    // const invite &#x3D; this.discordProvider.getClient().generateInvite({
-    //   // scopes:
-    // });
-    // console.log(invite)
+    this._logger.log(&#x27;Bot was started!&#x27;);
+
   }
 
+  /* This is a cron expression that will run every 5 minutes. */
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async pollLatestTweetsFromHaloSupport() {
+    try {
+      return await this._twitterService.pollHaloSupportTweets();
+    } catch (error) {
+      this._logger.error(error);
+    }
+  }
+
+  /**
+   * It unsubscribes from all the subscriptions that were created in the onModuleInit function.
+   */
   onModuleDestroy() {
     this._subMap.forEach((sub) &#x3D;&gt; sub.unsubscribe());
   }

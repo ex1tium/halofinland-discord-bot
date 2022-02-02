@@ -1,5 +1,3 @@
-
-
 import { Command } from '@discord-nestjs/core';
 
 import { StatsRegSubCommand } from './register/register.command';
@@ -22,4 +20,4 @@ import { StatsUpdateSubCommand } from './update/update.command';
     StatsHelpSubCommand,
   ],
 })
-export class StatsBaseCommand { }
+export class StatsBaseCommand {}

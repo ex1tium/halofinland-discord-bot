@@ -28,16 +28,19 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content controller">
+               <div class="content injectable">
                    <div class="content-data">
 
 
 
 
 
+
+
+
 <ol class="breadcrumb">
-  <li>Controllers</li>
-  <li >Oauth2DiscordController</li>
+  <li>Injectables</li>
+  <li >ExampleMiddleWare</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -55,24 +58,9 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/controllers/oauth2-discord/oauth2-discord.controller.ts</code>
+            <code>src/middleware/example.middleware.ts</code>
         </p>
 
-            <p class="comment">
-                <h3>Prefix</h3>
-            </p>
-            <p class="comment">
-                <code>oauth2-discord</code>
-            </p>
-
-
-            <p class="comment">
-                <h3>Description</h3>
-            </p>
-            <p class="comment">
-                <p> Used for Discord oAuth2 callback. Return simple HTTP OK message for authentication purposes when inviting bot to join server</p>
-
-            </p>
 
 
 
@@ -91,8 +79,7 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
-                                    <span class="modifier">Async</span>
-                                <a href="#callbackForDiscordOauth2" >callbackForDiscordOauth2</a>
+                                <a href="#use" >use</a>
                             </li>
                         </ul>
                     </td>
@@ -107,6 +94,55 @@
 </section>
 
             <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(_logger: Logger)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="7" class="link-to-prism">src/middleware/example.middleware.ts:7</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>_logger</td>
+                                                  
+                                                        <td>
+                                                                    <code>Logger</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
     
     <h3 id="methods">
         Methods
@@ -115,33 +151,24 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="callbackForDiscordOauth2"></a>
+                    <a name="use"></a>
                     <span class="name">
-                        <span class="modifier">Async</span>
-                        <span ><b>callbackForDiscordOauth2</b></span>
-                        <a href="#callbackForDiscordOauth2"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>use</b></span>
+                        <a href="#use"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>callbackForDiscordOauth2(request: Request, response: <a href="../interfaces/Response.html" target="_self">Response</a>, body: Body)</code>
+<code>use(req: Request, res: <a href="../interfaces/Response.html" target="_self">Response</a>, next: NextFunction)</code>
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <b>Decorators : </b>
-                    <br />
-                    <code>@Get()<br /></code>
-                </td>
-            </tr>
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="24"
-                            class="link-to-prism">src/controllers/oauth2-discord/oauth2-discord.controller.ts:24</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="12"
+                            class="link-to-prism">src/middleware/example.middleware.ts:12</a></div>
                 </td>
             </tr>
 
@@ -162,7 +189,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>request</td>
+                                    <td>req</td>
                                     <td>
                                             <code>Request</code>
                                     </td>
@@ -174,7 +201,7 @@
 
                                 </tr>
                                 <tr>
-                                    <td>response</td>
+                                    <td>res</td>
                                     <td>
                                                 <code><a href="../interfaces/Response.html" target="_self" >Response</a></code>
                                     </td>
@@ -186,9 +213,9 @@
 
                                 </tr>
                                 <tr>
-                                    <td>body</td>
+                                    <td>next</td>
                                     <td>
-                                            <code>Body</code>
+                                            <code>NextFunction</code>
                                     </td>
 
                                     <td>
@@ -203,7 +230,7 @@
                     <div>
                     </div>
                     <div class="io-description">
-                        <b>Returns : </b>    <code>unknown</code>
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
 
                     </div>
                     <div class="io-description">
@@ -213,62 +240,32 @@
             </tr>
         </tbody>
     </table>
-</section>    </div>
+</section>
+
+    </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
-  Controller,
-  Get,
-  Request,
-  Req,
-  Logger,
-  Body,
-  Res,
-  Response,
-  HttpStatus,
-} from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, Logger, NestMiddleware } from &#x27;@nestjs/common&#x27;;
+import { Request, Response, NextFunction } from &#x27;express&#x27;;
 
-/**
- *  Used for Discord oAuth2 callback. Return simple HTTP OK message for authentication purposes when inviting bot to join server
- *
- * @export
- * @class Oauth2DiscordController
- */
-@Controller(&#x27;oauth2-discord&#x27;)
-export class Oauth2DiscordController {
-  private _logger: Logger &#x3D; new Logger(Oauth2DiscordController.name);
+@Injectable()
+/* This middleware logs the request body. */
+// https://docs.nestjs.com/middleware
+export class ExampleMiddleWare implements NestMiddleware {
+  constructor(private _logger: Logger) {
+    this._logger &#x3D; new Logger(ExampleMiddleWare.name);
+  }
 
-  @Get()
-  async callbackForDiscordOauth2(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-    @Body() body: Body,
-  ) {
-    if (request) {
-      // const requestJson &#x3D; await request.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(request.body)}&#x60;);
-    }
-
-    if (response) {
-      // const responseJson &#x3D; await response.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(response.body)}&#x60;);
-    }
-
-    if (body) {
-      // const bodyJson &#x3D; await body.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(body.body)}&#x60;);
-    }
-
-    return HttpStatus.OK;
+  use(req: Request, res: Response, next: NextFunction) {
+    this._logger.warn(&#x27;ExampleMiddleWare request body: &#x27;, req.body);
+    next();
   }
 }
 </code></pre>
     </div>
+
 </div>
-
-
-
 
 
 
@@ -306,8 +303,8 @@ export class Oauth2DiscordController {
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'controller';
-            var COMPODOC_CURRENT_PAGE_URL = 'Oauth2DiscordController.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'ExampleMiddleWare.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

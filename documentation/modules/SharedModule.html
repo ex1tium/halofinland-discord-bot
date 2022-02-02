@@ -56,13 +56,13 @@
 <title>cluster_SharedModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-32.8 8,-230.8 705,-230.8 705,-32.8 8,-32.8"/>
 </g>
-<g id="clust6" class="cluster">
-<title>cluster_SharedModule_providers</title>
-<polygon fill="none" stroke="black" points="40,-40.8 40,-92.8 673,-92.8 673,-40.8 40,-40.8"/>
-</g>
 <g id="clust4" class="cluster">
 <title>cluster_SharedModule_exports</title>
 <polygon fill="none" stroke="black" points="16,-170.8 16,-222.8 697,-222.8 697,-170.8 16,-170.8"/>
+</g>
+<g id="clust6" class="cluster">
+<title>cluster_SharedModule_providers</title>
+<polygon fill="none" stroke="black" points="40,-40.8 40,-92.8 673,-92.8 673,-40.8 40,-40.8"/>
 </g>
 <!-- DiscordCommandProvider  -->
 <g id="node1" class="node">
@@ -271,21 +271,22 @@ import { ConfigModule, ConfigService } from &#x27;@nestjs/config&#x27;;
 import { APP_FILTER } from &#x27;@nestjs/core&#x27;;
 import { Intents, Message } from &#x27;discord.js&#x27;;
 import { AllExceptionsFilter } from &#x27;src/exception-filters/globalExceptions&#x27;;
-import { DiscordApiService } from &#x27;src/services/discord-api.service&#x27;;
 import { HaloDotApiService } from &#x27;src/services/haloDotApi/halodotapi.service&#x27;;
-// import { DiscordConfigService } from &#x27;src/services/discord-config.service&#x27;;
 import { PrismaService } from &#x27;src/services/prisma.service&#x27;;
-// import { PrismaModule } from &#x27;src/services/prisma/prisma.module&#x27;;
 import { TwitterService } from &#x27;src/services/twitter.service&#x27;;
-// import { TwitterModule } from &#x27;src/services/twitter/twitter.module&#x27;;
 import { UserService } from &#x27;src/services/user.service&#x27;;
+
+/* The DiscordModule is a wrapper around the Discord.js library. It provides a way to register commands
+and events.
+
+The DiscordModule.forRootAsync method is used to register the Discord.js client. It takes an array
+of options. The first option is the token for the Discord bot. The second option is an array of file
+paths to register commands from. The third option is an object that contains the Discord.js client
+options. The Discord.js client options are used to set the intents for the bot. The intents are used
+to determine what events the bot will listen */
 
 @Module({
   imports: [
-    // DiscordModule.forRootAsync({
-    //   imports: [ConfigModule, PrismaModule],
-    //   useClass: DiscordConfigService,
-    // }),
     HttpModule,
     DiscordModule.forRootAsync({
       imports: [ConfigModule, SharedModule],
@@ -344,7 +345,7 @@ import { UserService } from &#x27;src/services/user.service&#x27;;
     DiscordCommandProvider,
   ],
 })
-export class SharedModule {}
+export class SharedModule { }
 </code></pre>
     </div>
 </div>

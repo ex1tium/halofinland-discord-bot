@@ -41,7 +41,9 @@ export class TwitterService {
     private _prismaService: PrismaService,
     private _discordProvider: DiscordClientProvider,
   ) {
-    this._twitterAllowedSearchAuthorIds = this._configService.get('twitterAllowedSearchAuthorIds').split(", ");
+    this._twitterAllowedSearchAuthorIds = this._configService
+      .get('twitterAllowedSearchAuthorIds')
+      .split(', ');
 
     // console.debug('twitterAllowedSearchAuthorIds', this.twitterAllowedSearchAuthorIds)
 
@@ -52,15 +54,12 @@ export class TwitterService {
     // this._logger.debug(`twitter client:  ${JSON.stringify(this._client)}`);
   }
 
-
-
   /**
    * It searches for users with the given IDs and returns them.
    * @returns The twitter users.
    */
   async init() {
     try {
-
       this._twitterUsers = [];
       let foundError: boolean = false;
       const notFoundUserIds: string[] = [];
@@ -70,21 +69,23 @@ export class TwitterService {
 
         if (user.data && !user.errors) {
           this._logger.verbose(`twitter user: ${JSON.stringify(user)}`);
-          this._twitterUsers.push(user.data)
+          this._twitterUsers.push(user.data);
         } else if (user.errors) {
           foundError = true;
-          notFoundUserIds.push(user.errors[0].value)
+          notFoundUserIds.push(user.errors[0].value);
         }
       }
 
       await this.pollHaloSupportTweets().catch((error) => {
-        this._logger.error(error)
-      })
+        this._logger.error(error);
+      });
 
       // this._logger.verbose(`twitter users: ${JSON.stringify(this._twitterUsers)}`);
 
       if (foundError) {
-        return Promise.reject(`User with IDs ${notFoundUserIds} not a valid Twitter User`)
+        return Promise.reject(
+          `User with IDs ${notFoundUserIds} not a valid Twitter User`,
+        );
       } else {
         return this._twitterUsers;
       }
@@ -113,7 +114,6 @@ export class TwitterService {
     this._haloSupportTweets.next([...tweets]);
   }
 
-
   /**
    * It sends a message to a Discord channel.
    * @param {string} channelId - The ID of the channel to send the message to.
@@ -125,14 +125,18 @@ export class TwitterService {
       const channel = (await this._discordProvider
         .getClient()
         .channels.fetch(channelId)) as TextChannel;
-      const createMessage = await this.constructEmbedTweetMessage(tweet).catch((error) => {
-        this._logger.error(error);
-      });
+      const createMessage = await this.constructEmbedTweetMessage(tweet).catch(
+        (error) => {
+          this._logger.error(error);
+        },
+      );
 
       if (createMessage) {
         return channel.send({ embeds: [createMessage] });
       } else {
-        return Promise.reject(`Problem sending message to channel ${channel.name}.`);
+        return Promise.reject(
+          `Problem sending message to channel ${channel.name}.`,
+        );
       }
     } catch (error) {
       if (error && error.stack) {
@@ -143,7 +147,6 @@ export class TwitterService {
     }
   }
 
-
   /**
    * It constructs a message embed for a tweet.
    * @param {TweetV2} tweet - TweetV2
@@ -151,10 +154,10 @@ export class TwitterService {
    */
   async constructEmbedTweetMessage(tweet: TweetV2) {
     try {
-
-      if (this._twitterUsers.some(user => user.id === tweet.author_id)) {
-
-        const tweetAuthor = this._twitterUsers.filter((user) => user.id === tweet.author_id)[0];
+      if (this._twitterUsers.some((user) => user.id === tweet.author_id)) {
+        const tweetAuthor = this._twitterUsers.filter(
+          (user) => user.id === tweet.author_id,
+        )[0];
 
         const embedTweet = new MessageEmbed()
           .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
@@ -180,10 +183,10 @@ export class TwitterService {
         // .setURL(`https://twitter.com/i/web/status/${tweet.id}`)
         return embedTweet;
       } else {
-        Promise.reject('Could not find details for tweet author. Author twitter ID is not included in .env configuration TWITTER_ALLOWED_SEARCH_AUTHOR_IDS. Details for these users are loaded in init() function of TwitterService')
+        Promise.reject(
+          'Could not find details for tweet author. Author twitter ID is not included in .env configuration TWITTER_ALLOWED_SEARCH_AUTHOR_IDS. Details for these users are loaded in init() function of TwitterService',
+        );
       }
-
-
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -237,13 +240,15 @@ export class TwitterService {
             await this.recordTweet(tweet);
             newTweets.push(tweet);
 
-            const supportTweetChannelIds: string[] = this._configService.get('supportTweetChannelIds').split(', ');
+            const supportTweetChannelIds: string[] = this._configService
+              .get('supportTweetChannelIds')
+              .split(', ');
 
             for (let i = 0; i < supportTweetChannelIds.length; i++) {
               const channelId = supportTweetChannelIds[i];
 
-              await this.delay(500)
-              this.sendChannel(channelId, tweet)
+              await this.delay(500);
+              this.sendChannel(channelId, tweet);
             }
 
             // console.log('found new tweet', tweet);
@@ -322,6 +327,6 @@ export class TwitterService {
    * @returns Nothing.
    */
   delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

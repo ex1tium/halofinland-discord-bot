@@ -101,6 +101,10 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#constructStatsCommand" >constructStatsCommand</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#deleteCommand" >deleteCommand</a>
                             </li>
                             <li>
@@ -140,6 +144,9 @@
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>It sets the bot token and the discord url.
+application ID.</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -148,6 +155,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -162,6 +170,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li>HttpService</li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>_configService</td>
@@ -174,6 +188,13 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li>The config service is used to get the bot token and
+application ID.</li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -189,6 +210,53 @@
     <h3 id="methods">
         Methods
     </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="constructStatsCommand"></a>
+                    <span class="name">
+                        <span class="modifier">Async</span>
+                        <span ><b>constructStatsCommand</b></span>
+                        <a href="#constructStatsCommand"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>constructStatsCommand()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="99"
+                            class="link-to-prism">src/services/discord-api.service.ts:99</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>It creates a list of commands that can be used in the bot.</p>
+</div>
+
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>unknown</code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>An array of objects that represent the commands.</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <table class="table table-sm table-bordered">
         <tbody>
             <tr>
@@ -211,14 +279,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="91"
-                            class="link-to-prism">src/services/discord-api.service.ts:91</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="222"
+                            class="link-to-prism">src/services/discord-api.service.ts:222</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>It deletes a command from the bot.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -229,6 +299,7 @@
                                     <td>Name</td>
                                     <td>Type</td>
                                     <td>Optional</td>
+                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -243,6 +314,12 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>The ID of the command you want to delete.</li>
+</ul>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -254,7 +331,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>The response from the API.</p>
+
                     </div>
                 </td>
             </tr>
@@ -282,17 +360,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="68"
-                            class="link-to-prism">src/services/discord-api.service.ts:68</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="192"
+                            class="link-to-prism">src/services/discord-api.service.ts:192</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>It gets the commands that are registered with the bot.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../interfaces/Response.html" target="_self" >Promise&lt;void | AxiosResponse&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>The response from the API.</p>
 
                     </div>
                 </td>
@@ -314,21 +400,25 @@
             <tr>
                 <td class="col-md-4">
                     <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>registerNewCommand(name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, description: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, type?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, options?: <a href="../interfaces/DefineDiscordCommand.html" target="_self">DefineDiscordCommand[]</a>)</code>
+                    <code>registerNewCommand(name: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, description: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, type?: "sub_command" | "sub_command_group", options?: <a href="../interfaces/DefineDiscordCommand.html" target="_self">DefineDiscordCommand[]</a>)</code>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="28"
-                            class="link-to-prism">src/services/discord-api.service.ts:28</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="46"
+                            class="link-to-prism">src/services/discord-api.service.ts:46</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>It takes in a name, description, and type, and then sends a post request to the Discord API with
+the data to register a new command for the bot. Required appropriate scope and permission.
+command.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -339,6 +429,7 @@
                                     <td>Name</td>
                                     <td>Type</td>
                                     <td>Optional</td>
+                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -353,6 +444,12 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>The name of the command.</li>
+</ul>
+
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>description</td>
@@ -365,11 +462,17 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>The description of the command.</li>
+</ul>
+
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>type</td>
                                     <td>
-                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            <code>&quot;sub_command&quot; | &quot;sub_command_group&quot;</code>
                                     </td>
 
                                     <td>
@@ -377,6 +480,12 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>The type of command.</li>
+</ul>
+
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>options</td>
@@ -389,6 +498,13 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>An array of objects that define the options for the
+command.</li>
+</ul>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -396,11 +512,12 @@
                     <div>
                     </div>
                     <div class="io-description">
-                        <b>Returns : </b>    <code>unknown</code>
+                        <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>The response from the post request.</p>
+
                     </div>
                 </td>
             </tr>
@@ -505,7 +622,7 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { HttpService } from &#x27;@nestjs/axios&#x27;;
 import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
 import { ConfigService } from &#x27;@nestjs/config&#x27;;
-import { lastValueFrom } from &#x27;rxjs&#x27;;
+import { lastValueFrom, take } from &#x27;rxjs&#x27;;
 import { DefineDiscordCommand } from &#x27;src/models/sub-command-options.model&#x27;;
 import { AxiosResponse } from &#x27;axios&#x27;;
 
@@ -516,6 +633,12 @@ export class DiscordApiService {
   discordUrl: string;
   botToken: string;
 
+  /**
+   * It sets the bot token and the discord url.
+   * @param {HttpService} _httpService - HttpService
+   * @param {ConfigService} _configService - The config service is used to get the bot token and
+   * application ID.
+   */
   constructor(
     private _httpService: HttpService,
     private _configService: ConfigService,
@@ -525,16 +648,28 @@ export class DiscordApiService {
       &#x27;applicationId&#x27;,
     )}/guilds/${this._configService.get(&#x27;guildID&#x27;)}/commands&#x60;;
 
-    console.log(&#x27;discordAPI url for commands:&#x27;, this.discordUrl);
-    console.log(&#x27;discordAPI token:&#x27;, this.botToken);
+    // console.log(&#x27;discordAPI url for commands:&#x27;, this.discordUrl);
+    // console.log(&#x27;discordAPI token:&#x27;, this.botToken);
   }
 
+
+
+  /**
+   * It takes in a name, description, and type, and then sends a post request to the Discord API with
+   * the data to register a new command for the bot. Required appropriate scope and permission.
+   * @param {string} name - The name of the command.
+   * @param {string} description - The description of the command.
+   * @param {&#x27;sub_command&#x27; | &#x27;sub_command_group&#x27;} [type] - The type of command.
+   * @param {DefineDiscordCommand[]} [options] - An array of objects that define the options for the
+   * command.
+   * @returns The response from the post request.
+   */
   async registerNewCommand(
     name: string,
     description: string,
-    type?: number,
+    type?: &#x27;sub_command&#x27; | &#x27;sub_command_group&#x27;,
     options?: DefineDiscordCommand[],
-  ) {
+  ): Promise&lt;any&gt; {
     try {
       const data: DefineDiscordCommand &#x3D; {
         name: name,
@@ -542,14 +677,18 @@ export class DiscordApiService {
       };
 
       if (type) {
-        data.type &#x3D; type;
+        data.type &#x3D; type &#x3D;&#x3D;&#x3D; &#x27;sub_command&#x27; ? 1 : type &#x3D;&#x3D;&#x3D; &#x27;sub_command_group&#x27; ? 2 : null;
+
+        if (data.type &#x3D;&#x3D;&#x3D; null) {
+          return Promise.reject(&#x27;Check type parameter&#x27;);
+        }
       }
 
       if (options) {
         data.options &#x3D; options;
       }
 
-      this._logger.warn(data);
+      // this._logger.warn(data);
 
       const post &#x3D; this._httpService.post(this.discordUrl, data, {
         headers: {
@@ -557,9 +696,14 @@ export class DiscordApiService {
         },
       });
 
-      return post.pipe().subscribe((data) &#x3D;&gt; {
-        console.log(&#x27;registerCommand response&#x27;, data);
-      });
+      const result &#x3D; await lastValueFrom(post)
+
+
+      if (result.status &#x3D;&#x3D;&#x3D; 200) {
+        return result.data
+      } else {
+        return Promise.reject(&#x60;Error registering new command. HttpStatus: ${result.status}&#x60;)
+      }
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -569,6 +713,103 @@ export class DiscordApiService {
     }
   }
 
+  /**
+   * It creates a list of commands that can be used in the bot.
+   * @returns An array of objects that represent the commands.
+   */
+  async constructStatsCommand() {
+    // 1 is type SUB_COMMAND&#x27;
+    // 2 is type SUB_COMMAND_GROUP
+    const statsSubCommands: DefineDiscordCommand[] &#x3D; [
+      {
+        name: &#x27;reg&#x27;,
+        description: &#x27;Register your Xbox Gamer tag&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description: &#x27;Enter Xbox Gamertag&#x27;,
+            type: 3,
+            required: true,
+          },
+          {
+            name: &#x27;allowlogging&#x27;,
+            description:
+              &#x27;Allow your stats to be logged in a database every 24 hours.&#x27;,
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: &#x27;Yes&#x27;,
+                value: &#x27;1&#x27;,
+              },
+              {
+                name: &#x27;No&#x27;,
+                value: &#x27;0&#x27;,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: &#x27;update&#x27;,
+        description: &#x27;Update your registered Xbox Gamer Tag&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description: &#x27;Enter Xbox Gamertag&#x27;,
+            type: 3,
+            required: true,
+          },
+        ],
+      },
+      {
+        name: &#x27;get&#x27;,
+        description: &#x27;Query your stats or use :gamertag: to query&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description:
+              &#x27;(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite&#x27;,
+            type: 3,
+            required: false,
+          },
+        ],
+      },
+      {
+        name: &#x27;help&#x27;,
+        description: &#x27;READ ME&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;lang&#x27;,
+            description: &#x27;Select language&#x27;,
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: &#x27;Suomeksi&#x27;,
+                value: &#x27;fi&#x27;,
+              },
+              {
+                name: &#x27;In English&#x27;,
+                value: &#x27;en&#x27;,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    return statsSubCommands
+  }
+
+  /**
+   * It gets the commands that are registered with the bot.
+   * @returns The response from the API.
+   */
   async getCommands(): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {
     try {
       const get &#x3D; await lastValueFrom(
@@ -582,6 +823,8 @@ export class DiscordApiService {
       if (get.status &#x3D;&#x3D; 200) {
         this._logger.debug(&#x60;REGISTERED COMMANDS: &#x60;, JSON.stringify(get.data));
         return get;
+      } else {
+        Promise.reject(&#x60;API responded with status ${get.status}&#x60;)
       }
     } catch (error) {
       if (error &amp;&amp; error.stack) {
@@ -592,6 +835,11 @@ export class DiscordApiService {
     }
   }
 
+  /**
+   * It deletes a command from the bot.
+   * @param {string} commandId - The ID of the command you want to delete.
+   * @returns The response from the API.
+   */
   async deleteCommand(
     commandId: string,
   ): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {

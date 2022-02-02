@@ -132,14 +132,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="10"
-                            class="link-to-prism">src/services/prisma.service.ts:10</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="18"
+                            class="link-to-prism">src/services/prisma.service.ts:18</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>When the server is shutting down, close the application</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -150,6 +152,7 @@
                                     <td>Name</td>
                                     <td>Type</td>
                                     <td>Optional</td>
+                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -164,6 +167,12 @@
                                     </td>
 
 
+                                    <td>
+                                        <ul>
+<li>INestApplication</li>
+</ul>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -203,14 +212,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="6"
-                            class="link-to-prism">src/services/prisma.service.ts:6</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="10"
+                            class="link-to-prism">src/services/prisma.service.ts:10</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>It connects to the database.</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
@@ -230,11 +241,19 @@
 import { PrismaClient } from &#x27;@prisma/client&#x27;;
 
 @Injectable()
+/* When the server starts, connect to the database. */
 export class PrismaService extends PrismaClient implements OnModuleInit {
+  /**
+   * It connects to the database.
+   */
   async onModuleInit() {
     await this.$connect();
   }
 
+  /**
+   * When the server is shutting down, close the application
+   * @param {INestApplication} app - INestApplication
+   */
   async enableShutdownHooks(app: INestApplication) {
     this.$on(&#x27;beforeExit&#x27;, async () &#x3D;&gt; {
       await app.close();

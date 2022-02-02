@@ -131,8 +131,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="5"
-                            class="link-to-prism">src/pipes/message-to-upper.pipe.ts:5</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="9"
+                            class="link-to-prism">src/pipes/message-to-upper.pipe.ts:9</a></div>
                 </td>
             </tr>
 
@@ -185,6 +185,10 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { DiscordPipeTransform } from &#x27;@discord-nestjs/core&#x27;;
 import { Message } from &#x27;discord.js&#x27;;
 
+/* The MessageToUpperPipe class implements the DiscordPipeTransform interface. The transform method
+takes an array of Message objects as an argument and returns an array of Message objects. The
+transform method returns a new array of Message objects with the content of each Message object in
+the array converted to uppercase. */
 export class MessageToUpperPipe implements DiscordPipeTransform {
   transform([message]: [Message]): [Message] {
     message.content &#x3D; message.content.toUpperCase();
