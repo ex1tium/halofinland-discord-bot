@@ -1,18 +1,20 @@
 import { Module } from '@nestjs/common';
-// TransformPipe, ValidationPipe
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import config from '../environment/config'
+import config from '../environment/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
-import { HaloDotApiModule } from './controllers/halo-dot-api/halo-dot-api.module';
 import { SharedModule } from './shared/shared.module';
 import { DiscordApiService } from './services/discord-api.service';
 import { AllExceptionsFilter } from './exception-filters/globalExceptions';
 import { APP_FILTER } from '@nestjs/core';
 import { Oauth2DiscordModule } from './controllers/oauth2-discord/oauth2-discord.module';
 
+/* We import the ConfigModule, which will load the environment variables from the .env file. We then
+import the HttpModule, which will configure the timeout and max redirects for the HTTP client. We
+then import the ScheduleModule, which will configure the cron jobs. We then import the
+Oauth2DiscordModule, which will configure the Discord OAuth2 callback. Finally, we import the
+SharedModule, which will configure the shared services. */
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,16 +22,20 @@ import { Oauth2DiscordModule } from './controllers/oauth2-discord/oauth2-discord
       isGlobal: true,
       load: [config],
     }),
+    /* The HttpModule is a class that registers an async factory function that returns an object with a
+    timeout property and a maxRedirects property. The ConfigModule is a class that registers an async
+    factory function that returns an object with a timeout property and a maxRedirects property. The
+    ConfigService is a class that injects the ConfigModule and returns the object with a timeout
+    property and a maxRedirects property. */
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
-        // timeout: 15,
-        // maxRedirects: 5,
+        timeout: 10000,
+        maxRedirects: 3,
       }),
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
-    HaloDotApiModule,
     Oauth2DiscordModule,
     SharedModule,
   ],
@@ -39,6 +45,7 @@ import { Oauth2DiscordModule } from './controllers/oauth2-discord/oauth2-discord
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    AppService, DiscordApiService],
+    DiscordApiService,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

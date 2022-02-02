@@ -10,7 +10,7 @@ generator client {
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  // shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
@@ -36,7 +36,7 @@ model Tweets {
 
 model Tweet {
   tweet_id   String   @id @unique
-  text       String
+  text       String   @db.LongText
   created_at DateTime
   author_id  String
 

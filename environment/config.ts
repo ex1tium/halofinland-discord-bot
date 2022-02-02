@@ -1,7 +1,8 @@
 export default () => ({
-  token: process.env.TOKEN,
+  token: process.env.DISCORD_BOT_TOKEN,
   applicationId: process.env.APPLICATION_ID,
   allowGuilds: process.env.ALLOW_GUILDS,
+  supportTweetChannelIds: process.env.TWEET_CHANNEL_IDS,
   guildID: process.env.GUILD_ID,
   botPermissions: process.env.BOT_PERMISSIONS,
   twitterApiKey: process.env.TWITTER_API_KEY,

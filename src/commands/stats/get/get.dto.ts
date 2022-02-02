@@ -1,9 +1,9 @@
 import { Param, Choice, ParamType } from '@discord-nestjs/core';
 
-enum PublicStats {
-  true,
-  false
-}
+// enum PublicStats {
+//   true,
+//   false,
+// }
 
 export class GetDto {
   @Param({ description: 'Xbox Gamer Tag', required: false })

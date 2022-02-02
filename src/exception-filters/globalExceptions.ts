@@ -1,30 +1,3 @@
-// import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger, HttpStatus } from '@nestjs/common';
-// import { Request, Response } from 'express';
-
-// @Catch()
-// export class HttpExceptionFilter implements ExceptionFilter {
-//   private logger = new Logger(HttpExceptionFilter.name)
-
-//   catch(exception: HttpException, host: ArgumentsHost) {
-//     const ctx = host.switchToHttp();
-//     const response = ctx.getResponse<Response>();
-//     const request = ctx.getRequest<Request>();
-//     const status = exception.getStatus();
-
-//     this.logger.error(exception);
-
-//     response
-//       .status(status)
-//       .json({
-//         statusCode: status,
-//         success: false,
-//         timestamp: new Date().toISOString(),
-//         path: request.url,
-//         message: (status === HttpStatus.INTERNAL_SERVER_ERROR) ? 'Sorry we are experiencing technical problems.' : '',
-//       });
-//   }
-// }
-
 import {
   ExceptionFilter,
   Catch,
@@ -35,11 +8,12 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
+/* The @Catch() decorator is used to catch all exceptions thrown by the controller methods. */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private _logger: Logger = new Logger('StatsRegSubCommand')
+  private _logger: Logger = new Logger('StatsRegSubCommand');
 
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     // In certain situations `httpAdapter` might not be available in the
@@ -57,10 +31,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
-      error: JSON.stringify(exception)
+      error: JSON.stringify(exception),
     };
 
-    this._logger.error(`AllExcepetionsFilter error response: ${JSON.stringify(ctx.getResponse())}`)
+    this._logger.error(
+      `AllExcepetionsFilter error response: ${JSON.stringify(
+        ctx.getResponse(),
+      )}`,
+    );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

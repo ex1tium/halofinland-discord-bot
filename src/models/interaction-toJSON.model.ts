@@ -1,5 +1,9 @@
 export interface ToJsonResponse {
-  type: 'APPLICATION_COMMAND' | 'PING' | 'MESSAGE_COMPONENT' | 'APPLICATION_COMMAND_AUTOCOMPLETE';
+  type:
+    | 'APPLICATION_COMMAND'
+    | 'PING'
+    | 'MESSAGE_COMPONENT'
+    | 'APPLICATION_COMMAND_AUTOCOMPLETE';
   id: string;
   applicationId: string;
   channelId: string;
@@ -12,5 +16,5 @@ export interface ToJsonResponse {
   commandName: string;
   deferred: boolean;
   replied: boolean;
-  ephemeral: null
+  ephemeral: null;
 }
