@@ -1,5 +1,4 @@
 declare module ServiceRecordsModels {
-
   export interface Vehicles {
     destroys: number;
     hijacks: number;
@@ -80,6 +79,4 @@ declare module ServiceRecordsModels {
     data: Data;
     additional: Additional;
   }
-
 }
-

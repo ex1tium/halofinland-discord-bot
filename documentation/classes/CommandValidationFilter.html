@@ -151,7 +151,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/exception-filters/discord-command-validation.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/exception-filters/discord-command-validation.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -187,8 +187,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="16"
-                            class="link-to-prism">src/exception-filters/discord-command-validation.ts:16</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="14"
+                            class="link-to-prism">src/exception-filters/discord-command-validation.ts:14</a></div>
                 </td>
             </tr>
 
@@ -269,8 +269,7 @@ import { MessageEmbed } from &#x27;discord.js&#x27;;
 
 @Catch(ValidationError)
 export class CommandValidationFilter implements DiscordExceptionFilter {
-  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;)
-
+  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
   async catch(
     exceptionList: ValidationError[],
@@ -287,11 +286,13 @@ export class CommandValidationFilter implements DiscordExceptionFilter {
       ),
     );
 
-    if (interaction.isCommand()) await interaction.reply({ embeds }).catch((error) &#x3D;&gt; {
-      this._logger.error(error, error &amp;&amp; error.stack ? error.stack : null)
-    });
+    if (interaction.isCommand())
+      await interaction.reply({ embeds }).catch((error) &#x3D;&gt; {
+        this._logger.error(error, error &amp;&amp; error.stack ? error.stack : null);
+      });
   }
-}</code></pre>
+}
+</code></pre>
     </div>
 </div>
 

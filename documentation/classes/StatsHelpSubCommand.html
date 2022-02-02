@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/commands/stats/help/help.command.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/help/help.command.ts:19</a></div>
                             </td>
                         </tr>
 
@@ -169,7 +169,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/commands/stats/help/help.command.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/help/help.command.ts:19</a></div>
                         </td>
                     </tr>
 
@@ -205,8 +205,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="21"
-                            class="link-to-prism">src/commands/stats/help/help.command.ts:21</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="23"
+                            class="link-to-prism">src/commands/stats/help/help.command.ts:23</a></div>
                 </td>
             </tr>
 
@@ -277,86 +277,98 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from &#x27;@discord-nestjs/core&#x27;;
-import { Logger, UseFilters, ValidationPipe } from &#x27;@nestjs/common&#x27;;
 import {
-  CommandInteraction,
-  InteractionReplyOptions,
-  MessageEmbed,
-} from &#x27;discord.js&#x27;;
+  DiscordTransformedCommand,
+  Payload,
+  SubCommand,
+  UsePipes,
+} from &#x27;@discord-nestjs/core&#x27;;
+import { Logger, UseFilters, ValidationPipe } from &#x27;@nestjs/common&#x27;;
+import { CommandInteraction, MessageEmbed } from &#x27;discord.js&#x27;;
 import { CommandValidationFilter } from &#x27;src/exception-filters/discord-command-validation&#x27;;
 import { StatsHelpDto } from &#x27;./help.dto&#x27;;
 
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: &#x27;help&#x27;, description: &#x27;READ ME&#x27; })
-export class StatsHelpSubCommand implements DiscordTransformedCommand&lt;StatsHelpDto&gt; {
+export class StatsHelpSubCommand
+  implements DiscordTransformedCommand&lt;StatsHelpDto&gt;
+{
+  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;)
+  constructor() {}
 
-  constructor() { }
-
-  async handler(@Payload() dto: StatsHelpDto, interaction?: CommandInteraction) {
+  async handler(
+    @Payload() dto: StatsHelpDto,
+    interaction?: CommandInteraction,
+  ) {
     try {
-      this._logger.verbose(&#x27;HELP COMMAND&#x27;, dto.lang)
-
-      // this._logger.verbose(JSON.stringify(dto))
-      this._logger.verbose(interaction)
-
       if (dto.lang &#x3D;&#x3D; &#x27;fi&#x27;) {
         const embedHelpFi &#x3D; new MessageEmbed()
           .setColor(&#x27;#0099ff&#x27;)
           .setTitle(&#x27;Ohjeet&#x27;)
-          // .setURL(&#x27;https://discord.js.org/&#x27;)
-          // .setAuthor(&#x27;Some name&#x27;, &#x27;https://i.imgur.com/AfFp7pu.png&#x27;, &#x27;https://discord.js.org&#x27;)
-          .setDescription(&#x27;Ohjeistus alikomennoille /stats. ?:parametri: tarkoittaa että se on valinnainen.&#x27;)
-          // .setThumbnail(&#x27;https://i.imgur.com/AfFp7pu.png&#x27;)
+          .setDescription(
+            &#x27;Ohjeistus alikomennoille /stats. ?:parametri: tarkoittaa että se on valinnainen.&#x27;,
+          )
           .addFields(
             { name: &#x27;help :lang:&#x27;, value: &#x27;Tulostaa tämän viestin&#x27; },
-            { name: &#x27;reg :gamertag: :allowlogging:&#x27;, value: &#x27;Rekisteröi Xbox gamertägisi&#x27; },
+            {
+              name: &#x27;reg :gamertag: :allowlogging:&#x27;,
+              value: &#x27;Rekisteröi Xbox gamertägisi&#x27;,
+            },
             { name: &#x27;update&#x27;, value: &#x27;Päivitä tilastot&#x27; },
-            { name: &#x27;get ?:gamertag:&#x27;, value: &#x27;Tulostaa käyttäjän Halo Infinite tilastot tai hakee käyttäjän tilastot gamertagille&#x27; },
+            {
+              name: &#x27;get ?:gamertag:&#x27;,
+              value:
+                &#x27;Tulostaa käyttäjän Halo Infinite tilastot tai hakee käyttäjän tilastot gamertagille&#x27;,
+            },
           )
           .setFooter({
-            text: &#x27;Bug reports and feature requests 🅴🆇 𝟭 🆃🅸🆄🅼#2753&#x27;
+            text: &#x27;https://github.com/ex1tium/halofinland-discord-bot&#x27;,
           })
-          // .setImage(&#x27;https://i.imgur.com/AfFp7pu.png&#x27;) //TODO Statsi kuva?
-          .setTimestamp()
+          .setTimestamp();
 
-        return interaction.reply({
-          embeds: [embedHelpFi],
-          ephemeral: true
-        }).catch((error) &#x3D;&gt; {
-          Promise.reject(error)
-        })
+        return interaction
+          .reply({
+            embeds: [embedHelpFi],
+            ephemeral: true,
+          })
+          .catch((error) &#x3D;&gt; {
+            Promise.reject(error);
+          });
       } else {
         const embedHelpEn &#x3D; new MessageEmbed()
           .setColor(&#x27;#0099ff&#x27;)
           .setTitle(&#x27;Help&#x27;)
-          // .setURL(&#x27;https://discord.js.org/&#x27;)
-          // .setAuthor(&#x27;Some name&#x27;, &#x27;https://i.imgur.com/AfFp7pu.png&#x27;, &#x27;https://discord.js.org&#x27;)
-          .setDescription(&#x27;Help for subcommands of /stats. ?:param: means its optional.&#x27;)
-          // .setThumbnail(&#x27;https://i.imgur.com/AfFp7pu.png&#x27;)
+          .setDescription(
+            &#x27;Help for subcommands of /stats. ?:param: means its optional.&#x27;,
+          )
           .addFields(
-            { name: &#x27;help :lang:&#x27;, value: &#x27;Prints this message in chosen language&#x27; },
-            { name: &#x27;reg :tag: :allowlogging:&#x27;, value: &#x27;Registers your Xbox gamertag for stats&#x27; },
+            {
+              name: &#x27;help :lang:&#x27;,
+              value: &#x27;Prints this message in chosen language&#x27;,
+            },
+            {
+              name: &#x27;reg :tag: :allowlogging:&#x27;,
+              value: &#x27;Registers your Xbox gamertag for stats&#x27;,
+            },
             { name: &#x27;update&#x27;, value: &#x27;Updates latest stats from API&#x27; },
             { name: &#x27;get&#x27;, value: &#x27;Prints your stats or stats for gamertag&#x27; },
           )
           .setFooter({
-            text: &#x27;Bugi raportit ja kehitysehdotukset 🅴🆇 𝟭 🆃🅸🆄🅼#2753&#x27;
+            text: &#x27;https://github.com/ex1tium/halofinland-discord-bot&#x27;,
           })
-          // .setImage(&#x27;https://i.imgur.com/AfFp7pu.png&#x27;) //TODO Statsi kuva?
-          .setTimestamp()
+          .setTimestamp();
 
-        return interaction.reply({
-          embeds: [embedHelpEn],
-          ephemeral: true
-        }).catch((error) &#x3D;&gt; {
-          Promise.reject(error)
-        })
+        return interaction
+          .reply({
+            embeds: [embedHelpEn],
+            ephemeral: true,
+          })
+          .catch((error) &#x3D;&gt; {
+            Promise.reject(error);
+          });
       }
-
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -364,28 +376,9 @@ export class StatsHelpSubCommand implements DiscordTransformedCommand&lt;StatsHe
         return Promise.reject(this._logger.error(error));
       }
     }
-
   }
 }
-
-
-
-// // import { EmailDto } from &#x27;../../dto/email.dto&#x27;;
-// import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-// import {
-//   Payload,
-//   // SubCommand,
-//   DiscordTransformedCommand,
-//   UsePipes,
-// } from &#x27;@discord-nestjs/core&#x27;;
-
-// @UsePipes(TransformPipe)
-// @SubCommand({ name: &#x27;email&#x27;, description: &#x27;Register by email&#x27; })
-// export class EmailSubCommand implements DiscordTransformedCommand&lt;EmailDto&gt; {
-//   handler(@Payload() dto: EmailDto): string {
-//     return &#x60;Success register user: ${dto.email}, ${dto.name}, ${dto.age}, ${dto.city}&#x60;;
-//   }
-// }</code></pre>
+</code></pre>
     </div>
 </div>
 

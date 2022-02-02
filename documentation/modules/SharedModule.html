@@ -330,10 +330,21 @@ import { UserService } from &#x27;src/services/user.service&#x27;;
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider],
-  exports: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider]
+    TwitterService,
+    PrismaService,
+    UserService,
+    HaloDotApiService,
+    DiscordCommandProvider,
+  ],
+  exports: [
+    TwitterService,
+    PrismaService,
+    UserService,
+    HaloDotApiService,
+    DiscordCommandProvider,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}
 </code></pre>
     </div>
 </div>

@@ -1,8 +1,8 @@
-import { Param, Choice, ParamType } from '@discord-nestjs/core';
+import { Param, Choice } from '@discord-nestjs/core';
 
 enum Language {
   FI = 'fi',
-  EN = 'en'
+  EN = 'en',
 }
 
 export class StatsHelpDto {
@@ -10,5 +10,3 @@ export class StatsHelpDto {
   @Choice(Language)
   lang: Language;
 }
-
-

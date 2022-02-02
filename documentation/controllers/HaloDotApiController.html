@@ -130,8 +130,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="42"
-                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:42</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="39"
+                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:39</a></div>
                 </td>
             </tr>
 
@@ -169,8 +169,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="48"
-                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:48</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="43"
+                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:43</a></div>
                 </td>
             </tr>
 
@@ -206,8 +206,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="33"
-                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:33</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="31"
+                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.controller.ts:31</a></div>
                 </td>
             </tr>
 
@@ -236,8 +236,7 @@ import { Message } from &#x27;discord.js&#x27;;
 import { lastValueFrom } from &#x27;rxjs&#x27;;
 import { MessageFromUserGuard } from &#x27;src/guards/message-fom-user.guard&#x27;;
 import { HaloDotApiService } from &#x27;src/services/haloDotApi/halodotapi.service&#x27;;
-import { AxiosResponse } from &quot;axios&quot;;
-
+import { AxiosResponse } from &#x27;axios&#x27;;
 
 @Controller(&#x27;halo-dot-api&#x27;)
 export class HaloDotApiController {
@@ -248,10 +247,9 @@ export class HaloDotApiController {
   constructor(
     private _haloDotApiService: HaloDotApiService,
     private _http: HttpService,
-    private _configService: ConfigService
+    private _configService: ConfigService,
   ) {
-
-    this._haloDotApiInfiniteBaseUrl &#x3D; &#x60;https://cryptum.halodotapi.com/games/hi/&#x60;
+    this._haloDotApiInfiniteBaseUrl &#x3D; &#x60;https://cryptum.halodotapi.com/games/hi/&#x60;;
 
     // this._haloDotApiService.getMotd().then((motd) &#x3D;&gt; {
     //   motd.unsubscribe();
@@ -264,31 +262,30 @@ export class HaloDotApiController {
     //   this._logger.log(&#x60;res.status: ${res.status}&#x60;)
     //   this._logger.log(&#x60;res.data:&#x60;, res.data)
     //   this._logger.log(&#x60;res.headers:&#x60;, res.headers)
-
     // })
   }
 
-  runCommand() {
-
-  }
+  runCommand() {}
 
   // @Cron(CronExpression.EVERY_5_SECONDS)
   // @Cron(CronExpression.EVERY_5_MINUTES)
   async testQuery() {
     try {
       // const response &#x3D; await this.getMotdAsync()
-      const responseCsr &#x3D; await this._haloDotApiService.requestPlayerStatsCSR(&#x27;ex1tium1306&#x27;, &#x27;open&#x27;)
+      const responseCsr &#x3D; await this._haloDotApiService.requestPlayerStatsCSR(
+        &#x27;ex1tium1306&#x27;,
+        &#x27;open&#x27;,
+      );
       if (responseCsr) {
         // this._logger.log(&#x27;responseCsr.data: &#x27;,JSON.s responseCsr.data);
         this._logger.warn(&#x27;responseCsr&#x27;, responseCsr);
       }
 
-      const responseServiceRecord &#x3D; await this._haloDotApiService.requestPlayerServiceRecord(&#x27;ex1tium1306&#x27;)
+      const responseServiceRecord &#x3D;
+        await this._haloDotApiService.requestPlayerServiceRecord(&#x27;ex1tium1306&#x27;);
       if (responseServiceRecord) {
         this._logger.warn(&#x27;responseServiceRecord&#x27;, responseServiceRecord);
       }
-
-
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));

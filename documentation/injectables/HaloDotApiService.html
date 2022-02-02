@@ -254,8 +254,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="26"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:26</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="25"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:25</a></div>
                 </td>
             </tr>
 
@@ -364,8 +364,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="52"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:52</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="50"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:50</a></div>
                 </td>
             </tr>
 
@@ -509,32 +509,33 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { HttpService } from &#x27;@nestjs/axios&#x27;;
 import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
 import { ConfigService } from &#x27;@nestjs/config&#x27;;
-import { AxiosResponse } from &quot;axios&quot;;
+import { AxiosResponse } from &#x27;axios&#x27;;
 import { lastValueFrom, Observable } from &#x27;rxjs&#x27;;
 @Injectable()
 export class HaloDotApiService {
   private readonly _logger &#x3D; new Logger(HaloDotApiService.name);
 
-  private _haloDotApiInfiniteBaseUrl
+  private _haloDotApiInfiniteBaseUrl;
   private _headers;
-
 
   constructor(
     private _http: HttpService,
-    private _configService: ConfigService
+    private _configService: ConfigService,
   ) {
     this._haloDotApiInfiniteBaseUrl &#x3D; &#x60;https://cryptum.halodotapi.com/games/hi/&#x60;;
     this._headers &#x3D; {
-      &#x27;Authorization&#x27;: &#x60;Cryptum-Token ${this._configService.get(&#x27;haloDotToken&#x27;)}&#x60;,
+      Authorization: &#x60;Cryptum-Token ${this._configService.get(&#x27;haloDotToken&#x27;)}&#x60;,
       &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
-      &#x27;Cryptum-API-Version&#x27;: &#x27;2.3-alpha&#x27;
-    }
+      &#x27;Cryptum-API-Version&#x27;: &#x27;2.3-alpha&#x27;,
+    };
   }
 
   async init(): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {
     try {
-      this._logger.debug(&#x60;haloDotApiBaseUrl: ${this._haloDotApiInfiniteBaseUrl}&#x60;)
-      const url &#x3D; &#x27;https://cryptum.halodotapi.com/&#x27;
+      this._logger.debug(
+        &#x60;haloDotApiBaseUrl: ${this._haloDotApiInfiniteBaseUrl}&#x60;,
+      );
+      const url &#x3D; &#x27;https://cryptum.halodotapi.com/&#x27;;
       // const req &#x3D;
       return await lastValueFrom(this._http.get(url));
     } catch (error) {
@@ -545,15 +546,12 @@ export class HaloDotApiService {
       }
     }
     // this._http.get()
-
   }
 
   getMotd(): Observable&lt;AxiosResponse&lt;any, any&gt;&gt; {
     const url &#x3D; this._haloDotApiInfiniteBaseUrl + &#x27;motd&#x27;;
-    this._logger.debug(&#x60;url: ${url}&#x60;)
-    const request &#x3D; this._http.get&lt;any&gt;(url, {
-
-    })
+    this._logger.debug(&#x60;url: ${url}&#x60;);
+    const request &#x3D; this._http.get&lt;any&gt;(url, {});
     return request;
   }
 
@@ -561,15 +559,17 @@ export class HaloDotApiService {
     try {
       let returnValue: CsrsModels.CsrsRootObject;
 
-      const url &#x3D; this._haloDotApiInfiniteBaseUrl + &#x60;stats/players/${gamertag}/csrs&#x60;;
-      const request &#x3D; await lastValueFrom(this._http.get&lt;any&gt;(url, {
-        headers: this._headers
-      }))
+      const url &#x3D;
+        this._haloDotApiInfiniteBaseUrl + &#x60;stats/players/${gamertag}/csrs&#x60;;
+      const request &#x3D; await lastValueFrom(
+        this._http.get&lt;any&gt;(url, {
+          headers: this._headers,
+        }),
+      );
       if (request &amp;&amp; request.status &#x3D;&#x3D;&#x3D; 200) {
         returnValue &#x3D; request.data as CsrsModels.CsrsRootObject;
       }
       return returnValue;
-
     } catch (error) {
       // throw new Error(error);
       if (error &amp;&amp; error.stack) {
@@ -584,16 +584,19 @@ export class HaloDotApiService {
     try {
       let returnValue: ServiceRecordsModels.ServiceRecord | undefined;
 
-      const url &#x3D; this._haloDotApiInfiniteBaseUrl + &#x60;stats/players/${gamertag}/service-record/global&#x60;;
+      const url &#x3D;
+        this._haloDotApiInfiniteBaseUrl +
+        &#x60;stats/players/${gamertag}/service-record/global&#x60;;
       // this._logger.warn(&#x60;url: ${url}&#x60;)
-      const request &#x3D; await lastValueFrom(this._http.get&lt;any&gt;(url, {
-        headers: this._headers
-      }))
+      const request &#x3D; await lastValueFrom(
+        this._http.get&lt;any&gt;(url, {
+          headers: this._headers,
+        }),
+      );
       if (request &amp;&amp; request.status &#x3D;&#x3D; 200) {
         returnValue &#x3D; request.data as ServiceRecordsModels.ServiceRecord;
       }
       return returnValue;
-
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -619,7 +622,6 @@ export class HaloDotApiService {
   //   return request;
   // }
 }
-
 
 // declare module namespace {
 
@@ -685,7 +687,6 @@ export class HaloDotApiService {
 // }
 
 // }
-
 </code></pre>
     </div>
 

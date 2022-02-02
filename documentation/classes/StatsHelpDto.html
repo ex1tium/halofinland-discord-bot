@@ -151,11 +151,11 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Param, Choice, ParamType } from &#x27;@discord-nestjs/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Param, Choice } from &#x27;@discord-nestjs/core&#x27;;
 
 enum Language {
   FI &#x3D; &#x27;fi&#x27;,
-  EN &#x3D; &#x27;en&#x27;
+  EN &#x3D; &#x27;en&#x27;,
 }
 
 export class StatsHelpDto {
@@ -163,8 +163,6 @@ export class StatsHelpDto {
   @Choice(Language)
   lang: Language;
 }
-
-
 </code></pre>
     </div>
 </div>

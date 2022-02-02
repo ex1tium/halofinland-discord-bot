@@ -218,7 +218,7 @@
 import { AppController } from &#x27;./app.controller&#x27;;
 import { AppService } from &#x27;./app.service&#x27;;
 import { ConfigModule, ConfigService } from &#x27;@nestjs/config&#x27;;
-import config from &#x27;../environment/config&#x27;
+import config from &#x27;../environment/config&#x27;;
 import { ScheduleModule } from &#x27;@nestjs/schedule&#x27;;
 import { HttpModule } from &#x27;@nestjs/axios&#x27;;
 import { HaloDotApiModule } from &#x27;./controllers/halo-dot-api/halo-dot-api.module&#x27;;
@@ -254,9 +254,11 @@ import { Oauth2DiscordModule } from &#x27;./controllers/oauth2-discord/oauth2-di
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    AppService, DiscordApiService],
+    AppService,
+    DiscordApiService,
+  ],
 })
-export class AppModule { }
+export class AppModule {}
 </code></pre>
     </div>
 </div>

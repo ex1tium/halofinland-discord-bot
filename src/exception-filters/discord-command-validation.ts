@@ -1,4 +1,3 @@
-
 import {
   DiscordArgumentMetadata,
   DiscordExceptionFilter,
@@ -8,10 +7,10 @@ import { Logger } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { MessageEmbed } from 'discord.js';
 
+/* We catch all validation errors and send a message to the user with the error details. */
 @Catch(ValidationError)
 export class CommandValidationFilter implements DiscordExceptionFilter {
-  private _logger: Logger = new Logger('StatsRegSubCommand')
-
+  private _logger: Logger = new Logger('StatsRegSubCommand');
 
   async catch(
     exceptionList: ValidationError[],
@@ -28,8 +27,9 @@ export class CommandValidationFilter implements DiscordExceptionFilter {
       ),
     );
 
-    if (interaction.isCommand()) await interaction.reply({ embeds }).catch((error) => {
-      this._logger.error(error, error && error.stack ? error.stack : null)
-    });
+    if (interaction.isCommand())
+      await interaction.reply({ embeds }).catch((error) => {
+        this._logger.error(error, error && error.stack ? error.stack : null);
+      });
   }
 }

@@ -134,7 +134,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/services/discord-api.service.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/services/discord-api.service.ts:13</a></div>
                             </td>
                         </tr>
 
@@ -211,8 +211,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="96"
-                            class="link-to-prism">src/services/discord-api.service.ts:96</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="91"
+                            class="link-to-prism">src/services/discord-api.service.ts:91</a></div>
                 </td>
             </tr>
 
@@ -282,8 +282,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="71"
-                            class="link-to-prism">src/services/discord-api.service.ts:71</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="68"
+                            class="link-to-prism">src/services/discord-api.service.ts:68</a></div>
                 </td>
             </tr>
 
@@ -321,8 +321,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="29"
-                            class="link-to-prism">src/services/discord-api.service.ts:29</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="28"
+                            class="link-to-prism">src/services/discord-api.service.ts:28</a></div>
                 </td>
             </tr>
 
@@ -437,7 +437,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/services/discord-api.service.ts:12</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/services/discord-api.service.ts:10</a></div>
                         </td>
                     </tr>
 
@@ -463,7 +463,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/services/discord-api.service.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/services/discord-api.service.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -489,7 +489,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/services/discord-api.service.ts:14</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/services/discord-api.service.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -507,12 +507,11 @@ import { Injectable, Logger } from &#x27;@nestjs/common&#x27;;
 import { ConfigService } from &#x27;@nestjs/config&#x27;;
 import { lastValueFrom } from &#x27;rxjs&#x27;;
 import { DefineDiscordCommand } from &#x27;src/models/sub-command-options.model&#x27;;
-import { AxiosResponse } from &quot;axios&quot;;
+import { AxiosResponse } from &#x27;axios&#x27;;
 
 @Injectable()
 export class DiscordApiService {
-
-  private _logger: Logger &#x3D; new Logger(DiscordApiService.name)
+  private _logger: Logger &#x3D; new Logger(DiscordApiService.name);
 
   discordUrl: string;
   botToken: string;
@@ -521,21 +520,26 @@ export class DiscordApiService {
     private _httpService: HttpService,
     private _configService: ConfigService,
   ) {
-    this.botToken &#x3D; this._configService.get(&#x27;token&#x27;)
-    this.discordUrl &#x3D; &#x60;https://discord.com/api/v8/applications/${this._configService.get(&#x27;applicationId&#x27;)}/guilds/${this._configService.get(&#x27;guildID&#x27;)}/commands&#x60;
+    this.botToken &#x3D; this._configService.get(&#x27;token&#x27;);
+    this.discordUrl &#x3D; &#x60;https://discord.com/api/v8/applications/${this._configService.get(
+      &#x27;applicationId&#x27;,
+    )}/guilds/${this._configService.get(&#x27;guildID&#x27;)}/commands&#x60;;
 
-    console.log(&#x27;discordAPI url for commands:&#x27;, this.discordUrl)
-    console.log(&#x27;discordAPI token:&#x27;, this.botToken)
-
+    console.log(&#x27;discordAPI url for commands:&#x27;, this.discordUrl);
+    console.log(&#x27;discordAPI token:&#x27;, this.botToken);
   }
 
-  async registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
-
+  async registerNewCommand(
+    name: string,
+    description: string,
+    type?: number,
+    options?: DefineDiscordCommand[],
+  ) {
     try {
       const data: DefineDiscordCommand &#x3D; {
-        &quot;name&quot;: name,
-        &quot;description&quot;: description,
-      }
+        name: name,
+        description: description,
+      };
 
       if (type) {
         data.type &#x3D; type;
@@ -545,20 +549,17 @@ export class DiscordApiService {
         data.options &#x3D; options;
       }
 
-      this._logger.warn(data)
+      this._logger.warn(data);
 
-
-      const post &#x3D; this._httpService.post(
-        this.discordUrl,
-        data, {
+      const post &#x3D; this._httpService.post(this.discordUrl, data, {
         headers: {
-          &#x27;Authorization&#x27;: &#x60;Bot ${this.botToken}&#x60;
-        }
-      })
+          Authorization: &#x60;Bot ${this.botToken}&#x60;,
+        },
+      });
 
       return post.pipe().subscribe((data) &#x3D;&gt; {
-        console.log(&#x27;registerCommand response&#x27;, data)
-      })
+        console.log(&#x27;registerCommand response&#x27;, data);
+      });
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -566,24 +567,20 @@ export class DiscordApiService {
         return Promise.reject(this._logger.error(error));
       }
     }
-
-
-
   }
 
   async getCommands(): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {
     try {
-      const get &#x3D; await lastValueFrom(this._httpService.get(
-        this.discordUrl,
-        {
+      const get &#x3D; await lastValueFrom(
+        this._httpService.get(this.discordUrl, {
           headers: {
-            &#x27;Authorization&#x27;: &#x60;Bot ${this.botToken}&#x60;
-          }
-        }
-      ))
+            Authorization: &#x60;Bot ${this.botToken}&#x60;,
+          },
+        }),
+      );
 
       if (get.status &#x3D;&#x3D; 200) {
-        this._logger.debug(&#x60;REGISTERED COMMANDS: &#x60;, JSON.stringify(get.data))
+        this._logger.debug(&#x60;REGISTERED COMMANDS: &#x60;, JSON.stringify(get.data));
         return get;
       }
     } catch (error) {
@@ -593,22 +590,25 @@ export class DiscordApiService {
         return Promise.reject(this._logger.error(error));
       }
     }
-
   }
 
-  async deleteCommand(commandId: string): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {
+  async deleteCommand(
+    commandId: string,
+  ): Promise&lt;void | AxiosResponse&lt;any, any&gt;&gt; {
     try {
-      const deleteCommand &#x3D; await lastValueFrom(this._httpService.delete(
-        this.discordUrl + &#x60;/${commandId}&#x60;,
-        {
+      const deleteCommand &#x3D; await lastValueFrom(
+        this._httpService.delete(this.discordUrl + &#x60;/${commandId}&#x60;, {
           headers: {
-            &#x27;Authorization&#x27;: &#x60;Bot ${this.botToken}&#x60;
-          }
-        }
-      ))
+            Authorization: &#x60;Bot ${this.botToken}&#x60;,
+          },
+        }),
+      );
 
       if (deleteCommand.status &#x3D;&#x3D; 200) {
-        this._logger.debug(&#x60;DELETE COMMAND: &#x60;, JSON.stringify(deleteCommand.data))
+        this._logger.debug(
+          &#x60;DELETE COMMAND: &#x60;,
+          JSON.stringify(deleteCommand.data),
+        );
 
         return deleteCommand;
       } else {

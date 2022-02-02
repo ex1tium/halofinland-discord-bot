@@ -634,7 +634,11 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export interface ToJsonResponse {
-  type: &#x27;APPLICATION_COMMAND&#x27; | &#x27;PING&#x27; | &#x27;MESSAGE_COMPONENT&#x27; | &#x27;APPLICATION_COMMAND_AUTOCOMPLETE&#x27;;
+  type:
+    | &#x27;APPLICATION_COMMAND&#x27;
+    | &#x27;PING&#x27;
+    | &#x27;MESSAGE_COMPONENT&#x27;
+    | &#x27;APPLICATION_COMMAND_AUTOCOMPLETE&#x27;;
   id: string;
   applicationId: string;
   channelId: string;
@@ -647,8 +651,9 @@
   commandName: string;
   deferred: boolean;
   replied: boolean;
-  ephemeral: null
-}</code></pre>
+  ephemeral: null;
+}
+</code></pre>
     </div>
 </div>
 

@@ -123,8 +123,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="214"
-                            class="link-to-prism">src/app.controller.ts:214</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="222"
+                            class="link-to-prism">src/app.controller.ts:222</a></div>
                 </td>
             </tr>
 
@@ -160,8 +160,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="32"
-                            class="link-to-prism">src/app.controller.ts:32</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="44"
+                            class="link-to-prism">src/app.controller.ts:44</a></div>
                 </td>
             </tr>
 
@@ -204,8 +204,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="56"
-                            class="link-to-prism">src/app.controller.ts:56</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="66"
+                            class="link-to-prism">src/app.controller.ts:66</a></div>
                 </td>
             </tr>
 
@@ -225,8 +225,22 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Get, Logger, OnModuleDestroy, OnModuleInit, Request } from &#x27;@nestjs/common&#x27;;
-import { On, Once, UseGuards, UsePipes, DiscordClientProvider, DiscordCommandProvider } from &#x27;@discord-nestjs/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+  Request,
+} from &#x27;@nestjs/common&#x27;;
+import {
+  On,
+  Once,
+  UseGuards,
+  UsePipes,
+  DiscordClientProvider,
+  DiscordCommandProvider,
+} from &#x27;@discord-nestjs/core&#x27;;
 import { Message } from &#x27;discord.js&#x27;;
 import { AppService } from &#x27;./app.service&#x27;;
 import { MessageFromUserGuard } from &#x27;./guards/message-fom-user.guard&#x27;;
@@ -236,7 +250,7 @@ import { UserService } from &#x27;./services/user.service&#x27;;
 import { Subscription } from &#x27;rxjs&#x27;;
 import { DiscordApiService } from &#x27;./services/discord-api.service&#x27;;
 import { DefineDiscordCommand } from &#x27;./models/sub-command-options.model&#x27;;
-// Client, ClientProvider, 
+// Client, ClientProvider,
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
   private readonly _logger &#x3D; new Logger(AppController.name);
@@ -249,16 +263,13 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     private _twitterService: TwitterService,
     private _userService: UserService,
     private _discordCommandProvider: DiscordCommandProvider,
-    private _discordApiService: DiscordApiService
-
+    private _discordApiService: DiscordApiService,
   ) {
     // console.log(this.discordProvider.getClient().channels)
-
   }
 
   onModuleInit() {
     // console.log(this.discordProvider.getClient())
-
     // this._userService.users({}).then((users) &#x3D;&gt; {
     //   console.log(&#x27;users&#x27;, users)
     // })
@@ -278,144 +289,145 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   //   }
   // }
 
-
   @Once(&#x27;ready&#x27;)
   onReady() {
     this._logger.log(&#x27;Bot was started!&#x27;);
 
     this._twitterService.init();
 
-    this._subMap.set(&#x27;newTweets&#x27;, this._twitterService.newTweets$.subscribe((newTweets) &#x3D;&gt; {
-      if (newTweets) {
-        this._logger.log(&#x60;newTweets ${newTweets}&#x60;);
-      }
-    }))
+    this._subMap.set(
+      &#x27;newTweets&#x27;,
+      this._twitterService.newTweets$.subscribe((newTweets) &#x3D;&gt; {
+        if (newTweets) {
+          this._logger.log(&#x60;newTweets ${newTweets}&#x60;);
+        }
+      }),
+    );
 
     // 1 is type SUB_COMMAND&#x27;
     // 2 is type SUB_COMMAND_GROUP
-    const statsSubCommands: DefineDiscordCommand[] &#x3D;
-      [
-        {
-          &quot;name&quot;: &quot;reg&quot;,
-          &quot;description&quot;: &quot;Register your Xbox Gamer tag&quot;,
-          &quot;type&quot;: 1,
-          &quot;options&quot;: [
-            {
-              &quot;name&quot;: &quot;gamertag&quot;,
-              &quot;description&quot;: &quot;Enter Xbox Gamertag&quot;,
-              &quot;type&quot;: 3,
-              &quot;required&quot;: true
-            },
-            {
-              &quot;name&quot;: &quot;allowlogging&quot;,
-              &quot;description&quot;: &quot;Allow your stats to be logged in a database every 24 hours.&quot;,
-              &quot;type&quot;: 3,
-              &quot;required&quot;: true,
-              &quot;choices&quot;: [
-                {
-                  &quot;name&quot;: &quot;Yes&quot;,
-                  &quot;value&quot;: &quot;1&quot;
-                },
-                {
-                  &quot;name&quot;: &quot;No&quot;,
-                  &quot;value&quot;: &quot;0&quot;
-                },
-              ]
-            },
-          ]
-        },
-        {
-          &quot;name&quot;: &quot;update&quot;,
-          &quot;description&quot;: &quot;Update your registered Xbox Gamer Tag&quot;,
-          &quot;type&quot;: 1,
-          &quot;options&quot;: [
-            {
-              &quot;name&quot;: &quot;gamertag&quot;,
-              &quot;description&quot;: &quot;Enter Xbox Gamertag&quot;,
-              &quot;type&quot;: 3,
-              &quot;required&quot;: true
-            },
+    const statsSubCommands: DefineDiscordCommand[] &#x3D; [
+      {
+        name: &#x27;reg&#x27;,
+        description: &#x27;Register your Xbox Gamer tag&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description: &#x27;Enter Xbox Gamertag&#x27;,
+            type: 3,
+            required: true,
+          },
+          {
+            name: &#x27;allowlogging&#x27;,
+            description:
+              &#x27;Allow your stats to be logged in a database every 24 hours.&#x27;,
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: &#x27;Yes&#x27;,
+                value: &#x27;1&#x27;,
+              },
+              {
+                name: &#x27;No&#x27;,
+                value: &#x27;0&#x27;,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: &#x27;update&#x27;,
+        description: &#x27;Update your registered Xbox Gamer Tag&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description: &#x27;Enter Xbox Gamertag&#x27;,
+            type: 3,
+            required: true,
+          },
+        ],
+      },
+      {
+        name: &#x27;get&#x27;,
+        description: &#x27;Query your stats or use :gamertag: to query&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;gamertag&#x27;,
+            description:
+              &#x27;(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite&#x27;,
+            type: 3,
+            required: false,
+          },
+          // {
+          //   &quot;name&quot;: &quot;isPublic&quot;,
+          //   &quot;description&quot;: &quot;(Optional) Show stats publicly on channel&quot;,
+          //   &quot;type&quot;: 3,
+          //   &quot;required&quot;: false,
+          //   &quot;choices&quot;: [
+          //     {
+          //       &quot;name&quot;: &quot;Yes&quot;,
+          //       &quot;value&quot;: &quot;1&quot;
+          //     },
+          //     {
+          //       &quot;name&quot;: &quot;No&quot;,
+          //       &quot;value&quot;: &quot;0&quot;
+          //     },
+          //   ]
+          // },
+        ],
+      },
+      {
+        name: &#x27;help&#x27;,
+        description: &#x27;READ ME&#x27;,
+        type: 1,
+        options: [
+          {
+            name: &#x27;lang&#x27;,
+            description: &#x27;Select language&#x27;,
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: &#x27;Suomeksi&#x27;,
+                value: &#x27;fi&#x27;,
+              },
+              {
+                name: &#x27;In English&#x27;,
+                value: &#x27;en&#x27;,
+              },
+            ],
+          },
+        ],
+      },
+      // {
+      //   &quot;name&quot;: &quot;role&quot;,
+      //   &quot;description&quot;: &quot;Get or edit permissions for a role&quot;,
+      //   &quot;type&quot;: 2,
+      //   &quot;options&quot;: [
+      //     {
+      //       &quot;name&quot;: &quot;get&quot;,
+      //       &quot;description&quot;: &quot;Get permissions for a role&quot;,
+      //       &quot;type&quot;: 1
+      //     },
+      //     {
+      //       &quot;name&quot;: &quot;edit&quot;,
+      //       &quot;description&quot;: &quot;Edit permissions for a role&quot;,
+      //       &quot;type&quot;: 1
+      //     }
+      //   ]
+      // }
 
-          ]
-        },
-        {
-          &quot;name&quot;: &quot;get&quot;,
-          &quot;description&quot;: &quot;Query your stats or use :gamertag: to query&quot;,
-          &quot;type&quot;: 1,
-          &quot;options&quot;: [
-            {
-              &quot;name&quot;: &quot;gamertag&quot;,
-              &quot;description&quot;: &quot;(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite&quot;,
-              &quot;type&quot;: 3,
-              &quot;required&quot;: false
-            },
-            // {
-            //   &quot;name&quot;: &quot;isPublic&quot;,
-            //   &quot;description&quot;: &quot;(Optional) Show stats publicly on channel&quot;,
-            //   &quot;type&quot;: 3,
-            //   &quot;required&quot;: false,
-            //   &quot;choices&quot;: [
-            //     {
-            //       &quot;name&quot;: &quot;Yes&quot;,
-            //       &quot;value&quot;: &quot;1&quot;
-            //     },
-            //     {
-            //       &quot;name&quot;: &quot;No&quot;,
-            //       &quot;value&quot;: &quot;0&quot;
-            //     },
-            //   ]
-            // },
-          ]
-        },
-        {
-          &quot;name&quot;: &quot;help&quot;,
-          &quot;description&quot;: &quot;READ ME&quot;,
-          &quot;type&quot;: 1,
-          &quot;options&quot;: [
-            {
-              &quot;name&quot;: &quot;lang&quot;,
-              &quot;description&quot;: &quot;Select language&quot;,
-              &quot;type&quot;: 3,
-              &quot;required&quot;: true,
-              &quot;choices&quot;: [
-                {
-                  &quot;name&quot;: &quot;Suomeksi&quot;,
-                  &quot;value&quot;: &quot;fi&quot;
-                },
-                {
-                  &quot;name&quot;: &quot;In English&quot;,
-                  &quot;value&quot;: &quot;en&quot;
-                },
-              ]
-            },
-
-          ]
-        },
-        // {
-        //   &quot;name&quot;: &quot;role&quot;,
-        //   &quot;description&quot;: &quot;Get or edit permissions for a role&quot;,
-        //   &quot;type&quot;: 2,
-        //   &quot;options&quot;: [
-        //     {
-        //       &quot;name&quot;: &quot;get&quot;,
-        //       &quot;description&quot;: &quot;Get permissions for a role&quot;,
-        //       &quot;type&quot;: 1
-        //     },
-        //     {
-        //       &quot;name&quot;: &quot;edit&quot;,
-        //       &quot;description&quot;: &quot;Edit permissions for a role&quot;,
-        //       &quot;type&quot;: 1
-        //     }
-        //   ]
-        // }
-
-        // {
-        //   name: &#x27;reg&#x27;,
-        //   description: &#x27;Enter your Xbox Gamer Tag&#x27;,
-        //   type: 1,
-        //   required: true
-        // }
-      ]
+      // {
+      //   name: &#x27;reg&#x27;,
+      //   description: &#x27;Enter your Xbox Gamer Tag&#x27;,
+      //   type: 1,
+      //   required: true
+      // }
+    ];
     // this._subMap.set(&#x27;stats_command&#x27;, this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Halo Infinite stats commands&#x27;, 1, statsSubCommands))
     // const result &#x3D; await this._discordApiService.getCommands();
     // this._discordApiService.deleteCommand(&#x27;912494585433952346&#x27;);
@@ -424,26 +436,19 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     //   this._logger.error(error);
     // })
 
-
     // this._subMap.set(&#x27;test_command&#x27;, this._discordApiService.registerNewCommand(&#x27;test&#x27;, &#x27;testing command&#x27;, 1, null))
 
     // this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Halo Infinite stats commands&#x27;, 1, statsSubCommands)
 
-
     // const invite &#x3D; this.discordProvider.getClient().generateInvite({
-    //   // scopes: 
+    //   // scopes:
     // });
     // console.log(invite)
   }
 
-
-
   onModuleDestroy() {
-
-    this._subMap.forEach(sub &#x3D;&gt; sub.unsubscribe())
-
+    this._subMap.forEach((sub) &#x3D;&gt; sub.unsubscribe());
   }
-
 }
 </code></pre>
     </div>

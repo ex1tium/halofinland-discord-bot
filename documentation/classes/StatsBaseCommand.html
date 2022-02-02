@@ -66,6 +66,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p> Base /stats command. Base commands cannot do anything by themselves if they have sub commands in  include array.</p>
+
+            </p>
 
 
 
@@ -83,50 +90,29 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { StatsDto } from &#x27;./stats.dto&#x27;;
-import { Command, UsePipes, Payload, DiscordTransformedCommand, UseGroup, DiscordCommand, UseFilters } from &#x27;@discord-nestjs/core&#x27;;
-import { TransformPipe, ValidationPipe } from &#x27;@discord-nestjs/common&#x27;;
-import { CommandInteraction, InteractionReplyOptions, MessageEmbed } from &#x27;discord.js&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Command } from &#x27;@discord-nestjs/core&#x27;;
+
 import { StatsRegSubCommand } from &#x27;./register/register.command&#x27;;
 import { StatsHelpSubCommand } from &#x27;./help/help.command&#x27;;
 import { StatsGetSubCommand } from &#x27;./get/get.command&#x27;;
 import { StatsUpdateSubCommand } from &#x27;./update/update.command&#x27;;
-import { CommandValidationFilter } from &#x27;src/exception-filters/discord-command-validation&#x27;;
-
-// @UseFilters(CommandValidationFilter)
-// @UsePipes(TransformPipe, ValidationPipe)
+/**
+ *  Base /stats command. Base commands cannot do anything by themselves if they have sub commands in  include array.
+ *
+ * @export
+ * @class StatsBaseCommand
+ */
 @Command({
   name: &#x27;stats&#x27;,
   description: &#x27;Stats provided by HaloDotAPI&#x27;,
   include: [
-    // UseGroup(
-    //   { name: &#x27;reg&#x27;, description: &#x27;Register Xbox Gamer Tag&#x27; },
-    // ),
     StatsGetSubCommand,
     StatsUpdateSubCommand,
     StatsRegSubCommand,
-    StatsHelpSubCommand
-
+    StatsHelpSubCommand,
   ],
 })
 export class StatsBaseCommand { }
-
-// implements DiscordCommand {
-//   handler(interaction: CommandInteraction): InteractionReplyOptions {
-//     // console.log(JSON.stringify(interaction));
-//     // console.log(&#x60;User was registered with name: ${dto.name}&#x60;)
-
-//     // const { user } &#x3D; interaction;
-
-//     const embed &#x3D; new MessageEmbed().setTitle(&#x27;stats&#x27;)
-
-
-//     return {
-//       embeds: [embed],
-//     };
-//     // return &#x60;Stats test command&#x60;;
-//   }
-// }
 </code></pre>
     </div>
 </div>

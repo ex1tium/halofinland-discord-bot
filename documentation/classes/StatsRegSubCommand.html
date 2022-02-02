@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/commands/stats/register/register.command.ts:21</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/register/register.command.ts:24</a></div>
                             </td>
                         </tr>
 
@@ -199,7 +199,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/commands/stats/register/register.command.ts:21</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/register/register.command.ts:24</a></div>
                         </td>
                     </tr>
 
@@ -235,8 +235,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">src/commands/stats/register/register.command.ts:30</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="28"
+                            class="link-to-prism">src/commands/stats/register/register.command.ts:28</a></div>
                 </td>
             </tr>
 
@@ -307,7 +307,12 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from &#x27;@discord-nestjs/core&#x27;;
+import {
+  DiscordTransformedCommand,
+  Payload,
+  SubCommand,
+  UsePipes,
+} from &#x27;@discord-nestjs/core&#x27;;
 import { Logger, UseFilters, ValidationPipe } from &#x27;@nestjs/common&#x27;;
 import {
   CommandInteraction,
@@ -315,43 +320,33 @@ import {
   MessageEmbed,
 } from &#x27;discord.js&#x27;;
 import { CommandValidationFilter } from &#x27;src/exception-filters/discord-command-validation&#x27;;
-import { HaloDotApiService } from &#x27;src/services/haloDotApi/halodotapi.service&#x27;;
-import { PrismaService } from &#x27;src/services/prisma.service&#x27;;
-import { TwitterService } from &#x27;src/services/twitter.service&#x27;;
 import { UserService } from &#x27;src/services/user.service&#x27;;
 import { RegisterDto } from &#x27;./register.dto&#x27;;
 
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: &#x27;reg&#x27;, description: &#x27;Register your Xbox Gamer tag&#x27; })
-export class StatsRegSubCommand implements DiscordTransformedCommand&lt;RegisterDto&gt; {
+export class StatsRegSubCommand
+  implements DiscordTransformedCommand&lt;RegisterDto&gt;
+{
+  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;)
-
-  constructor(
-    private _userService: UserService
-  ) { }
-
-  // constructor(private _twitterService: TwitterService) { }
-
+  constructor(private _userService: UserService) {}
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
-
     try {
-
       const gamerTag &#x3D; dto.gamertag;
       const allowLogging &#x3D; dto.allowlogging;
-      this._logger.warn(&#x60;allowLogging: ${allowLogging}&#x60;)
+      this._logger.warn(&#x60;allowLogging: ${allowLogging}&#x60;);
 
-      const userId &#x3D; interaction.user.id
+      const userId &#x3D; interaction.user.id;
       const userExists &#x3D; await this._userService.user({
         discord_user_id: userId,
-      })
+      });
 
       let wasUpdated &#x3D; false;
 
-
-      this._logger.warn(&#x60;userExists: ${JSON.stringify(userExists)}&#x60;)
+      // this._logger.warn(&#x60;userExists: ${JSON.stringify(userExists)}&#x60;);
 
       if (userExists &amp;&amp; userExists.discord_user_id) {
         this._userService.updateUser({
@@ -360,59 +355,48 @@ export class StatsRegSubCommand implements DiscordTransformedCommand&lt;Register
           },
           data: {
             gamertag: gamerTag,
-            allow_stats_logging: allowLogging ? 1 : 0
-          }
-        })
+            allow_stats_logging: allowLogging ? 1 : 0,
+          },
+        });
 
-        wasUpdated &#x3D; true
+        wasUpdated &#x3D; true;
       } else {
         this._userService.createUser({
           discord_user_id: userId,
           gamertag: gamerTag,
-          allow_stats_logging: allowLogging ? 1 : 0
-        })
+          allow_stats_logging: allowLogging ? 1 : 0,
+        });
       }
-
-      // this._logger.verbose(dto.gamertag)
-
-      // this._logger.verbose(JSON.stringify(dto))
-      // this._logger.verbose(interaction.user)
-
-      // this._logger.debug(&#x60;userId: ${userId}&#x60;)
 
       let embedReply: MessageEmbed;
+
       if (wasUpdated) {
-        embedReply &#x3D; new MessageEmbed()
-          .setColor(&#x27;#DFFF00&#x27;)
-          // .setDescription(&#x27;Gamertag Updated&#x27;)
-          .addFields(
-            { name: &#x60;Old Gamertag&#x60;, value: &#x60;${userExists.gamertag}&#x60; },
-            { name: &#x60;New Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
-            { name: &#x60;Logging&#x60;, value: &#x60;${allowLogging ? &#x27;enabled&#x27; : &#x27;disabled&#x27;}&#x60; },
-          )
-        // .setTimestamp()
-
+        embedReply &#x3D; new MessageEmbed().setColor(&#x27;#DFFF00&#x27;).addFields(
+          { name: &#x60;Old Gamertag&#x60;, value: &#x60;${userExists.gamertag}&#x60; },
+          { name: &#x60;New Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
+          {
+            name: &#x60;Logging&#x60;,
+            value: &#x60;${allowLogging ? &#x27;enabled&#x27; : &#x27;disabled&#x27;}&#x60;,
+          },
+        );
       } else {
-        embedReply &#x3D; new MessageEmbed()
-          .setColor(&#x27;#40E0D0&#x27;)
-          // .setDescription(&#x27;Gamertag Saved&#x27;)
-          .addFields(
-            // { name: &#x60;Old Gamertag&#x60;, value: &#x60;${userExists.gamerTag}&#x60; },
-            { name: &#x60;Registered Xbox Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
-            { name: &#x60;Logging&#x60;, value: &#x60;${allowLogging ? &#x27;enabled&#x27; : &#x27;disabled&#x27;}&#x60; },
-
-          )
-        // .setTimestamp()
+        embedReply &#x3D; new MessageEmbed().setColor(&#x27;#40E0D0&#x27;).addFields(
+          { name: &#x60;Registered Xbox Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
+          {
+            name: &#x60;Logging&#x60;,
+            value: &#x60;${allowLogging ? &#x27;enabled&#x27; : &#x27;disabled&#x27;}&#x60;,
+          },
+        );
       }
 
-      const reply &#x3D; {
-        embeds: [embedReply]
-      }
+      const reply: InteractionReplyOptions &#x3D; {
+        embeds: [embedReply],
+        ephemeral: true,
+      };
 
       return interaction.reply(reply).catch((error) &#x3D;&gt; {
-        Promise.reject(error)
-      })
-
+        Promise.reject(error);
+      });
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -421,7 +405,8 @@ export class StatsRegSubCommand implements DiscordTransformedCommand&lt;Register
       }
     }
   }
-}</code></pre>
+}
+</code></pre>
     </div>
 </div>
 

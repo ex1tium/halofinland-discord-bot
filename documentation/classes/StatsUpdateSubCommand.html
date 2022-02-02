@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/commands/stats/update/update.command.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/update/update.command.ts:26</a></div>
                             </td>
                         </tr>
 
@@ -199,7 +199,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/commands/stats/update/update.command.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/commands/stats/update/update.command.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -235,8 +235,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="20"
-                            class="link-to-prism">src/commands/stats/update/update.command.ts:20</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="30"
+                            class="link-to-prism">src/commands/stats/update/update.command.ts:30</a></div>
                 </td>
             </tr>
 
@@ -307,7 +307,13 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from &#x27;@discord-nestjs/core&#x27;;
+import {
+  DiscordCommand,
+  DiscordTransformedCommand,
+  Payload,
+  SubCommand,
+  UsePipes,
+} from &#x27;@discord-nestjs/core&#x27;;
 import { Logger } from &#x27;@nestjs/common&#x27;;
 import {
   CommandInteraction,
@@ -318,21 +324,24 @@ import { UserService } from &#x27;src/services/user.service&#x27;;
 import { UpdateDto } from &#x27;./update.dto&#x27;;
 
 @UsePipes(TransformPipe)
-@SubCommand({ name: &#x27;update&#x27;, description: &#x27;Update your registered Xbox Gamer Tag&#x27; })
-export class StatsUpdateSubCommand implements DiscordTransformedCommand&lt;UpdateDto&gt; {
+@SubCommand({
+  name: &#x27;update&#x27;,
+  description: &#x27;Update your registered Xbox Gamer Tag&#x27;,
+})
+export class StatsUpdateSubCommand
+  implements DiscordTransformedCommand&lt;UpdateDto&gt;
+{
+  private _logger: Logger &#x3D; new Logger(StatsUpdateSubCommand.name);
 
-  private _logger: Logger &#x3D; new Logger(StatsUpdateSubCommand.name)
-
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService) {}
 
   async handler(@Payload() dto: UpdateDto, interaction: CommandInteraction) {
     try {
-
-      const gamerTag &#x3D; dto.gamertag
-      const userId &#x3D; interaction.user.id
+      const gamerTag &#x3D; dto.gamertag;
+      const userId &#x3D; interaction.user.id;
       const userExists &#x3D; await this._userService.user({
         discord_user_id: userId,
-      })
+      });
       let embedReply: MessageEmbed;
 
       if (userExists) {
@@ -341,9 +350,9 @@ export class StatsUpdateSubCommand implements DiscordTransformedCommand&lt;Updat
             discord_user_id: userId,
           },
           data: {
-            gamertag: gamerTag
-          }
-        })
+            gamertag: gamerTag,
+          },
+        });
 
         embedReply &#x3D; new MessageEmbed()
           .setColor(&#x27;#DFFF00&#x27;)
@@ -352,18 +361,18 @@ export class StatsUpdateSubCommand implements DiscordTransformedCommand&lt;Updat
             { name: &#x60;Old Gamertag&#x60;, value: &#x60;${userExists.gamertag}&#x60; },
             { name: &#x60;New Gamertag&#x60;, value: &#x60;${gamerTag}&#x60; },
           )
-          .setTimestamp()
+          .setTimestamp();
         const reply &#x3D; {
-          embeds: [embedReply]
-        }
+          embeds: [embedReply],
+        };
 
-        this._logger.verbose(JSON.stringify(dto))
-        this._logger.verbose(interaction)
+        this._logger.verbose(JSON.stringify(dto));
+        this._logger.verbose(interaction);
 
         return reply;
       }
 
-      return &#x27;use /stats reg :gamertag: command to register first&#x27;
+      return &#x27;use /stats reg :gamertag: command to register first&#x27;;
     } catch (error) {
       if (error &amp;&amp; error.stack) {
         return Promise.reject(this._logger.error(error.stack));

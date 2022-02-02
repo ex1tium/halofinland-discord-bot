@@ -153,17 +153,18 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Param, Choice, ParamType } from &#x27;@discord-nestjs/core&#x27;;
 
-enum PublicStats {
-  true,
-  false
-}
+// enum PublicStats {
+//   true,
+//   false,
+// }
 
 export class GetDto {
   @Param({ description: &#x27;Xbox Gamer Tag&#x27;, required: false })
   gamertag: string;
   // @Choice(PublicStats)
   // isPublic: PublicStats;
-}</code></pre>
+}
+</code></pre>
     </div>
 </div>
 

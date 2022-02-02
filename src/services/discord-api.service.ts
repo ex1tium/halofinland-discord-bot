@@ -1,38 +1,57 @@
-
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { DefineDiscordCommand } from 'src/models/sub-command-options.model';
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class DiscordApiService {
-
-  private _logger: Logger = new Logger(DiscordApiService.name)
+  private _logger: Logger = new Logger(DiscordApiService.name);
 
   discordUrl: string;
   botToken: string;
 
+  /**
+   * It sets the bot token and the discord url.
+   * @param {HttpService} _httpService - HttpService
+   * @param {ConfigService} _configService - The config service is used to get the bot token and
+   * application ID.
+   */
   constructor(
     private _httpService: HttpService,
     private _configService: ConfigService,
   ) {
-    this.botToken = this._configService.get('token')
-    this.discordUrl = `https://discord.com/api/v8/applications/${this._configService.get('applicationId')}/guilds/${this._configService.get('guildID')}/commands`
+    this.botToken = this._configService.get('token');
+    this.discordUrl = `https://discord.com/api/v8/applications/${this._configService.get(
+      'applicationId',
+    )}/guilds/${this._configService.get('guildID')}/commands`;
 
-    console.log('discordAPI url for commands:', this.discordUrl)
-    console.log('discordAPI token:', this.botToken)
-
+    // console.log('discordAPI url for commands:', this.discordUrl);
+    // console.log('discordAPI token:', this.botToken);
   }
 
-  async registerNewCommand(name: string, description: string, type?: number, options?: DefineDiscordCommand[]) {
 
+  /**
+   * It takes in a name, description, and type, and options, and sends it to the Discord API
+   * @param {string} name - The name of the command.
+   * @param {string} description - The description of the command.
+   * @param {number} [type] - The type of command.
+   * @param {DefineDiscordCommand[]} [options] - An array of objects that define the options for the
+   * command.
+   * @returns The response from the server.
+   */
+  async registerNewCommand(
+    name: string,
+    description: string,
+    type?: number,
+    options?: DefineDiscordCommand[],
+  ): Promise<any> {
     try {
       const data: DefineDiscordCommand = {
-        "name": name,
-        "description": description,
-      }
+        name: name,
+        description: description,
+      };
 
       if (type) {
         data.type = type;
@@ -42,20 +61,15 @@ export class DiscordApiService {
         data.options = options;
       }
 
-      this._logger.warn(data)
+      this._logger.warn(data);
 
-
-      const post = this._httpService.post(
-        this.discordUrl,
-        data, {
+      const post = this._httpService.post(this.discordUrl, data, {
         headers: {
-          'Authorization': `Bot ${this.botToken}`
-        }
-      })
+          Authorization: `Bot ${this.botToken}`,
+        },
+      });
 
-      return post.pipe().subscribe((data) => {
-        console.log('registerCommand response', data)
-      })
+      return post
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -63,24 +77,117 @@ export class DiscordApiService {
         return Promise.reject(this._logger.error(error));
       }
     }
-
-
-
   }
 
+  /**
+   * It creates a list of commands that can be used in the bot.
+   * @returns An array of objects that represent the commands.
+   */
+  async constructStatsCommand() {
+    // 1 is type SUB_COMMAND'
+    // 2 is type SUB_COMMAND_GROUP
+    const statsSubCommands: DefineDiscordCommand[] = [
+      {
+        name: 'reg',
+        description: 'Register your Xbox Gamer tag',
+        type: 1,
+        options: [
+          {
+            name: 'gamertag',
+            description: 'Enter Xbox Gamertag',
+            type: 3,
+            required: true,
+          },
+          {
+            name: 'allowlogging',
+            description:
+              'Allow your stats to be logged in a database every 24 hours.',
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: 'Yes',
+                value: '1',
+              },
+              {
+                name: 'No',
+                value: '0',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'update',
+        description: 'Update your registered Xbox Gamer Tag',
+        type: 1,
+        options: [
+          {
+            name: 'gamertag',
+            description: 'Enter Xbox Gamertag',
+            type: 3,
+            required: true,
+          },
+        ],
+      },
+      {
+        name: 'get',
+        description: 'Query your stats or use :gamertag: to query',
+        type: 1,
+        options: [
+          {
+            name: 'gamertag',
+            description:
+              '(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite',
+            type: 3,
+            required: false,
+          },
+        ],
+      },
+      {
+        name: 'help',
+        description: 'READ ME',
+        type: 1,
+        options: [
+          {
+            name: 'lang',
+            description: 'Select language',
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: 'Suomeksi',
+                value: 'fi',
+              },
+              {
+                name: 'In English',
+                value: 'en',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    return statsSubCommands
+  }
+
+  /**
+   * It gets the commands that are registered with the bot.
+   * @returns The response from the API.
+   */
   async getCommands(): Promise<void | AxiosResponse<any, any>> {
     try {
-      const get = await lastValueFrom(this._httpService.get(
-        this.discordUrl,
-        {
+      const get = await lastValueFrom(
+        this._httpService.get(this.discordUrl, {
           headers: {
-            'Authorization': `Bot ${this.botToken}`
-          }
-        }
-      ))
+            Authorization: `Bot ${this.botToken}`,
+          },
+        }),
+      );
 
       if (get.status == 200) {
-        this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data))
+        this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data));
         return get;
       }
     } catch (error) {
@@ -90,22 +197,30 @@ export class DiscordApiService {
         return Promise.reject(this._logger.error(error));
       }
     }
-
   }
 
-  async deleteCommand(commandId: string): Promise<void | AxiosResponse<any, any>> {
+  /**
+   * It deletes a command from the bot.
+   * @param {string} commandId - The ID of the command you want to delete.
+   * @returns The response from the API.
+   */
+  async deleteCommand(
+    commandId: string,
+  ): Promise<void | AxiosResponse<any, any>> {
     try {
-      const deleteCommand = await lastValueFrom(this._httpService.delete(
-        this.discordUrl + `/${commandId}`,
-        {
+      const deleteCommand = await lastValueFrom(
+        this._httpService.delete(this.discordUrl + `/${commandId}`, {
           headers: {
-            'Authorization': `Bot ${this.botToken}`
-          }
-        }
-      ))
+            Authorization: `Bot ${this.botToken}`,
+          },
+        }),
+      );
 
       if (deleteCommand.status == 200) {
-        this._logger.debug(`DELETE COMMAND: `, JSON.stringify(deleteCommand.data))
+        this._logger.debug(
+          `DELETE COMMAND: `,
+          JSON.stringify(deleteCommand.data),
+        );
 
         return deleteCommand;
       } else {

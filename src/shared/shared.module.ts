@@ -5,21 +5,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { Intents, Message } from 'discord.js';
 import { AllExceptionsFilter } from 'src/exception-filters/globalExceptions';
-import { DiscordApiService } from 'src/services/discord-api.service';
 import { HaloDotApiService } from 'src/services/haloDotApi/halodotapi.service';
-// import { DiscordConfigService } from 'src/services/discord-config.service';
 import { PrismaService } from 'src/services/prisma.service';
-// import { PrismaModule } from 'src/services/prisma/prisma.module';
 import { TwitterService } from 'src/services/twitter.service';
-// import { TwitterModule } from 'src/services/twitter/twitter.module';
 import { UserService } from 'src/services/user.service';
+
+/* The DiscordModule is a wrapper around the Discord.js library. It provides a way to register commands
+and events.
+
+The DiscordModule.forRootAsync method is used to register the Discord.js client. It takes an array
+of options. The first option is the token for the Discord bot. The second option is an array of file
+paths to register commands from. The third option is an object that contains the Discord.js client
+options. The Discord.js client options are used to set the intents for the bot. The intents are used
+to determine what events the bot will listen */
 
 @Module({
   imports: [
-    // DiscordModule.forRootAsync({
-    //   imports: [ConfigModule, PrismaModule],
-    //   useClass: DiscordConfigService,
-    // }),
     HttpModule,
     DiscordModule.forRootAsync({
       imports: [ConfigModule, SharedModule],
@@ -64,7 +65,18 @@ import { UserService } from 'src/services/user.service';
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider],
-  exports: [TwitterService, PrismaService, UserService, HaloDotApiService, DiscordCommandProvider]
+    TwitterService,
+    PrismaService,
+    UserService,
+    HaloDotApiService,
+    DiscordCommandProvider,
+  ],
+  exports: [
+    TwitterService,
+    PrismaService,
+    UserService,
+    HaloDotApiService,
+    DiscordCommandProvider,
+  ],
 })
 export class SharedModule { }

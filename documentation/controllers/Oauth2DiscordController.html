@@ -133,8 +133,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="10"
-                            class="link-to-prism">src/controllers/oauth2-discord/oauth2-discord.controller.ts:10</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="18"
+                            class="link-to-prism">src/controllers/oauth2-discord/oauth2-discord.controller.ts:18</a></div>
                 </td>
             </tr>
 
@@ -210,37 +210,44 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Get, Request, Req, Logger, Body, Res, Response, HttpStatus } from &#x27;@nestjs/common&#x27;;
-
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Controller,
+  Get,
+  Request,
+  Req,
+  Logger,
+  Body,
+  Res,
+  Response,
+  HttpStatus,
+} from &#x27;@nestjs/common&#x27;;
 
 @Controller(&#x27;oauth2-discord&#x27;)
 export class Oauth2DiscordController {
-
-  private _logger: Logger &#x3D; new Logger(Oauth2DiscordController.name)
+  private _logger: Logger &#x3D; new Logger(Oauth2DiscordController.name);
 
   @Get()
   async callbackForDiscordOauth2(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
-    @Body() body: Body
+    @Body() body: Body,
   ) {
-
     if (request) {
       // const requestJson &#x3D; await request.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(request.body)}&#x60;)
+      this._logger.verbose(&#x60;request json: ${JSON.stringify(request.body)}&#x60;);
     }
 
     if (response) {
       // const responseJson &#x3D; await response.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(response.body)}&#x60;)
+      this._logger.verbose(&#x60;request json: ${JSON.stringify(response.body)}&#x60;);
     }
 
     if (body) {
       // const bodyJson &#x3D; await body.json();
-      this._logger.verbose(&#x60;request json: ${JSON.stringify(body.body)}&#x60;)
+      this._logger.verbose(&#x60;request json: ${JSON.stringify(body.body)}&#x60;);
     }
 
-    return HttpStatus.OK
+    return HttpStatus.OK;
   }
 }
 </code></pre>

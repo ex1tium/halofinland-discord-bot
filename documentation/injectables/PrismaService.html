@@ -132,8 +132,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="12"
-                            class="link-to-prism">src/services/prisma.service.ts:12</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="10"
+                            class="link-to-prism">src/services/prisma.service.ts:10</a></div>
                 </td>
             </tr>
 
@@ -203,8 +203,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="8"
-                            class="link-to-prism">src/services/prisma.service.ts:8</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="6"
+                            class="link-to-prism">src/services/prisma.service.ts:6</a></div>
                 </td>
             </tr>
 
@@ -230,9 +230,7 @@
 import { PrismaClient } from &#x27;@prisma/client&#x27;;
 
 @Injectable()
-export class PrismaService extends PrismaClient
-  implements OnModuleInit {
-
+export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
   }
@@ -242,7 +240,8 @@ export class PrismaService extends PrismaClient
       await app.close();
     });
   }
-}</code></pre>
+}
+</code></pre>
     </div>
 
 </div>

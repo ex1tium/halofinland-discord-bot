@@ -131,7 +131,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/get/get.command.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/get/get.command.ts:24</a></div>
                             </td>
                         </tr>
 
@@ -211,7 +211,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/commands/stats/get/get.command.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/commands/stats/get/get.command.ts:24</a></div>
                         </td>
                     </tr>
 
@@ -247,8 +247,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="26"
-                            class="link-to-prism">src/commands/stats/get/get.command.ts:26</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="31"
+                            class="link-to-prism">src/commands/stats/get/get.command.ts:31</a></div>
                 </td>
             </tr>
 
@@ -319,7 +319,13 @@
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-import { DiscordCommand, DiscordTransformedCommand, Payload, SubCommand, UsePipes } from &#x27;@discord-nestjs/core&#x27;;
+import {
+  DiscordCommand,
+  DiscordTransformedCommand,
+  Payload,
+  SubCommand,
+  UsePipes,
+} from &#x27;@discord-nestjs/core&#x27;;
 import { Logger, UseFilters, ValidationPipe } from &#x27;@nestjs/common&#x27;;
 import {
   CommandInteraction,
@@ -335,25 +341,25 @@ import { GetDto } from &#x27;./get.dto&#x27;;
 @UsePipes(TransformPipe, ValidationPipe)
 @SubCommand({ name: &#x27;get&#x27;, description: &#x27;Prints our your stats&#x27; })
 export class StatsGetSubCommand implements DiscordTransformedCommand&lt;GetDto&gt; {
-
-  private _logger: Logger &#x3D; new Logger(StatsGetSubCommand.name)
+  private _logger: Logger &#x3D; new Logger(StatsGetSubCommand.name);
 
   constructor(
     private _haloDotApi: HaloDotApiService,
-    private _userService: UserService
-  ) { }
+    private _userService: UserService,
+  ) {}
 
-  async handler(@Payload() dto: GetDto, interaction: CommandInteraction): Promise&lt;any&gt; {
+  async handler(
+    @Payload() dto: GetDto,
+    interaction: CommandInteraction,
+  ): Promise&lt;any&gt; {
     try {
-
-
       const defer &#x3D; await interaction.deferReply({ fetchReply: true });
       // const reply &#x3D; await interaction.fetchReply()
-      this._logger.verbose(JSON.stringify(defer))
+      this._logger.verbose(JSON.stringify(defer));
 
       // https://github.com/discordjs/discord.js/issues/7005
-      const hasParam &#x3D; !!dto.gamertag
-      const userId &#x3D; interaction.user.id
+      const hasParam &#x3D; !!dto.gamertag;
+      const userId &#x3D; interaction.user.id;
 
       let gamerTag: string;
       let embedReply: MessageEmbed;
@@ -362,198 +368,238 @@ export class StatsGetSubCommand implements DiscordTransformedCommand&lt;GetDto&g
 
       if (hasParam) {
         gamerTag &#x3D; dto.gamertag;
-        this._logger.debug(&#x60;gamerTag as param: ${gamerTag}&#x60;)
+        this._logger.debug(&#x60;gamerTag as param: ${gamerTag}&#x60;);
 
+        const statsCSR &#x3D; await this._haloDotApi
+          .requestPlayerStatsCSR(gamerTag, &#x27;open&#x27;)
+          .catch((error) &#x3D;&gt; {
+            this._logger.error(error);
+          });
+        const statsRecord &#x3D; await this._haloDotApi
+          .requestPlayerServiceRecord(gamerTag)
+          .catch((error) &#x3D;&gt; {
+            this._logger.error(error);
+          });
 
-        const statsCSR &#x3D; await this._haloDotApi.requestPlayerStatsCSR(gamerTag, &#x27;open&#x27;).catch((error) &#x3D;&gt; {
-          this._logger.error(error)
-        })
-        const statsRecord &#x3D; await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) &#x3D;&gt; {
-          this._logger.error(error)
-        })
-
-        if (statsCSR &amp;&amp; statsCSR.data &amp;&amp; statsRecord &amp;&amp; statsRecord.data &amp;&amp; !interaction.replied) {
-
+        if (
+          statsCSR &amp;&amp;
+          statsCSR.data &amp;&amp;
+          statsRecord &amp;&amp;
+          statsRecord.data &amp;&amp;
+          !interaction.replied
+        ) {
           embedReply &#x3D; new MessageEmbed()
             .setColor(&#x27;#CCCCFF&#x27;)
             .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
             .setTitle(gamerTag)
             .setDescription(statsCSR.data[0].response.current.tier)
             .addFields(
-              { name: &#x60;Kills&#x60;, value: &#x60; ${statsRecord.data.summary.kills}&#x60;, inline: true },
-              { name: &#x60;Deaths&#x60;, value: &#x60; ${statsRecord.data.summary.deaths}&#x60;, inline: true },
-              { name: &#x60;Assists&#x60;, value: &#x60; ${statsRecord.data.summary.assists}&#x60;, inline: true },
+              {
+                name: &#x60;Kills&#x60;,
+                value: &#x60; ${statsRecord.data.summary.kills}&#x60;,
+                inline: true,
+              },
+              {
+                name: &#x60;Deaths&#x60;,
+                value: &#x60; ${statsRecord.data.summary.deaths}&#x60;,
+                inline: true,
+              },
+              {
+                name: &#x60;Assists&#x60;,
+                value: &#x60; ${statsRecord.data.summary.assists}&#x60;,
+                inline: true,
+              },
             )
             .addFields(
-              { name: &#x60;KDA&#x60;, value: &#x60; ${statsRecord.data.kda.toFixed(1)}&#x60;, inline: true },
-              { name: &#x60;KDR&#x60;, value: &#x60; ${statsRecord.data.kdr.toFixed(1)}&#x60;, inline: true },
-              { name: &#x60;Matches Played&#x60;, value: &#x60; ${statsRecord.data.matches_played}&#x60;, inline: true },
+              {
+                name: &#x60;KDA&#x60;,
+                value: &#x60; ${statsRecord.data.kda.toFixed(1)}&#x60;,
+                inline: true,
+              },
+              {
+                name: &#x60;KDR&#x60;,
+                value: &#x60; ${statsRecord.data.kdr.toFixed(1)}&#x60;,
+                inline: true,
+              },
+              {
+                name: &#x60;Matches Played&#x60;,
+                value: &#x60; ${statsRecord.data.matches_played}&#x60;,
+                inline: true,
+              },
             )
             .setFooter({
-              text: &#x60;Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%&#x60;,
-            })
+              text: &#x60;Time played: ${
+                statsRecord.data.time_played.human
+              }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%&#x60;,
+            });
           // .setTimestamp()
           replyMessage &#x3D; {
             embeds: [embedReply],
-            fetchReply: true
-          }
-
-          console.log(&#x27;1&#x27;)
+            fetchReply: true,
+          };
 
           if (interaction.deferred &amp;&amp; !interaction.replied)
-            await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { this._logger.verbose(reply) }).catch((error) &#x3D;&gt; {
-              Promise.reject(error)
-            })
-
-
+            await interaction
+              .editReply(replyMessage)
+              .then((reply) &#x3D;&gt; {
+                this._logger.verbose(reply);
+              })
+              .catch((error) &#x3D;&gt; {
+                Promise.reject(error);
+              });
         } else {
           let errorEmbed &#x3D; new MessageEmbed()
             .setColor(&#x27;#FF0000&#x27;)
             .setTitle(&#x27;Error&#x27;)
-            .setDescription(&#x60;Stats not found for ${gamerTag}&#x60;)
+            .setDescription(&#x60;Stats not found for ${gamerTag}&#x60;);
           replyMessage &#x3D; {
             embeds: [errorEmbed],
-            fetchReply: true
-          }
+            fetchReply: true,
+          };
 
-          console.log(&#x27;2&#x27;)
-
-          // if (interaction.deferred &amp;&amp; !interaction.replied)
-          await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { this._logger.verbose(reply) }).catch((error) &#x3D;&gt; {
-            Promise.reject(error)
-          })
-
-          // interaction.reply(replyMessage).then((reply) &#x3D;&gt; {
-          //   this._logger.debug(&#x60;reply: ${reply}&#x60;)
-          // })
+          await interaction
+            .editReply(replyMessage)
+            .then((reply) &#x3D;&gt; {
+              this._logger.verbose(reply);
+            })
+            .catch((error) &#x3D;&gt; {
+              Promise.reject(error);
+            });
         }
-
       } else {
-        const botUser &#x3D; await this._userService.user({
-          discord_user_id: userId,
-        }).catch((error) &#x3D;&gt; {
-          this._logger.error(error)
-        })
+        const botUser &#x3D; await this._userService
+          .user({
+            discord_user_id: userId,
+          })
+          .catch((error) &#x3D;&gt; {
+            this._logger.error(error);
+          });
 
         if (botUser) {
-          gamerTag &#x3D; botUser.gamertag
-          this._logger.debug(&#x60;gamerTag from botuser: ${gamerTag}&#x60;)
+          gamerTag &#x3D; botUser.gamertag;
+          this._logger.debug(&#x60;gamerTag from botuser: ${gamerTag}&#x60;);
 
           // TODO write query against HaloDotApi
-          const statsCSR &#x3D; await this._haloDotApi.requestPlayerStatsCSR(gamerTag, &#x27;open&#x27;).catch((error) &#x3D;&gt; {
-            this._logger.error(error)
-          })
+          const statsCSR &#x3D; await this._haloDotApi
+            .requestPlayerStatsCSR(gamerTag, &#x27;open&#x27;)
+            .catch((error) &#x3D;&gt; {
+              this._logger.error(error);
+            });
 
-          const statsRecord &#x3D; await this._haloDotApi.requestPlayerServiceRecord(gamerTag).catch((error) &#x3D;&gt; {
-            this._logger.error(error)
-          })
+          const statsRecord &#x3D; await this._haloDotApi
+            .requestPlayerServiceRecord(gamerTag)
+            .catch((error) &#x3D;&gt; {
+              this._logger.error(error);
+            });
 
-          if (statsCSR &amp;&amp; statsCSR.data &amp;&amp; statsRecord &amp;&amp; statsRecord.data &amp;&amp; !interaction.replied) {
-
+          if (
+            statsCSR &amp;&amp;
+            statsCSR.data &amp;&amp;
+            statsRecord &amp;&amp;
+            statsRecord.data &amp;&amp;
+            !interaction.replied
+          ) {
             embedReply &#x3D; new MessageEmbed()
               .setColor(&#x27;#CCCCFF&#x27;)
               .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
               .setTitle(gamerTag)
               .setDescription(statsCSR.data[0].response.current.tier)
               .addFields(
-                { name: &#x60;Kills&#x60;, value: &#x60; ${statsRecord.data.summary.kills}&#x60;, inline: true },
-                { name: &#x60;Deaths&#x60;, value: &#x60; ${statsRecord.data.summary.deaths}&#x60;, inline: true },
-                { name: &#x60;Assists&#x60;, value: &#x60; ${statsRecord.data.summary.assists}&#x60;, inline: true },
+                {
+                  name: &#x60;Kills&#x60;,
+                  value: &#x60; ${statsRecord.data.summary.kills}&#x60;,
+                  inline: true,
+                },
+                {
+                  name: &#x60;Deaths&#x60;,
+                  value: &#x60; ${statsRecord.data.summary.deaths}&#x60;,
+                  inline: true,
+                },
+                {
+                  name: &#x60;Assists&#x60;,
+                  value: &#x60; ${statsRecord.data.summary.assists}&#x60;,
+                  inline: true,
+                },
               )
               .addFields(
-                { name: &#x60;KDA&#x60;, value: &#x60; ${statsRecord.data.kda.toFixed(1)}&#x60;, inline: true },
-                { name: &#x60;KDR&#x60;, value: &#x60; ${statsRecord.data.kdr.toFixed(1)}&#x60;, inline: true },
-                { name: &#x60;Matches Played&#x60;, value: &#x60; ${statsRecord.data.matches_played}&#x60;, inline: true },
+                {
+                  name: &#x60;KDA&#x60;,
+                  value: &#x60; ${statsRecord.data.kda.toFixed(1)}&#x60;,
+                  inline: true,
+                },
+                {
+                  name: &#x60;KDR&#x60;,
+                  value: &#x60; ${statsRecord.data.kdr.toFixed(1)}&#x60;,
+                  inline: true,
+                },
+                {
+                  name: &#x60;Matches Played&#x60;,
+                  value: &#x60; ${statsRecord.data.matches_played}&#x60;,
+                  inline: true,
+                },
               )
               .setFooter({
-                text: &#x60;Time played: ${statsRecord.data.time_played.human}. Wins: ${statsRecord.data.win_rate.toFixed(1)}%&#x60;,
-              })            // .setTimestamp()
+                text: &#x60;Time played: ${
+                  statsRecord.data.time_played.human
+                }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%&#x60;,
+              }); // .setTimestamp()
 
             replyMessage &#x3D; {
               embeds: [embedReply],
-              fetchReply: true
-            }
-            console.log(&#x27;3&#x27;)
-
-
-            // if (interaction.deferred &amp;&amp; !interaction.replied)
-            //   return await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { interaction.deleteReply() }).catch((error) &#x3D;&gt; {
-            //     Promise.reject(error)
-            //   })
-
+              fetchReply: true,
+            };
 
             if (interaction.deferred &amp;&amp; !interaction.replied)
-              await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { this._logger.verbose(reply) }).catch((error) &#x3D;&gt; {
-                Promise.reject(error)
-              })
-
-
-            // interaction.reply(replyMessage).then((reply) &#x3D;&gt; {
-            //   this._logger.debug(&#x60;reply: ${reply}&#x60;)
-            // }).finally(() &#x3D;&gt; {
-            //   // interaction.editReply(&#x27;edit reply&#x27;)
-            // })
-
-            // return await interaction.followUp(replyMessage)
-
-
-
-
+              await interaction
+                .editReply(replyMessage)
+                .then((reply) &#x3D;&gt; {
+                  this._logger.verbose(reply);
+                })
+                .catch((error) &#x3D;&gt; {
+                  Promise.reject(error);
+                });
           } else {
             let errorEmbed &#x3D; new MessageEmbed()
               .setColor(&#x27;#FF0000&#x27;)
               .setTitle(&#x27;Error&#x27;)
-              .setDescription(&#x60;Stats not found for ${gamerTag}&#x60;)
+              .setDescription(&#x60;Stats not found for ${gamerTag}&#x60;);
             replyMessage &#x3D; {
               embeds: [errorEmbed],
-              fetchReply: true
-            }
-
-            console.log(&#x27;4&#x27;)
-
-            // if (interaction.deferred &amp;&amp; !interaction.replied)
-            //   return await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { interaction.deleteReply() }).catch((error) &#x3D;&gt; {
-            //     Promise.reject(error)
-            //   })
+              fetchReply: true,
+            };
 
             if (interaction.deferred &amp;&amp; !interaction.replied)
-              await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { this._logger.verbose(reply) }).catch((error) &#x3D;&gt; {
-                Promise.reject(error)
-              })
-
-            // interaction.reply(replyMessage).then((reply) &#x3D;&gt; {
-            //   this._logger.debug(&#x60;reply: ${reply}&#x60;)
-            // })
-
+              await interaction
+                .editReply(replyMessage)
+                .then((reply) &#x3D;&gt; {
+                  this._logger.verbose(reply);
+                })
+                .catch((error) &#x3D;&gt; {
+                  Promise.reject(error);
+                });
           }
-
         } else {
-          embedReply &#x3D; new MessageEmbed()
-            .setColor(&#x27;#FF7F50&#x27;)
-            // .setDescription(&#x27;Gamertag Updated&#x27;)
-            .addFields(
-              { name: &#x60;Error&#x60;, value: &#x60;No Xbox Gametag registered for user&#x60; },
-            )
-          // .setTimestamp()
+          embedReply &#x3D; new MessageEmbed().setColor(&#x27;#FF7F50&#x27;).addFields({
+            name: &#x60;Error&#x60;,
+            value: &#x60;No Xbox Gametag registered for user&#x60;,
+          });
+
           replyMessage &#x3D; {
             embeds: [embedReply],
-            fetchReply: true
-          }
+            fetchReply: true,
+          };
 
-          console.log(&#x27;5&#x27;)
+          console.log(&#x27;5&#x27;);
 
-          // if (interaction.deferred &amp;&amp; !interaction.replied)
-          //   return await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { interaction.deleteReply() }).catch((error) &#x3D;&gt; {
-          //     Promise.reject(error)
-          //   })
           if (interaction.deferred &amp;&amp; !interaction.replied)
-            await interaction.editReply(replyMessage).then((reply) &#x3D;&gt; { this._logger.verbose(reply) }).catch((error) &#x3D;&gt; {
-              Promise.reject(error)
-            })
-
-          // interaction.reply(replyMessage).then((reply) &#x3D;&gt; {
-          //   this._logger.debug(&#x60;reply: ${reply}&#x60;)
-          // })
+            await interaction
+              .editReply(replyMessage)
+              .then((reply) &#x3D;&gt; {
+                this._logger.verbose(reply);
+              })
+              .catch((error) &#x3D;&gt; {
+                Promise.reject(error);
+              });
         }
       }
     } catch (error) {
@@ -565,25 +611,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand&lt;GetDto&g
     }
   }
 }
-
-
-
-// // import { EmailDto } from &#x27;../../dto/email.dto&#x27;;
-// import { TransformPipe } from &#x27;@discord-nestjs/common&#x27;;
-// import {
-//   Payload,
-//   // SubCommand,
-//   DiscordTransformedCommand,
-//   UsePipes,
-// } from &#x27;@discord-nestjs/core&#x27;;
-
-// @UsePipes(TransformPipe)
-// @SubCommand({ name: &#x27;email&#x27;, description: &#x27;Register by email&#x27; })
-// export class EmailSubCommand implements DiscordTransformedCommand&lt;EmailDto&gt; {
-//   handler(@Payload() dto: EmailDto): string {
-//     return &#x60;Success register user: ${dto.email}, ${dto.name}, ${dto.age}, ${dto.city}&#x60;;
-//   }
-// }</code></pre>
+</code></pre>
     </div>
 </div>
 

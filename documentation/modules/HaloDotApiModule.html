@@ -197,8 +197,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="44"
-                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.module.ts:44</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="49"
+                            class="link-to-prism">src/controllers/halo-dot-api/halo-dot-api.module.ts:49</a></div>
                 </td>
             </tr>
 
@@ -253,7 +253,12 @@
     <div class="tab-pane fade  tab-source-code" id="c-source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { DiscordCommandProvider } from &#x27;@discord-nestjs/core&#x27;;
 import { HttpModule } from &#x27;@nestjs/axios&#x27;;
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from &#x27;@nestjs/common&#x27;;
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from &#x27;@nestjs/common&#x27;;
 import { ConfigModule, ConfigService } from &#x27;@nestjs/config&#x27;;
 import { APP_FILTER } from &#x27;@nestjs/core&#x27;;
 import { AllExceptionsFilter } from &#x27;src/exception-filters/globalExceptions&#x27;;
@@ -276,7 +281,7 @@ import { HaloDotApiController } from &#x27;./halo-dot-api.controller&#x27;;
       }),
       inject: [ConfigService],
     }),
-    HaloDotApiModule
+    HaloDotApiModule,
     // HttpModule.register({
     //   headers: {
     //     &#x27;Authorization&#x27;: &#x27;Cryptum-Token HIDM6WWaSZUc15AhW8jAPc3kJoAlOizH63Kn3XGqn4gmHEgBxO3dfEj1oqbMe2Oq&#x27;,
@@ -290,14 +295,12 @@ import { HaloDotApiController } from &#x27;./halo-dot-api.controller&#x27;;
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-    HaloDotApiService]
+    HaloDotApiService,
+  ],
 })
 export class HaloDotApiModule implements NestModule {
-
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(HaloDotApiMiddleware)
-      .forRoutes(HaloDotApiController)
+    consumer.apply(HaloDotApiMiddleware).forRoutes(HaloDotApiController);
   }
 }
 </code></pre>

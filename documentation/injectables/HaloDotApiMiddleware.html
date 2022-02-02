@@ -134,8 +134,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="10"
-                            class="link-to-prism">src/middleware/halo-dot-api.middleware.ts:10</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="9"
+                            class="link-to-prism">src/middleware/halo-dot-api.middleware.ts:9</a></div>
                 </td>
             </tr>
 
@@ -253,12 +253,10 @@ export class HaloDotApiMiddleware implements NestMiddleware {
   private _logger &#x3D; new Logger(HaloDotApiMiddleware.name);
   // constructor(private _logger: Logger) { }
 
-
   use(req: Request, res: Response, next: NextFunction) {
-
     // const
 
-    this._logger.warn(&#x27;HaloDotApiMiddleWare HEADER: &#x27;, req.headers)
+    this._logger.warn(&#x27;HaloDotApiMiddleWare HEADER: &#x27;, req.headers);
     // console.log()
 
     next();

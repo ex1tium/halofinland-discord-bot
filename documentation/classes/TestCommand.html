@@ -149,8 +149,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="16"
-                            class="link-to-prism">src/commands/test.command.ts:16</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="14"
+                            class="link-to-prism">src/commands/test.command.ts:14</a></div>
                 </td>
             </tr>
 
@@ -218,9 +218,7 @@ import { ToJsonResponse } from &#x27;src/models/interaction-toJSON.model&#x27;;
   description: &#x27;test a command&#x27;,
 })
 export class TestCommand implements DiscordCommand {
-  constructor(
-    // private readonly _haloDotApi: HalodotapiService
-  ) { }
+  constructor() {} // private readonly _haloDotApi: HalodotapiService
 
   handler(interaction: CommandInteraction): string {
     // const isCommand &#x3D; interaction.isCommand()
@@ -258,15 +256,12 @@ export class TestCommand implements DiscordCommand {
     // //   ephemeral: null
     // // }
 
-    // // console.log(&#x27;interaction.command&#x27;, interaction.command) 
-
+    // // console.log(&#x27;interaction.command&#x27;, interaction.command)
 
     // // return this._haloDotApi.init();
     return null;
   }
 }
-
-
 </code></pre>
     </div>
 </div>

@@ -1,5 +1,4 @@
 declare module CsrsModels {
-
   export interface Current {
     value: number;
     measurement_matches_remaining: number;
@@ -60,7 +59,4 @@ declare module CsrsModels {
     data: QueueGroups[];
     additional: Additional;
   }
-
-
 }
-
