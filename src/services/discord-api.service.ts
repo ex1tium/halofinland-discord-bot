@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, take } from 'rxjs';
 import { DefineDiscordCommand } from 'src/models/sub-command-options.model';
 import { AxiosResponse } from 'axios';
 
@@ -32,19 +32,21 @@ export class DiscordApiService {
   }
 
 
+
   /**
-   * It takes in a name, description, and type, and options, and sends it to the Discord API
+   * It takes in a name, description, and type, and then sends a post request to the Discord API with
+   * the data to register a new command for the bot. Required appropriate scope and permission.
    * @param {string} name - The name of the command.
    * @param {string} description - The description of the command.
-   * @param {number} [type] - The type of command.
+   * @param {'sub_command' | 'sub_command_group'} [type] - The type of command.
    * @param {DefineDiscordCommand[]} [options] - An array of objects that define the options for the
    * command.
-   * @returns The response from the server.
+   * @returns The response from the post request.
    */
   async registerNewCommand(
     name: string,
     description: string,
-    type?: number,
+    type?: 'sub_command' | 'sub_command_group',
     options?: DefineDiscordCommand[],
   ): Promise<any> {
     try {
@@ -54,14 +56,18 @@ export class DiscordApiService {
       };
 
       if (type) {
-        data.type = type;
+        data.type = type === 'sub_command' ? 1 : type === 'sub_command_group' ? 2 : null;
+
+        if (data.type === null) {
+          return Promise.reject('Check type parameter');
+        }
       }
 
       if (options) {
         data.options = options;
       }
 
-      this._logger.warn(data);
+      // this._logger.warn(data);
 
       const post = this._httpService.post(this.discordUrl, data, {
         headers: {
@@ -69,7 +75,14 @@ export class DiscordApiService {
         },
       });
 
-      return post
+      const result = await lastValueFrom(post)
+
+
+      if (result.status === 200) {
+        return result.data
+      } else {
+        return Promise.reject(`Error registering new command. HttpStatus: ${result.status}`)
+      }
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));
@@ -189,6 +202,8 @@ export class DiscordApiService {
       if (get.status == 200) {
         this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data));
         return get;
+      } else {
+        Promise.reject(`API responded with status ${get.status}`)
       }
     } catch (error) {
       if (error && error.stack) {

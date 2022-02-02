@@ -9,7 +9,6 @@ import {
 } from '@discord-nestjs/core';
 import { TwitterService } from './services/twitter.service';
 import { Subscription } from 'rxjs';
-import { DefineDiscordCommand } from './models/sub-command-options.model';
 import { DiscordApiService } from './services/discord-api.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
@@ -19,23 +18,18 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   private readonly _logger = new Logger(AppController.name);
   private _subMap = new Map<string, Subscription>();
 
-  allowedChannelIds: string[] = ['911368720440496208'];
-
   constructor(
     private _twitterService: TwitterService,
     private _discordApiService: DiscordApiService,
-  ) {
-  }
+  ) { }
 
-  onModuleInit() {
-
-  }
+  onModuleInit() { }
 
   @Once('ready')
-  onReady() {
+  async onReady() {
 
     /* The below code is initializing the TwitterService. */
-    this._twitterService.init().catch((error) => {
+    await this._twitterService.init().catch((error) => {
       this._logger.error(error);
     }).then(() => {
 
@@ -53,26 +47,29 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       }),
     );
 
+
+    /* The `registerNewCommand` method is used to register a new command with the Discord API. The first
+    parameter is the name of the command, the second parameter is a description of the command, and
+    the third parameter is the type of the command. The `constructStatsCommand` method is used
+    to construct stats the command. */
+
+    // Doesn't have to be ran every startup. Only if changes are made
+    // TODO write commandline argument for running this command?
+    await this._discordApiService.registerNewCommand('stats', 'Commands for interacting with Halo Stats API', 'sub_command', await this._discordApiService.constructStatsCommand())
+      .then((value) => {
+        // this._logger.verbose(`Registered command: ${JSON.stringify(value)}`)
+      }).catch((error) => {
+        this._logger.error(error)
+      })
+
+
+    await this._discordApiService.getCommands()
+      .catch((error) => {
+        this._logger.error(error)
+      })
+
     this._logger.log('Bot was started!');
 
-
-
-    // this._subMap.set('stats_command', this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands))
-    // const result = await this._discordApiService.getCommands();
-    // this._discordApiService.deleteCommand('912494585433952346');
-
-    // this._discordApiService.getCommands().catch((error) => {
-    //   this._logger.error(error);
-    // })
-
-    // this._subMap.set('test_command', this._discordApiService.registerNewCommand('test', 'testing command', 1, null))
-
-    // this._discordApiService.registerNewCommand('stats', 'Halo Infinite stats commands', 1, statsSubCommands)
-
-    // const invite = this.discordProvider.getClient().generateInvite({
-    //   // scopes:
-    // });
-    // console.log(invite)
   }
 
   /* This is a cron expression that will run every 5 minutes. */

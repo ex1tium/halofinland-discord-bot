@@ -30,8 +30,8 @@ SharedModule, which will configure the shared services. */
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
-        timeout: 15,
-        maxRedirects: 5,
+        timeout: 10000,
+        maxRedirects: 3,
       }),
       inject: [ConfigService],
     }),
