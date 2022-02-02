@@ -128,8 +128,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="88"
-                            class="link-to-prism">src/app.controller.ts:88</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="90"
+                            class="link-to-prism">src/app.controller.ts:90</a></div>
                 </td>
             </tr>
 
@@ -167,8 +167,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="26"
-                            class="link-to-prism">src/app.controller.ts:26</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="23"
+                            class="link-to-prism">src/app.controller.ts:23</a></div>
                 </td>
             </tr>
 
@@ -213,8 +213,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="29"
-                            class="link-to-prism">src/app.controller.ts:29</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="26"
+                            class="link-to-prism">src/app.controller.ts:26</a></div>
                 </td>
             </tr>
 
@@ -259,8 +259,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="77"
-                            class="link-to-prism">src/app.controller.ts:77</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="79"
+                            class="link-to-prism">src/app.controller.ts:79</a></div>
                 </td>
             </tr>
 
@@ -286,14 +286,11 @@
   OnModuleDestroy,
   OnModuleInit,
 } from &#x27;@nestjs/common&#x27;;
-import {
-  Once,
-} from &#x27;@discord-nestjs/core&#x27;;
+import { Once } from &#x27;@discord-nestjs/core&#x27;;
 import { TwitterService } from &#x27;./services/twitter.service&#x27;;
 import { Subscription } from &#x27;rxjs&#x27;;
 import { DiscordApiService } from &#x27;./services/discord-api.service&#x27;;
 import { Cron, CronExpression } from &#x27;@nestjs/schedule&#x27;;
-
 
 @Controller()
 export class AppController implements OnModuleInit, OnModuleDestroy {
@@ -309,13 +306,13 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
   @Once(&#x27;ready&#x27;)
   async onReady() {
-
     /* The below code is initializing the TwitterService. */
-    await this._twitterService.init().catch((error) &#x3D;&gt; {
-      this._logger.error(error);
-    }).then(() &#x3D;&gt; {
-
-    })
+    await this._twitterService
+      .init()
+      .catch((error) &#x3D;&gt; {
+        this._logger.error(error);
+      })
+      .then(() &#x3D;&gt; { });
 
     /* The _subMap is a map of the
     subscriptions. The _subMap.set() method adds a subscription to the map. */
@@ -324,11 +321,12 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       /* Subscribing to the newTweets$ observable. */
       this._twitterService.newTweets$.subscribe((newTweets) &#x3D;&gt; {
         if (newTweets) {
-          this._logger.verbose(&#x60;Found ${newTweets.length} new tweets from @HaloSupport&#x60;);
+          this._logger.verbose(
+            &#x60;Found ${newTweets.length} new tweets from @HaloSupport&#x60;,
+          );
         }
       }),
     );
-
 
     /* The &#x60;registerNewCommand&#x60; method is used to register a new command with the Discord API. The first
     parameter is the name of the command, the second parameter is a description of the command, and
@@ -337,21 +335,25 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
     // Doesn&#x27;t have to be ran every startup. Only if changes are made
     // TODO write commandline argument for running this command?
-    await this._discordApiService.registerNewCommand(&#x27;stats&#x27;, &#x27;Commands for interacting with Halo Stats API&#x27;, &#x27;sub_command&#x27;, await this._discordApiService.constructStatsCommand())
+    await this._discordApiService
+      .registerNewCommand(
+        &#x27;stats&#x27;,
+        &#x27;Commands for interacting with Halo Stats API&#x27;,
+        &#x27;sub_command&#x27;,
+        await this._discordApiService.constructStatsCommand(),
+      )
       .then((value) &#x3D;&gt; {
         // this._logger.verbose(&#x60;Registered command: ${JSON.stringify(value)}&#x60;)
-      }).catch((error) &#x3D;&gt; {
-        this._logger.error(error)
       })
-
-
-    await this._discordApiService.getCommands()
       .catch((error) &#x3D;&gt; {
-        this._logger.error(error)
-      })
+        this._logger.error(error);
+      });
+
+    await this._discordApiService.getCommands().catch((error) &#x3D;&gt; {
+      this._logger.error(error);
+    });
 
     this._logger.log(&#x27;Bot was started!&#x27;);
-
   }
 
   /* This is a cron expression that will run every 5 minutes. */

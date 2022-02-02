@@ -407,8 +407,8 @@ application ID.</li>
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="46"
-                            class="link-to-prism">src/services/discord-api.service.ts:46</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="44"
+                            class="link-to-prism">src/services/discord-api.service.ts:44</a></div>
                 </td>
             </tr>
 
@@ -652,8 +652,6 @@ export class DiscordApiService {
     // console.log(&#x27;discordAPI token:&#x27;, this.botToken);
   }
 
-
-
   /**
    * It takes in a name, description, and type, and then sends a post request to the Discord API with
    * the data to register a new command for the bot. Required appropriate scope and permission.
@@ -677,7 +675,8 @@ export class DiscordApiService {
       };
 
       if (type) {
-        data.type &#x3D; type &#x3D;&#x3D;&#x3D; &#x27;sub_command&#x27; ? 1 : type &#x3D;&#x3D;&#x3D; &#x27;sub_command_group&#x27; ? 2 : null;
+        data.type &#x3D;
+          type &#x3D;&#x3D;&#x3D; &#x27;sub_command&#x27; ? 1 : type &#x3D;&#x3D;&#x3D; &#x27;sub_command_group&#x27; ? 2 : null;
 
         if (data.type &#x3D;&#x3D;&#x3D; null) {
           return Promise.reject(&#x27;Check type parameter&#x27;);
@@ -696,13 +695,14 @@ export class DiscordApiService {
         },
       });
 
-      const result &#x3D; await lastValueFrom(post)
-
+      const result &#x3D; await lastValueFrom(post);
 
       if (result.status &#x3D;&#x3D;&#x3D; 200) {
-        return result.data
+        return result.data;
       } else {
-        return Promise.reject(&#x60;Error registering new command. HttpStatus: ${result.status}&#x60;)
+        return Promise.reject(
+          &#x60;Error registering new command. HttpStatus: ${result.status}&#x60;,
+        );
       }
     } catch (error) {
       if (error &amp;&amp; error.stack) {
@@ -803,7 +803,7 @@ export class DiscordApiService {
       },
     ];
 
-    return statsSubCommands
+    return statsSubCommands;
   }
 
   /**
@@ -824,7 +824,7 @@ export class DiscordApiService {
         this._logger.debug(&#x60;REGISTERED COMMANDS: &#x60;, JSON.stringify(get.data));
         return get;
       } else {
-        Promise.reject(&#x60;API responded with status ${get.status}&#x60;)
+        Promise.reject(&#x60;API responded with status ${get.status}&#x60;);
       }
     } catch (error) {
       if (error &amp;&amp; error.stack) {

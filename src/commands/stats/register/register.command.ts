@@ -25,10 +25,13 @@ export class StatsRegSubCommand
 {
   private _logger: Logger = new Logger('StatsRegSubCommand');
 
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
     try {
+
+      const defer = await interaction.deferReply({ fetchReply: true });
+
       const gamerTag = dto.gamertag;
       const allowLogging = dto.allowlogging;
       this._logger.warn(`allowLogging: ${allowLogging}`);
@@ -40,10 +43,11 @@ export class StatsRegSubCommand
 
       let wasUpdated = false;
 
-      // this._logger.warn(`userExists: ${JSON.stringify(userExists)}`);
+      this._logger.warn(`userExists: ${JSON.stringify(userExists)}`);
+      this._logger.warn(`userId: ${JSON.stringify(userId)}`);
 
       if (userExists && userExists.discord_user_id) {
-        this._userService.updateUser({
+        await this._userService.updateUser({
           where: {
             discord_user_id: userId,
           },
@@ -51,14 +55,18 @@ export class StatsRegSubCommand
             gamertag: gamerTag,
             allow_stats_logging: allowLogging ? 1 : 0,
           },
+        }).catch((error) => {
+          this._logger.error(error);
         });
 
         wasUpdated = true;
       } else {
-        this._userService.createUser({
+        await this._userService.createUser({
           discord_user_id: userId,
           gamertag: gamerTag,
           allow_stats_logging: allowLogging ? 1 : 0,
+        }).catch((error) => {
+          this._logger.error(error);
         });
       }
 
@@ -88,9 +96,15 @@ export class StatsRegSubCommand
         ephemeral: true,
       };
 
-      return interaction.reply(reply).catch((error) => {
-        Promise.reject(error);
-      });
+      if (interaction.deferred && !interaction.replied)
+        await interaction
+          .editReply(reply)
+          .then((reply) => {
+            this._logger.verbose(reply);
+          })
+          .catch((error) => {
+            Promise.reject(error);
+          });
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));

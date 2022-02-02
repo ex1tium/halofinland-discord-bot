@@ -26,10 +26,13 @@ export class StatsUpdateSubCommand
 {
   private _logger: Logger = new Logger(StatsUpdateSubCommand.name);
 
-  constructor(private _userService: UserService) {}
+  constructor(private _userService: UserService) { }
 
   async handler(@Payload() dto: UpdateDto, interaction: CommandInteraction) {
     try {
+
+      await interaction.deferReply({ fetchReply: true });
+
       const gamerTag = dto.gamertag;
       const userId = interaction.user.id;
       const userExists = await this._userService.user({
@@ -62,10 +65,17 @@ export class StatsUpdateSubCommand
         this._logger.verbose(JSON.stringify(dto));
         this._logger.verbose(interaction);
 
-        return reply;
+        return await interaction
+          .editReply(reply)
+          .then((reply) => {
+            this._logger.verbose(reply);
+          })
+          .catch((error) => {
+            Promise.reject(error);
+          });
       }
 
-      return 'use /stats reg :gamertag: command to register first';
+      // return 'use /stats reg :gamertag: command to register first';
     } catch (error) {
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));

@@ -147,7 +147,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:18</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:22</a></div>
                             </td>
                         </tr>
 
@@ -222,8 +222,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="56"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:56</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="60"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:60</a></div>
                 </td>
             </tr>
 
@@ -269,8 +269,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="35"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:35</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="39"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:39</a></div>
                 </td>
             </tr>
 
@@ -310,8 +310,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="98"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:98</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="101"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:101</a></div>
                 </td>
             </tr>
 
@@ -390,8 +390,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="69"
-                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:69</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="72"
+                            class="link-to-prism">src/services/haloDotApi/halodotapi.service.ts:72</a></div>
                 </td>
             </tr>
 
@@ -566,7 +566,7 @@ import { AxiosResponse } from &#x27;axios&#x27;;
 import { lastValueFrom, Observable } from &#x27;rxjs&#x27;;
 
 /**
- *  The HaloDotApiService class is a class that is responsible for making requests to the HaloDotApi. 
+ *  The HaloDotApiService class is a class that is responsible for making requests to the HaloDotApi.
  *
  * @export
  * @class HaloDotApiService
@@ -576,7 +576,11 @@ export class HaloDotApiService {
   private readonly _logger &#x3D; new Logger(HaloDotApiService.name);
 
   private _haloDotApiInfiniteBaseUrl: string;
-  private _headers: { Authorization: string; &#x27;Content-Type&#x27;: string; &#x27;Cryptum-API-Version&#x27;: string; };
+  private _headers: {
+    Authorization: string;
+    &#x27;Content-Type&#x27;: string;
+    &#x27;Cryptum-API-Version&#x27;: string;
+  };
 
   constructor(
     private _http: HttpService,
@@ -620,7 +624,6 @@ export class HaloDotApiService {
     const request &#x3D; this._http.get&lt;any&gt;(url, {});
     return request;
   }
-
 
   /**
    * It returns the CSRs for a player.
@@ -681,9 +684,7 @@ export class HaloDotApiService {
       }
     }
   }
-
 }
-
 </code></pre>
     </div>
 

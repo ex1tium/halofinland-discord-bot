@@ -333,7 +333,7 @@ export class StatsRegSubCommand
 {
   private _logger: Logger &#x3D; new Logger(&#x27;StatsRegSubCommand&#x27;);
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService) {}
 
   async handler(@Payload() dto: RegisterDto, interaction: CommandInteraction) {
     try {

@@ -26,14 +26,14 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   constructor(
     private _haloDotApi: HaloDotApiService,
     private _userService: UserService,
-  ) {}
+  ) { }
 
   async handler(
     @Payload() dto: GetDto,
     interaction: CommandInteraction,
   ): Promise<any> {
     try {
-      const defer = await interaction.deferReply({ fetchReply: true });
+      await interaction.deferReply({ fetchReply: true });
       // this._logger.verbose(JSON.stringify(defer));
 
       // https://github.com/discordjs/discord.js/issues/7005
@@ -107,9 +107,8 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               },
             )
             .setFooter({
-              text: `Time played: ${
-                statsRecord.data.time_played.human
-              }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+              text: `Time played: ${statsRecord.data.time_played.human
+                }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
             });
           // .setTimestamp()
           replyMessage = {
@@ -131,19 +130,21 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             .setColor('#FF0000')
             .setTitle('Error')
             .setDescription(`Stats not found for ${gamerTag}`);
+
           replyMessage = {
             embeds: [errorEmbed],
             fetchReply: true,
           };
 
-          await interaction
-            .editReply(replyMessage)
-            .then((reply) => {
-              this._logger.verbose(reply);
-            })
-            .catch((error) => {
-              Promise.reject(error);
-            });
+          if (interaction.deferred && !interaction.replied)
+            await interaction
+              .editReply(replyMessage)
+              .then((reply) => {
+                this._logger.verbose(reply);
+              })
+              .catch((error) => {
+                Promise.reject(error);
+              });
         }
       } else {
         const botUser = await this._userService
@@ -218,9 +219,8 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 },
               )
               .setFooter({
-                text: `Time played: ${
-                  statsRecord.data.time_played.human
-                }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
+                text: `Time played: ${statsRecord.data.time_played.human
+                  }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
               }); // .setTimestamp()
 
             replyMessage = {
