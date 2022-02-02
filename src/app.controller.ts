@@ -18,9 +18,9 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   constructor(
     private _twitterService: TwitterService,
     private _discordApiService: DiscordApiService,
-  ) {}
+  ) { }
 
-  onModuleInit() {}
+  onModuleInit() { }
 
   @Once('ready')
   async onReady() {
@@ -30,7 +30,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       .catch((error) => {
         this._logger.error(error);
       })
-      .then(() => {});
+      .then(() => { });
 
     /* The _subMap is a map of the
     subscriptions. The _subMap.set() method adds a subscription to the map. */
