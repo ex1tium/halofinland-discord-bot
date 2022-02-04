@@ -59,23 +59,23 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
     // Doesn't have to be ran every startup. Only if changes are made
     // TODO write commandline argument for running this command?
-    await this._discordApiService
-      .registerNewCommand(
-        'stats',
-        'Commands for interacting with Halo Stats API',
-        'sub_command',
-        await this._discordApiService.constructStatsCommand(),
-      )
-      .then((value) => {
-        // this._logger.verbose(`Registered command: ${JSON.stringify(value)}`)
-      })
-      .catch((error) => {
-        this._logger.error(error);
-      });
+    // await this._discordApiService
+    //   .registerNewCommand(
+    //     'stats',
+    //     'Commands for interacting with Halo Stats API',
+    //     'sub_command',
+    //     await this._discordApiService.constructStatsCommand(),
+    //   )
+    //   .then((value) => {
+    //     // this._logger.verbose(`Registered command: ${JSON.stringify(value)}`)
+    //   })
+    //   .catch((error) => {
+    //     this._logger.error(error);
+    //   });
 
-    await this._discordApiService.getCommands().catch((error) => {
-      this._logger.error(error);
-    });
+    // await this._discordApiService.getCommands().catch((error) => {
+    //   this._logger.error(error);
+    // });
 
 
 
