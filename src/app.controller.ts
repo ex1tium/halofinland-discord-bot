@@ -46,6 +46,12 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       }),
     );
 
+    /* Deleting all commands from the command list. */
+    // await this._discordApiService.
+    //   deleteAllCommands().catch((error) => {
+    //     this._logger.error(error);
+    //   })
+
     /* The `registerNewCommand` method is used to register a new command with the Discord API. The first
     parameter is the name of the command, the second parameter is a description of the command, and
     the third parameter is the type of the command. The `constructStatsCommand` method is used
@@ -70,6 +76,8 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     await this._discordApiService.getCommands().catch((error) => {
       this._logger.error(error);
     });
+
+
 
     this._logger.log('Bot was started!');
   }

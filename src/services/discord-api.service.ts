@@ -201,7 +201,7 @@ export class DiscordApiService {
 
       if (get.status == 200) {
         this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data));
-        return get;
+        return get.data;
       } else {
         Promise.reject(`API responded with status ${get.status}`);
       }
@@ -248,5 +248,24 @@ export class DiscordApiService {
         return Promise.reject(this._logger.error(error));
       }
     }
+  }
+
+  async deleteAllCommands() {
+    try {
+      const idsToDelete = await this.getCommands() as unknown as any[];
+      this._logger.log(idsToDelete)
+
+      for (const id of idsToDelete.map(v => v.id)) {
+        this._logger.debug(id)
+        await this.deleteCommand(id);
+      }
+    } catch (error) {
+      if (error && error.stack) {
+        return Promise.reject(this._logger.error(error.stack));
+      } else {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+
   }
 }

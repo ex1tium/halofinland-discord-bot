@@ -22,7 +22,7 @@ export class StatsHelpSubCommand
 {
   private _logger: Logger = new Logger('StatsRegSubCommand');
 
-  constructor() {}
+  constructor() { }
 
   async handler(
     @Payload() dto: StatsHelpDto,
@@ -34,23 +34,23 @@ export class StatsHelpSubCommand
           .setColor('#0099ff')
           .setTitle('Ohjeet')
           .setDescription(
-            'Ohjeistus alikomennoille /stats. ?:parametri: tarkoittaa että se on valinnainen.',
+            'Ohjeistus alikomennoille /stats. ?:parametri: tarkoittaa että se on valinnainen. Xbox gamertag on nimesi joka näkyy pelissä. Voit tarkastaa sen myös täältä https://social.xbox.com/changegamertag',
           )
           .addFields(
             { name: 'help :lang:', value: 'Tulostaa tämän viestin' },
             {
               name: 'reg :gamertag: :allowlogging:',
-              value: 'Rekisteröi Xbox gamertägisi',
+              value: 'Rekisteröi Xbox nimesi (gamertag)',
             },
-            { name: 'update', value: 'Päivitä tilastot' },
+            { name: 'update', value: 'Päivitä Xbox nimesi (gamertag) botille' },
             {
               name: 'get ?:gamertag:',
               value:
-                'Tulostaa käyttäjän Halo Infinite tilastot tai hakee käyttäjän tilastot gamertagille',
+                'Tulostaa käyttäjän Halo Infinite tilastot tai hakee toisen käyttäjän tilastot käyttäjänimellä',
             },
           )
           .setFooter({
-            text: 'https://github.com/ex1tium/halofinland-discord-bot',
+            text: 'Bugit ja kehitysehdotukset: https://github.com/ex1tium/halofinland-discord-bot',
           })
           .setTimestamp();
 
@@ -75,14 +75,14 @@ export class StatsHelpSubCommand
               value: 'Prints this message in chosen language',
             },
             {
-              name: 'reg :tag: :allowlogging:',
+              name: 'reg :gamertag: :allowlogging:',
               value: 'Registers your Xbox gamertag for stats',
             },
-            { name: 'update', value: 'Updates latest stats from API' },
-            { name: 'get', value: 'Prints your stats or stats for gamertag' },
+            { name: 'update', value: 'Updates your registered Xbox gamertag' },
+            { name: 'get', value: 'Prints your stats if registered or stats for the specified gamertag' },
           )
           .setFooter({
-            text: 'https://github.com/ex1tium/halofinland-discord-bot',
+            text: 'Bugs and feature requests: https://github.com/ex1tium/halofinland-discord-bot',
           })
           .setTimestamp();
 
