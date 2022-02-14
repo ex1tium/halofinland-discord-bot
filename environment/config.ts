@@ -10,5 +10,6 @@ export default () => ({
   twitterBearerToken: process.env.TWITTER_BEARER_TOKEN,
   twitterAllowedSearchAuthorIds: process.env.TWITTER_ALLOWED_SEARCH_AUTHOR_IDS,
   haloDotToken: process.env.HALO_DOT_TOKEN,
-  haloDotGamertag: process.env.HALO_DOT_GAMERTAG
+  haloDotGamertag: process.env.HALO_DOT_GAMERTAG,
+  autocodeToken: process.env.AUTOCODE_TOKEN
 });

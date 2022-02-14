@@ -73,9 +73,9 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     //     this._logger.error(error);
     //   });
 
-    // await this._discordApiService.getCommands().catch((error) => {
-    //   this._logger.error(error);
-    // });
+    await this._discordApiService.getCommands().catch((error) => {
+      this._logger.error(error);
+    });
 
 
 
@@ -95,7 +95,13 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
   /**
    * It unsubscribes from all the subscriptions that were created in the onModuleInit function.
    */
+
   onModuleDestroy() {
     this._subMap.forEach((sub) => sub.unsubscribe());
   }
+
+
+
+
+
 }

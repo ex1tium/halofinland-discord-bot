@@ -3,6 +3,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosResponse } from 'axios';
 import { lastValueFrom, Observable } from 'rxjs';
+import { PlayerCSRSResponse } from './csrs.models';
+import { InfinitePlayerMultiplayerServiceRecordResult } from './service-record.models';
 
 /**
  *  The HaloDotApiService class is a class that is responsible for making requests to the HaloDotApi.
@@ -15,33 +17,37 @@ export class HaloDotApiService {
   private readonly _logger = new Logger(HaloDotApiService.name);
 
   private _haloDotApiInfiniteBaseUrl: string;
+  private _apiVersion: string;
   private _headers: {
     Authorization: string;
-    'Content-Type': string;
-    'Cryptum-API-Version': string;
+    Accept: string
   };
 
   constructor(
     private _http: HttpService,
     private _configService: ConfigService,
   ) {
-    this._haloDotApiInfiniteBaseUrl = `https://cryptum.halodotapi.com/games/hi/`;
+    // this._haloDotApiInfiniteBaseUrl = `https://halo.api.stdlib.com/infinite@0.3.8/`;
+    this._haloDotApiInfiniteBaseUrl = `https://halo.api.stdlib.com/infinite`;
+    this._apiVersion = '0.3.8'
+
     this._headers = {
-      Authorization: `Cryptum-Token ${this._configService.get('haloDotToken')}`,
-      'Content-Type': 'application/json',
-      'Cryptum-API-Version': '2.3-alpha',
+      Authorization: `Bearer ${this._configService.get('autocodeToken')}`,
+      Accept: 'application/json',
     };
   }
 
+
   /**
-   * It makes a request to the HaloDotApi and returns the response.
+   * It makes a request to the Halo API and returns the last value from the response.
+   * @returns The last value from the promise chain.
    */
   async init(): Promise<void | AxiosResponse<any, any>> {
     try {
       this._logger.debug(
         `haloDotApiBaseUrl: ${this._haloDotApiInfiniteBaseUrl}`,
       );
-      const url = 'https://cryptum.halodotapi.com/';
+      const url = this._haloDotApiInfiniteBaseUrl;
       // const req =
       return await lastValueFrom(this._http.get(url));
     } catch (error) {
@@ -64,24 +70,46 @@ export class HaloDotApiService {
     return request;
   }
 
-  /**
-   * It returns the CSRs for a player.
-   * @param {string} gamertag - The gamertag of the player you want to get the CSRs for.
-   * @param {'open' | 'solo-duo'} [queue] - The queue to get stats for.
-   */
-  async requestPlayerStatsCSR(gamertag: string, queue?: 'open' | 'solo-duo') {
-    try {
-      let returnValue: CsrsModels.CsrsRootObject;
 
-      const url =
-        this._haloDotApiInfiniteBaseUrl + `stats/players/${gamertag}/csrs`;
+  /**
+   * It returns a promise that resolves to a CsrsRootObject.
+   * @param {string} gamertag - The gamertag of the player you want to get the CSRs for.
+   */
+  async requestPlayerStatsCSR(gamertag: string) {
+    try {
+      let returnValue: PlayerCSRSResponse;
+
+      // const url =
+      //   this._haloDotApiInfiniteBaseUrl + `stats/csrs/?gamertag=${gamertag}`;
+
+      // const url = "https://halo.api.stdlib.com/infinite/stats/csrs/"
+
+      const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/csrs/`
+
+      // https://halo.api.stdlib.com/infinite@0.3.8/stats/csrs/gamertag
+
+      this._logger.verbose(url)
+
+      const axiosRequestConfig = {
+        headers: this._headers,
+        params: {
+          gamertag: encodeURIComponent(gamertag)
+        }
+      }
+
       const request = await lastValueFrom(
-        this._http.get<any>(url, {
-          headers: this._headers,
-        }),
+        this._http.get<any>(url, axiosRequestConfig),
       );
+
+      this._logger.verbose(`axiosRequestConfig: ${JSON.stringify(axiosRequestConfig)}`)
+
+
       if (request && request.status === 200) {
-        returnValue = request.data as CsrsModels.CsrsRootObject;
+        returnValue = request.data as PlayerCSRSResponse;
+
+        this._logger.verbose(`PlayerCSRSResponse: ${JSON.stringify(request.data)}`)
+
+
       }
       return returnValue;
     } catch (error) {
@@ -100,19 +128,30 @@ export class HaloDotApiService {
    */
   async requestPlayerServiceRecord(gamertag: string) {
     try {
-      let returnValue: ServiceRecordsModels.ServiceRecord | undefined;
+      let returnValue: InfinitePlayerMultiplayerServiceRecordResult | undefined;
 
-      const url =
-        this._haloDotApiInfiniteBaseUrl +
-        `stats/players/${gamertag}/service-record/global`;
+      // const url =
+      //   this._haloDotApiInfiniteBaseUrl +
+      //   `stats/players/${gamertag}/service-record/global`;
+
+      const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/service-record/multiplayer/`
+
+      const axiosRequestConfig = {
+        headers: this._headers,
+        params: {
+          gamertag: encodeURIComponent(gamertag)
+        }
+      }
+
       // this._logger.warn(`url: ${url}`)
       const request = await lastValueFrom(
-        this._http.get<any>(url, {
-          headers: this._headers,
-        }),
+        this._http.get<any>(url, axiosRequestConfig),
       );
       if (request && request.status == 200) {
-        returnValue = request.data as ServiceRecordsModels.ServiceRecord;
+        returnValue = request.data as InfinitePlayerMultiplayerServiceRecordResult
+
+        this._logger.verbose(`InfinitePlayerMultiplayerServiceRecordResult: ${JSON.stringify(request.data)}`)
+
       }
       return returnValue;
     } catch (error) {

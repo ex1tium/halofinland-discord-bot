@@ -50,7 +50,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
         this._logger.debug(`gamerTag as param: ${gamerTag}`);
 
         const statsCSR = await this._haloDotApi
-          .requestPlayerStatsCSR(gamerTag, 'open')
+          .requestPlayerStatsCSR(gamerTag)
           .catch((error) => {
             this._logger.error(error);
           });
@@ -75,29 +75,29 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             .addFields(
               {
                 name: `Kills`,
-                value: ` ${statsRecord.data.summary.kills}`,
+                value: ` ${statsRecord.data.core.summary.kills}`,
                 inline: true,
               },
               {
                 name: `Deaths`,
-                value: ` ${statsRecord.data.summary.deaths}`,
+                value: ` ${statsRecord.data.core.summary.deaths}`,
                 inline: true,
               },
               {
                 name: `Assists`,
-                value: ` ${statsRecord.data.summary.assists}`,
+                value: ` ${statsRecord.data.core.summary.assists}`,
                 inline: true,
               },
             )
             .addFields(
               {
                 name: `KDA`,
-                value: ` ${statsRecord.data.kda.toFixed(1)}`,
+                value: ` ${statsRecord.data.core.kda.toFixed(1)}`,
                 inline: true,
               },
               {
                 name: `KDR`,
-                value: ` ${statsRecord.data.kdr.toFixed(1)}`,
+                value: ` ${statsRecord.data.core.kdr.toFixed(1)}`,
                 inline: true,
               },
               {
@@ -161,7 +161,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
 
           // TODO write query against HaloDotApi
           const statsCSR = await this._haloDotApi
-            .requestPlayerStatsCSR(gamerTag, 'open')
+            .requestPlayerStatsCSR(gamerTag)
             .catch((error) => {
               this._logger.error(error);
             });
@@ -171,6 +171,9 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             .catch((error) => {
               this._logger.error(error);
             });
+
+          this._logger.log(`statsCSR: ${JSON.stringify(statsCSR)}`);
+          this._logger.log(`statsRecord: ${JSON.stringify(statsRecord)}`);
 
           if (
             statsCSR &&
@@ -187,29 +190,29 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               .addFields(
                 {
                   name: `Kills`,
-                  value: ` ${statsRecord.data.summary.kills}`,
+                  value: ` ${statsRecord.data.core.summary.kills}`,
                   inline: true,
                 },
                 {
                   name: `Deaths`,
-                  value: ` ${statsRecord.data.summary.deaths}`,
+                  value: ` ${statsRecord.data.core.summary.deaths}`,
                   inline: true,
                 },
                 {
                   name: `Assists`,
-                  value: ` ${statsRecord.data.summary.assists}`,
+                  value: ` ${statsRecord.data.core.summary.assists}`,
                   inline: true,
                 },
               )
               .addFields(
                 {
                   name: `KDA`,
-                  value: ` ${statsRecord.data.kda.toFixed(1)}`,
+                  value: ` ${statsRecord.data.core.kda.toFixed(1)}`,
                   inline: true,
                 },
                 {
                   name: `KDR`,
-                  value: ` ${statsRecord.data.kdr.toFixed(1)}`,
+                  value: ` ${statsRecord.data.core.kdr.toFixed(1)}`,
                   inline: true,
                 },
                 {
