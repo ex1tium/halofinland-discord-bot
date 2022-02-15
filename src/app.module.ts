@@ -22,16 +22,15 @@ SharedModule, which will configure the shared services. */
       isGlobal: true,
       load: [config],
     }),
-    /* The HttpModule is a class that registers an async factory function that returns an object with a
-    timeout property and a maxRedirects property. The ConfigModule is a class that registers an async
-    factory function that returns an object with a timeout property and a maxRedirects property. The
-    ConfigService is a class that injects the ConfigModule and returns the object with a timeout
-    property and a maxRedirects property. */
+
+    /* This is a factory function that will return an object with the timeout and max redirects
+    configured. The `useFactory` function will be called when the module is loaded. The `inject`
+    property will inject the ConfigService into the factory function. */
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
-        timeout: 10000,
-        maxRedirects: 3,
+        timeout: 60000,
+        maxRedirects: 5,
       }),
       inject: [ConfigService],
     }),
@@ -48,4 +47,4 @@ SharedModule, which will configure the shared services. */
     DiscordApiService,
   ],
 })
-export class AppModule {}
+export class AppModule { }
