@@ -27,7 +27,7 @@ to determine what events the bot will listen */
       useFactory: (configService: ConfigService) => ({
         token: configService.get('token'),
         commands: ['**/**/*.command.js'],
-        removeGlobalCommands: true,
+        // removeGlobalCommands: true,
         autoRegisterGlobalCommands: true,
         discordClientOptions: {
           intents: [
