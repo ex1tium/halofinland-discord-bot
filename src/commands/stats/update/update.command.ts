@@ -77,9 +77,7 @@ export class StatsUpdateSubCommand
 
       // return 'use /stats reg :gamertag: command to register first';
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }

@@ -90,9 +90,7 @@ export class TwitterService {
         return this._twitterUsers;
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -139,9 +137,7 @@ export class TwitterService {
         );
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -188,9 +184,7 @@ export class TwitterService {
         );
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -258,9 +252,7 @@ export class TwitterService {
       this.next(newTweets);
       return newTweets;
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -283,9 +275,7 @@ export class TwitterService {
 
       return record;
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -313,9 +303,7 @@ export class TwitterService {
       // this._logger.verbose(`tweet: ${JSON.stringify(tweet)}`)
       return tweet;
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }

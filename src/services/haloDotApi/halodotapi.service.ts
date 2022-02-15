@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AxiosResponse } from 'axios';
 import { lastValueFrom, Observable } from 'rxjs';
+import { InfinitePlayerAppearanceResult } from './appearance.model';
 import { PlayerCSRSResponse } from './csrs.models';
 import { InfinitePlayerMultiplayerServiceRecordResult } from './service-record.models';
 
@@ -51,9 +52,7 @@ export class HaloDotApiService {
       // const req =
       return await lastValueFrom(this._http.get(url));
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -78,13 +77,12 @@ export class HaloDotApiService {
    */
   async requestPlayerStatsCSR(gamertag: string) {
     try {
-      let returnValue: PlayerCSRSResponse;
+      let returnValue: PlayerCSRSResponse = null;
       const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/csrs/`
 
       const axiosRequestConfig = {
         headers: this._headers,
         params: {
-          // gamertag: encodeURIComponent(gamertag)
           gamertag: gamertag
         }
       }
@@ -104,9 +102,7 @@ export class HaloDotApiService {
       }
       return returnValue;
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -120,14 +116,13 @@ export class HaloDotApiService {
    */
   async requestPlayerServiceRecord(gamertag: string) {
     try {
-      let returnValue: InfinitePlayerMultiplayerServiceRecordResult | undefined;
+      let returnValue: InfinitePlayerMultiplayerServiceRecordResult = null;
 
       const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/service-record/multiplayer/`
 
       const axiosRequestConfig = {
         headers: this._headers,
         params: {
-          // gamertag: encodeURIComponent(gamertag)
           gamertag: gamertag
 
         }
@@ -149,9 +144,41 @@ export class HaloDotApiService {
 
       return returnValue;
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
+      if (error) {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+  }
+
+  async requestEmblem(gamertag: string) {
+    try {
+      let returnValue: InfinitePlayerAppearanceResult = null;
+
+      const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/appearance/`
+
+      const axiosRequestConfig = {
+        headers: this._headers,
+        params: {
+          gamertag: gamertag
+
+        }
+      }
+
+      const request = await lastValueFrom(
+        this._http.get<any>(url, axiosRequestConfig),
+      );
+
+      if (request && request.status == 200) {
+        returnValue = request.data as InfinitePlayerAppearanceResult
+        // this._logger.verbose(`InfinitePlayerAppearanceResult: ${JSON.stringify(request.data)}`)
       } else {
+        return Promise.reject(`Request failed with status: ${request.status}`);
+      }
+
+      return returnValue;
+
+    } catch (error) {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }

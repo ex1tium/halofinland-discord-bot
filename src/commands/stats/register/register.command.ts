@@ -106,9 +106,7 @@ export class StatsRegSubCommand
             Promise.reject(error);
           });
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }

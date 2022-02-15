@@ -84,9 +84,7 @@ export class DiscordApiService {
         );
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -206,9 +204,7 @@ export class DiscordApiService {
         Promise.reject(`API responded with status ${get.status}`);
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -242,9 +238,7 @@ export class DiscordApiService {
         return null;
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
@@ -260,9 +254,7 @@ export class DiscordApiService {
         await this.deleteCommand(id);
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }

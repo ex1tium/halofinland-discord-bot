@@ -54,6 +54,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
           .catch((error) => {
             this._logger.error(error);
           });
+
         const statsRecord = await this._haloDotApi
           .requestPlayerServiceRecord(gamerTag)
           .catch((error) => {
@@ -71,7 +72,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
             .setColor('#CCCCFF')
             .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
             .setTitle(gamerTag)
-            .setDescription(statsCSR.data[0].response.current.tier)
+            .setDescription(`${statsCSR.data[0].response.current.tier} ${statsCSR.data[0].response.current.sub_tier} - ${statsCSR.data[0].response.current.value} CSR`)
             .addFields(
               {
                 name: `Kills`,
@@ -130,15 +131,22 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 inline: true,
               },
               {
+                name: `Next Tier`,
+                value: ` ${statsCSR.data[0].response.current.next_tier} ${statsCSR.data[0].response.current.next_sub_tier} (${statsCSR.data[0].response.current.next_tier_start})`,
+                inline: true,
+              },
+              {
                 name: `Points to Next Tier`,
                 value: ` ${statsCSR.data[0].response.current.next_tier_start - statsCSR.data[0].response.current.value}`,
                 inline: true,
               },
+            )
+            .addFields(
               {
-                name: `All-Time Best Rank`,
+                name: `Peak Rating`,
                 value: ` ${statsCSR.data[0].response.all_time.tier} ${statsCSR.data[0].response.all_time.sub_tier} -  ${statsCSR.data[0].response.all_time.value} `,
                 inline: true,
-              },
+              }
             )
             .setFooter({
               text: `Time played: ${statsRecord.data.time_played.human
@@ -220,7 +228,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
               .setColor('#CCCCFF')
               .setThumbnail(statsCSR.data[0].response.current.tier_image_url)
               .setTitle(gamerTag)
-              .setDescription(statsCSR.data[0].response.current.tier)
+              .setDescription(`${statsCSR.data[0].response.current.tier} ${statsCSR.data[0].response.current.sub_tier} - ${statsCSR.data[0].response.current.value} CSR`)
               .addFields(
                 {
                   name: `Kills`,
@@ -279,15 +287,22 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                   inline: true,
                 },
                 {
+                  name: `Next Tier`,
+                  value: ` ${statsCSR.data[0].response.current.next_tier} ${statsCSR.data[0].response.current.next_sub_tier} (${statsCSR.data[0].response.current.next_tier_start})`,
+                  inline: true,
+                },
+                {
                   name: `Points to Next Tier`,
                   value: ` ${statsCSR.data[0].response.current.next_tier_start - statsCSR.data[0].response.current.value}`,
                   inline: true,
                 },
+              )
+              .addFields(
                 {
-                  name: `All-Time Best Rank`,
+                  name: `Peak Rating`,
                   value: ` ${statsCSR.data[0].response.all_time.tier} ${statsCSR.data[0].response.all_time.sub_tier} -  ${statsCSR.data[0].response.all_time.value} `,
                   inline: true,
-                },
+                }
               )
               .setFooter({
                 text: `Time played: ${statsRecord.data.time_played.human
@@ -353,9 +368,7 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
         }
       }
     } catch (error) {
-      if (error && error.stack) {
-        return Promise.reject(this._logger.error(error.stack));
-      } else {
+      if (error) {
         return Promise.reject(this._logger.error(error));
       }
     }
