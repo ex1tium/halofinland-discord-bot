@@ -106,6 +106,40 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 inline: true,
               },
             )
+            .addFields(
+              {
+                name: `Accuracy`,
+                value: ` ${statsRecord.data.core.shots.accuracy.toFixed(1)}%`,
+                inline: true,
+              },
+              {
+                name: `AVG Damage Dealt`,
+                value: ` ${statsRecord.data.core.damage.average}`,
+                inline: true,
+              },
+              {
+                name: `Medals`,
+                value: ` ${statsRecord.data.core.summary.medals}`,
+                inline: true,
+              },
+            )
+            .addFields(
+              {
+                name: `Current Tier`,
+                value: `${statsCSR.data[0].response.current.tier} ${statsCSR.data[0].response.current.sub_tier} - ${statsCSR.data[0].response.current.value}`,
+                inline: true,
+              },
+              {
+                name: `Points to Next Tier`,
+                value: ` ${statsCSR.data[0].response.current.next_tier_start - statsCSR.data[0].response.current.value}`,
+                inline: true,
+              },
+              {
+                name: `All-Time Best Rank`,
+                value: ` ${statsCSR.data[0].response.all_time.tier} ${statsCSR.data[0].response.all_time.sub_tier} -  ${statsCSR.data[0].response.all_time.value} `,
+                inline: true,
+              },
+            )
             .setFooter({
               text: `Time played: ${statsRecord.data.time_played.human
                 }. Wins: ${statsRecord.data.win_rate.toFixed(1)}%`,
@@ -218,6 +252,40 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
                 {
                   name: `Matches Played`,
                   value: ` ${statsRecord.data.matches_played}`,
+                  inline: true,
+                },
+              )
+              .addFields(
+                {
+                  name: `Accuracy`,
+                  value: ` ${statsRecord.data.core.shots.accuracy.toFixed(1)}%`,
+                  inline: true,
+                },
+                {
+                  name: `AVG Damage Dealt`,
+                  value: ` ${statsRecord.data.core.damage.average}`,
+                  inline: true,
+                },
+                {
+                  name: `Medals`,
+                  value: ` ${statsRecord.data.core.summary.medals}`,
+                  inline: true,
+                },
+              )
+              .addFields(
+                {
+                  name: `Current Tier`,
+                  value: `${statsCSR.data[0].response.current.tier} ${statsCSR.data[0].response.current.sub_tier} - ${statsCSR.data[0].response.current.value}`,
+                  inline: true,
+                },
+                {
+                  name: `Points to Next Tier`,
+                  value: ` ${statsCSR.data[0].response.current.next_tier_start - statsCSR.data[0].response.current.value}`,
+                  inline: true,
+                },
+                {
+                  name: `All-Time Best Rank`,
+                  value: ` ${statsCSR.data[0].response.all_time.tier} ${statsCSR.data[0].response.all_time.sub_tier} -  ${statsCSR.data[0].response.all_time.value} `,
                   inline: true,
                 },
               )
