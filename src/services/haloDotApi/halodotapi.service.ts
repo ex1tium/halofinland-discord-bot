@@ -71,49 +71,39 @@ export class HaloDotApiService {
   }
 
 
+
   /**
-   * It returns a promise that resolves to a CsrsRootObject.
+   * It makes a request to the Halo API to get the CSR stats for a player.
    * @param {string} gamertag - The gamertag of the player you want to get the CSRs for.
    */
   async requestPlayerStatsCSR(gamertag: string) {
     try {
       let returnValue: PlayerCSRSResponse;
-
-      // const url =
-      //   this._haloDotApiInfiniteBaseUrl + `stats/csrs/?gamertag=${gamertag}`;
-
-      // const url = "https://halo.api.stdlib.com/infinite/stats/csrs/"
-
       const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/csrs/`
-
-      // https://halo.api.stdlib.com/infinite@0.3.8/stats/csrs/gamertag
-
-      this._logger.verbose(url)
 
       const axiosRequestConfig = {
         headers: this._headers,
         params: {
-          gamertag: encodeURIComponent(gamertag)
+          // gamertag: encodeURIComponent(gamertag)
+          gamertag: gamertag
         }
       }
+
+      // this._logger.verbose(`axiosRequestConfig: ${JSON.stringify(axiosRequestConfig)}`)
+      // this._logger.verbose(url)
 
       const request = await lastValueFrom(
         this._http.get<any>(url, axiosRequestConfig),
       );
 
-      this._logger.verbose(`axiosRequestConfig: ${JSON.stringify(axiosRequestConfig)}`)
-
-
       if (request && request.status === 200) {
         returnValue = request.data as PlayerCSRSResponse;
-
         this._logger.verbose(`PlayerCSRSResponse: ${JSON.stringify(request.data)}`)
-
-
+      } else {
+        return Promise.reject(`Request failed with status: ${request.status}`);
       }
       return returnValue;
     } catch (error) {
-      // throw new Error(error);
       if (error && error.stack) {
         return Promise.reject(this._logger.error(error.stack));
       } else {
@@ -122,37 +112,41 @@ export class HaloDotApiService {
     }
   }
 
+
+
   /**
-   * It makes a request to the Halo API to get the Service Record for a player.
+   * It returns a Promise that resolves to an InfinitePlayerMultiplayerServiceRecordResult.
    * @param {string} gamertag - The gamertag of the player you want to get the service record for.
    */
   async requestPlayerServiceRecord(gamertag: string) {
     try {
       let returnValue: InfinitePlayerMultiplayerServiceRecordResult | undefined;
 
-      // const url =
-      //   this._haloDotApiInfiniteBaseUrl +
-      //   `stats/players/${gamertag}/service-record/global`;
-
       const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/service-record/multiplayer/`
 
       const axiosRequestConfig = {
         headers: this._headers,
         params: {
-          gamertag: encodeURIComponent(gamertag)
+          // gamertag: encodeURIComponent(gamertag)
+          gamertag: gamertag
+
         }
       }
 
+      // this._logger.verbose(`axiosRequestConfig: ${JSON.stringify(axiosRequestConfig)}`)
       // this._logger.warn(`url: ${url}`)
+
       const request = await lastValueFrom(
         this._http.get<any>(url, axiosRequestConfig),
       );
+
       if (request && request.status == 200) {
         returnValue = request.data as InfinitePlayerMultiplayerServiceRecordResult
-
-        this._logger.verbose(`InfinitePlayerMultiplayerServiceRecordResult: ${JSON.stringify(request.data)}`)
-
+        // this._logger.verbose(`InfinitePlayerMultiplayerServiceRecordResult: ${JSON.stringify(request.data)}`)
+      } else {
+        return Promise.reject(`Request failed with status: ${request.status}`);
       }
+
       return returnValue;
     } catch (error) {
       if (error && error.stack) {
