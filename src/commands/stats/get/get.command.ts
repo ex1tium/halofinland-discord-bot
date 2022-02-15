@@ -40,9 +40,9 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
       const hasParam = !!dto.gamertag;
       const userId = interaction.user.id;
 
-      const queueType = dto.queue
+      // const queueType = dto.queue
 
-      this._logger.warn(`queueType: ${queueType}`);
+      // this._logger.warn(`queueType: ${queueType}`);
 
       let gamerTag: string;
       let embedReply: MessageEmbed;

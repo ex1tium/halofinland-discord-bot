@@ -84,7 +84,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     //   });
 
 
-    // /* Deleting all commands from the command list. */
+    /* Deleting all commands from the command list. */
     // await this._discordApiService.
     //   deleteAllCommands().catch((error) => {
     //     this._logger.error(`deleteAllCommands ${error}`);

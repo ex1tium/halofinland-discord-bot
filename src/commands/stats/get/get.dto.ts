@@ -16,7 +16,7 @@ export class GetDto {
   @Param({ description: '(Optional) Enter Xbox Gamertag to pull stats for Halo Infinite', required: false })
   gamertag: string;
 
-  @Choice(QueueType)
-  @Param({ description: 'Select from Open Crossplay, Solo-Duo Controller or Solo-Duo Keyboard and Mouse', required: false, type: ParamType.STRING })
-  queue: QueueType;
+  // @Choice(QueueType)
+  // @Param({ description: 'Select from Open Crossplay, Solo-Duo Controller or Solo-Duo Keyboard and Mouse', required: false, type: ParamType.STRING })
+  // queue: QueueType;
 }
