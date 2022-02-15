@@ -46,11 +46,6 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
       }),
     );
 
-    /* Deleting all commands from the command list. */
-    // await this._discordApiService.
-    //   deleteAllCommands().catch((error) => {
-    //     this._logger.error(error);
-    //   })
 
     /* The `registerNewCommand` method is used to register a new command with the Discord API. The first
     parameter is the name of the command, the second parameter is a description of the command, and
@@ -59,6 +54,7 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
 
     // Doesn't have to be ran every startup. Only if changes are made
     // TODO write commandline argument for running this command?
+
     // await this._discordApiService
     //   .registerNewCommand(
     //     'stats',
@@ -70,13 +66,29 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     //     // this._logger.verbose(`Registered command: ${JSON.stringify(value)}`)
     //   })
     //   .catch((error) => {
-    //     this._logger.error(error);
+    //     this._logger.error(`registerNewCommand ${error}`);
     //   });
 
-    await this._discordApiService.getCommands().catch((error) => {
-      this._logger.error(error);
-    });
+    // await this._discordApiService.getGuildCommands().then((value) => {
+    //   // this._logger.verbose(`getGuildCommands ${JSON.stringify(value)}`);
+    // }).catch((error) => {
+    //   this._logger.error(`getGuildCommands ${error}`);
+    // })
 
+    // await this._discordApiService.getGlobalCommands()
+    //   .then((value) => {
+    //     // this._logger.verbose(`getGlobalCommands ${JSON.stringify(value)}`)
+    //   })
+    //   .catch((error) => {
+    //     this._logger.error(`getGlobalCommands ${error}`);
+    //   });
+
+
+    // /* Deleting all commands from the command list. */
+    // await this._discordApiService.
+    //   deleteAllCommands().catch((error) => {
+    //     this._logger.error(`deleteAllCommands ${error}`);
+    //   })
 
 
     this._logger.log('Bot was started!');

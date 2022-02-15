@@ -19,7 +19,7 @@ import { GetDto } from './get.dto';
 
 @UseFilters(CommandValidationFilter)
 @UsePipes(TransformPipe, ValidationPipe)
-@SubCommand({ name: 'get', description: 'Prints our your stats' })
+@SubCommand({ name: 'get', description: 'Query your stats if registered or use :gamertag: to query' })
 export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
   private _logger: Logger = new Logger(StatsGetSubCommand.name);
 
@@ -39,6 +39,10 @@ export class StatsGetSubCommand implements DiscordTransformedCommand<GetDto> {
       // https://github.com/discordjs/discord.js/issues/7005
       const hasParam = !!dto.gamertag;
       const userId = interaction.user.id;
+
+      const queueType = dto.queue
+
+      this._logger.warn(`queueType: ${queueType}`);
 
       let gamerTag: string;
       let embedReply: MessageEmbed;

@@ -9,7 +9,9 @@ import { AxiosResponse } from 'axios';
 export class DiscordApiService {
   private _logger: Logger = new Logger(DiscordApiService.name);
 
-  discordUrl: string;
+  discordUrlBaseURL: string;
+  globalCommands: string;
+  guildCommands: string;
   botToken: string;
 
   /**
@@ -23,11 +25,15 @@ export class DiscordApiService {
     private _configService: ConfigService,
   ) {
     this.botToken = this._configService.get('token');
-    this.discordUrl = `https://discord.com/api/v8/applications/${this._configService.get(
+    this.discordUrlBaseURL = `https://discord.com/api/v8/applications/${this._configService.get(
       'applicationId',
-    )}/guilds/${this._configService.get('guildID')}/commands`;
+    )}`;
 
-    // console.log('discordAPI url for commands:', this.discordUrl);
+    this.globalCommands = `/commands`
+    this.guildCommands = `/guilds/${this._configService.get('guildID')}/commands`
+
+
+    // console.log('discordAPI url for commands:', this.discordUrlBaseURL);
     // console.log('discordAPI token:', this.botToken);
   }
 
@@ -68,7 +74,7 @@ export class DiscordApiService {
 
       // this._logger.warn(data);
 
-      const post = this._httpService.post(this.discordUrl, data, {
+      const post = this._httpService.post(this.discordUrlBaseURL, data, {
         headers: {
           Authorization: `Bot ${this.botToken}`,
         },
@@ -76,7 +82,7 @@ export class DiscordApiService {
 
       const result = await lastValueFrom(post);
 
-      if (result.status === 200) {
+      if (result.status === 200 || result.status === 201) {
         return result.data;
       } else {
         return Promise.reject(
@@ -153,6 +159,27 @@ export class DiscordApiService {
             type: 3,
             required: false,
           },
+          {
+            name: 'queue type',
+            description:
+              'Select from: Open Crossplay, Solo-Duo Controller or Solo-Duo Keyboard and Mouse',
+            type: 3,
+            required: true,
+            choices: [
+              {
+                name: 'Open Crossplay',
+                value: 'open_crossplay',
+              },
+              {
+                name: 'Solo-Duo Controller',
+                value: 'solo-duo_controller',
+              },
+              {
+                name: 'Solo-Duo Mouse and Keyboard',
+                value: 'solo-duo_mnk',
+              },
+            ],
+          },
         ],
       },
       {
@@ -183,22 +210,28 @@ export class DiscordApiService {
     return statsSubCommands;
   }
 
+
   /**
-   * It gets the commands that are registered with the bot.
-   * @returns The response from the API.
+   * It gets the global commands for the bot.
+   * @returns A promise that resolves to an array of objects.
    */
-  async getCommands(): Promise<void | AxiosResponse<any, any>> {
+  async getGlobalCommands() {
     try {
+
+      const url = this.discordUrlBaseURL + this.globalCommands;
+
+      // this._logger.warn(url);
+
       const get = await lastValueFrom(
-        this._httpService.get(this.discordUrl, {
+        this._httpService.get<Command[]>(url, {
           headers: {
             Authorization: `Bot ${this.botToken}`,
           },
         }),
       );
 
-      if (get.status == 200) {
-        this._logger.debug(`REGISTERED COMMANDS: `, JSON.stringify(get.data));
+      if (get.status == 200 || get.status == 201) {
+        this._logger.debug(`REGISTERED GLOBAL COMMANDS: `, JSON.stringify(get.data));
         return get.data;
       } else {
         Promise.reject(`API responded with status ${get.status}`);
@@ -210,27 +243,95 @@ export class DiscordApiService {
     }
   }
 
-  /**
-   * It deletes a command from the bot.
-   * @param {string} commandId - The ID of the command you want to delete.
-   * @returns The response from the API.
-   */
-  async deleteCommand(
-    commandId: string,
-  ): Promise<void | AxiosResponse<any, any>> {
+  // It gets registered discord guild commands for the bot
+  async getGuildCommands() {
     try {
-      const deleteCommand = await lastValueFrom(
-        this._httpService.delete(this.discordUrl + `/${commandId}`, {
+      const url = this.discordUrlBaseURL + this.guildCommands;
+
+      // this._logger.warn(url);
+
+      const get = await lastValueFrom(
+        this._httpService.get<Command[]>(url, {
           headers: {
             Authorization: `Bot ${this.botToken}`,
           },
         }),
       );
 
-      if (deleteCommand.status == 200) {
-        this._logger.debug(
-          `DELETE COMMAND: `,
-          JSON.stringify(deleteCommand.data),
+      if (get.status == 200 || get.status == 201) {
+        this._logger.debug(`REGISTERED GUILD COMMANDS: `, JSON.stringify(get.data));
+        return get.data;
+      } else {
+        Promise.reject(`API responded with status ${get.status}`);
+      }
+    } catch (error) {
+      if (error) {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+  }
+
+
+  /**
+   * It deletes a global command.
+   * @param {string} commandId - The ID of the command you want to delete.
+   * @returns The delete command is returning a promise.
+   */
+  async deleteGlobalCommand(
+    commandId: string,
+  ): Promise<void | AxiosResponse<any, any>> {
+    try {
+
+      const url = this.discordUrlBaseURL + this.globalCommands + '/' + commandId;
+
+
+      const deleteCommand = await lastValueFrom(
+        this._httpService.delete(url, {
+          headers: {
+            Authorization: `Bot ${this.botToken}`,
+          },
+        }),
+      );
+
+      if (deleteCommand.status == 200 || deleteCommand.status == 204) {
+        this._logger.warn(
+          `DELETE GLOBAL COMMAND: `,
+          JSON.stringify(commandId),
+        );
+
+        return deleteCommand;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      if (error) {
+        return Promise.reject(this._logger.error(error));
+      }
+    }
+  }
+
+
+  async deleteGuildCommand(
+    commandId: string,
+  ): Promise<void | AxiosResponse<any, any>> {
+    try {
+
+      const url = this.discordUrlBaseURL + this.guildCommands + '/' + commandId;
+
+      this._logger.warn(url);
+
+      const deleteCommand = await lastValueFrom(
+        this._httpService.delete(url, {
+          headers: {
+            Authorization: `Bot ${this.botToken}`,
+          },
+        }),
+      );
+
+      if (deleteCommand.status == 200 || deleteCommand.status == 204) {
+        this._logger.warn(
+          `DELETE GUILD COMMAND: `,
+          JSON.stringify(commandId),
         );
 
         return deleteCommand;
@@ -246,13 +347,23 @@ export class DiscordApiService {
 
   async deleteAllCommands() {
     try {
-      const idsToDelete = await this.getCommands() as unknown as any[];
-      this._logger.log(idsToDelete)
+      const globalCommandIds = await this.getGlobalCommands();
+      this._logger.log(`GLOBAL COMMANDS: `, globalCommandIds);
 
-      for (const id of idsToDelete.map(v => v.id)) {
+      const guildCommandIds = await this.getGuildCommands()
+      this._logger.log(`GUILD COMMANDS: `, guildCommandIds);
+
+      for (const id of globalCommandIds.map(v => v.id)) {
         this._logger.debug(id)
-        await this.deleteCommand(id);
+        await this.deleteGlobalCommand(id);
       }
+
+      for (const id of guildCommandIds.map(v => v.id)) {
+        this._logger.debug(id)
+        await this.deleteGuildCommand(id);
+      }
+
+      return true;
     } catch (error) {
       if (error) {
         return Promise.reject(this._logger.error(error));
@@ -261,3 +372,36 @@ export class DiscordApiService {
 
   }
 }
+export interface Command {
+  id: string;
+  application_id: string;
+  version: string;
+  default_permission: boolean;
+  default_member_permissions: null;
+  type: number;
+  name: string;
+  description: string;
+  dm_permission: null;
+  options?: CommandOption[];
+}
+
+export interface CommandOption {
+  type: number;
+  name: string;
+  description: string;
+  options: OptionOption[];
+}
+
+export interface OptionOption {
+  type: number;
+  name: string;
+  description: string;
+  choices?: Choice[];
+  required?: boolean;
+}
+
+export interface Choice {
+  name: string;
+  value: string;
+}
+

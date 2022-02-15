@@ -27,6 +27,7 @@ to determine what events the bot will listen */
       useFactory: (configService: ConfigService) => ({
         token: configService.get('token'),
         commands: ['**/**/*.command.js'],
+        removeGlobalCommands: true,
         autoRegisterGlobalCommands: true,
         discordClientOptions: {
           intents: [
@@ -79,4 +80,4 @@ to determine what events the bot will listen */
     DiscordCommandProvider,
   ],
 })
-export class SharedModule {}
+export class SharedModule { }
