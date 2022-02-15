@@ -20,6 +20,10 @@ import {
 export class Oauth2DiscordController {
   private _logger: Logger = new Logger(Oauth2DiscordController.name);
 
+  constructor() {
+    this._logger.verbose(`${Oauth2DiscordController.name} has been initialized.`);
+  }
+
   @Get()
   async callbackForDiscordOauth2(
     @Req() request: Request,

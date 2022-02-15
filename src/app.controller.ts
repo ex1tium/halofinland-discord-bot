@@ -75,13 +75,13 @@ export class AppController implements OnModuleInit, OnModuleDestroy {
     //   this._logger.error(`getGuildCommands ${error}`);
     // })
 
-    // await this._discordApiService.getGlobalCommands()
-    //   .then((value) => {
-    //     // this._logger.verbose(`getGlobalCommands ${JSON.stringify(value)}`)
-    //   })
-    //   .catch((error) => {
-    //     this._logger.error(`getGlobalCommands ${error}`);
-    //   });
+    await this._discordApiService.getGlobalCommands()
+      .then((value) => {
+        // this._logger.verbose(`getGlobalCommands ${JSON.stringify(value)}`)
+      })
+      .catch((error) => {
+        this._logger.error(`getGlobalCommands ${error}`);
+      });
 
 
     /* Deleting all commands from the command list. */

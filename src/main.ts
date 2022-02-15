@@ -19,7 +19,7 @@ bootstrap();
 
 process.on('uncaughtException', (error) => {
   // POSSIBLY BAD IDEA. PREVENT APP FROM CRASHING IF THIS LISTENER IS ON.
-  console.error(`possible fatal error: ${error}`);
+  console.error(`possible fatal error: ${JSON.stringify(error)}`);
 
   // TRIED TO MANUALLY CRASH APP AFTER this listener has triggered. Doesn't work as hoped?
   // process.kill(process.pid, 'SIGKILL')

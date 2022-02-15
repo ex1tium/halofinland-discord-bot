@@ -75,7 +75,7 @@ export class HaloDotApiService {
    * It makes a request to the Halo API to get the CSR stats for a player.
    * @param {string} gamertag - The gamertag of the player you want to get the CSRs for.
    */
-  async requestPlayerStatsCSR(gamertag: string) {
+  async requestPlayerStatsCSRS(gamertag: string) {
     try {
       let returnValue: PlayerCSRSResponse = null;
       const url = `${this._haloDotApiInfiniteBaseUrl}@${this._apiVersion}/stats/csrs/`
